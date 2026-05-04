@@ -16,6 +16,7 @@ import { historyCommand } from "./cli/history.js";
 import { brandCommand } from "./cli/brand.js";
 import { pluginInitCommand } from "./cli/plugin.js";
 import { critiqueDiff } from "./critique/diff.js";
+import { templateCommand } from "./cli/template.js";
 
 async function main() {
   const command = process.argv[2];
@@ -38,6 +39,7 @@ async function main() {
     case "history": await historyCommand(args); break;
     case "brand": await brandCommand(args); break;
     case "plugin": await pluginInitCommand(args); break;
+    case "template": await templateCommand(args); break;
     case "diff":
       const f1 = args[0];
       const f2 = args.find(a => !a.startsWith("-"));
@@ -69,6 +71,7 @@ function printHelp() {
     "history       Quality history & trends",
     "brand         <cache|fetch> Brand system",
     "plugin        Create plugin scaffold",
+    "template      List/use/delete templates",
     "diff          Compare two HTML files",
     "benchmark     Run benchmark suite",
     "mcp           Start MCP server",
