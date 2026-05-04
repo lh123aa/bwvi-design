@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metallix — Three.js 金属渲染</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap');
+:root{--primary:#0D0D0D;--accent:#C9A84C;--text:#E8E8E8;--text2:#888890;--font-d:'Space Grotesk',sans-serif;--font-b:'Inter',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--primary);color:var(--text);overflow-x:hidden}
+.w{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+
+/* Canvas behind hero only */
+#three-canvas{position:absolute;top:0;left:0;width:100%;height:100vh;z-index:0;pointer-events:none}
+.hero-wrap{position:relative;height:100vh;overflow:hidden}
+
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.8);backdrop-filter:blur(24px);border-bottom:1px solid rgba(201,168,76,0.06)}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0;max-width:1200px;margin:0 auto;padding:18px 24px}
+.logo{font-family:var(--font-d);font-size:1.375rem;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:-0.02em}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--text2);font-size:0.8125rem;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;transition:color 0.3s}
+.nav-links a:hover{color:var(--accent)}
+.cta-nav{padding:10px 28px;background:var(--accent);border:none;color:var(--primary);font-weight:600;font-size:0.8125rem;cursor:pointer;border-radius:2px;text-transform:uppercase;letter-spacing:0.05em;font-family:var(--font-b);transition:opacity 0.3s}
+.cta-nav:hover{opacity:0.85}
+
+.hero-inner{position:absolute;bottom:15%;left:50%;transform:translateX(-50%);width:100%;max-width:1200px;padding:0 24px;z-index:3}
+.hero-kicker{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent);margin-bottom:16px;opacity:0.6}
+.hero-inner h1{font-family:var(--font-d);font-size:clamp(2.5rem,5vw,4.5rem);font-weight:700;line-height:1.05;margin-bottom:20px;letter-spacing:-0.03em;color:#fff}
+.hero-inner p{font-size:1.0625rem;color:var(--text2);line-height:1.8;margin-bottom:32px;max-width:500px;font-weight:300}
+.btn-gold{padding:14px 36px;background:var(--accent);border:none;color:var(--primary);font-weight:600;font-size:0.875rem;cursor:pointer;font-family:var(--font-b);letter-spacing:0.02em;transition:all 0.3s}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.25)}
+.btn-ghost{padding:14px 36px;background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--accent);font-weight:500;font-size:0.875rem;cursor:pointer;font-family:var(--font-b);transition:all 0.3s}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(201,168,76,0.05)}
+
+.stats{padding:100px 0;position:relative;z-index:2}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,168,76,0.08)}
+.stat-card{padding:48px 32px;background:var(--primary);text-align:center}
+.stat-num{font-family:var(--font-d);font-size:2.75rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.stat-label{color:var(--text2);font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.08em}
+
+.features{padding:120px 0;position:relative;z-index:2}
+.sh{text-align:center;margin-bottom:64px}
+.sh .tag{display:inline-block;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent);margin-bottom:16px;border:1px solid rgba(201,168,76,0.2);padding:5px 14px}
+.sh h2{font-family:var(--font-d);font-size:2.5rem;font-weight:700;margin-bottom:12px}
+.sh p{color:var(--text2);font-size:1rem;max-width:520px;margin:0 auto;font-weight:300}
+.f-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,0.06)}
+.f-card{padding:48px 36px;background:var(--primary);transition:background 0.4s;position:relative}
+.f-card:hover{background:#151515}
+.f-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:0;background:var(--accent);transition:height 0.4s}
+.f-card:hover::before{height:100%}
+.f-icon{font-size:1.5rem;margin-bottom:20px;color:var(--accent)}
+.f-card h3{font-family:var(--font-d);font-size:1.125rem;font-weight:600;margin-bottom:10px}
+.f-card p{color:var(--text2);font-size:0.875rem;line-height:1.7;font-weight:300}
+
+.cta-section{padding:100px 0;position:relative;z-index:2}
+.cta-box{padding:80px 64px;background:#111;border:1px solid rgba(201,168,76,0.08);text-align:center}
+.cta-box h2{font-family:var(--font-d);font-size:2rem;font-weight:700;margin-bottom:12px}
+.cta-box p{color:var(--text2);font-size:1rem;margin-bottom:32px;font-weight:300}
+
+footer{border-top:1px solid rgba(201,168,76,0.06);padding:48px 0;position:relative;z-index:2}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
+.fc h4{font-family:var(--font-d);font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent)}
+.fc p{color:var(--text2);font-size:0.8125rem;line-height:1.8;font-weight:300}
+.fc ul{list-style:none}
+.fc li{margin-bottom:8px}
+.fc a{color:var(--text2);text-decoration:none;font-size:0.8125rem;transition:color 0.3s;font-weight:300}
+.fc a:hover{color:var(--accent)}
+.fb{border-top:1px solid rgba(201,168,76,0.06);margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2)}
+
+@media(max-width:768px){
+  .stats-grid,.f-grid{grid-template-columns:1fr}
+  .fg{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .cta-box{padding:40px 24px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<nav>
+<a href="/" class="logo">Metallix</a>
+<ul class="nav-links"><li><a href="#">Platform</a></li><li><a href="#">Solutions</a></li><li><a href="#">Docs</a></li><li><a href="#">Pricing</a></li></ul>
+<button class="cta-nav">Get Started</button>
+</nav>
+</header>
+
+<div class="hero-wrap">
+<div id="three-canvas"></div>
+<div class="hero-inner">
+<div class="hero-kicker">✦ Next-Gen Infrastructure</div>
+<h1>Built on <br>solid gold.</h1>
+<p>Enterprise cloud infrastructure with real-time 3D rendered metal — not CSS gradients.</p>
+<div>
+<button class="btn-gold" onclick="alert('Demo')">Deploy Now →</button>
+<button class="btn-ghost" onclick="alert('Demo')" style="margin-left:12px">Talk to Sales</button>
+</div>
+</div>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js';
+
+const container = document.getElementById('three-canvas');
+const w = container.clientWidth;
+const h = container.clientHeight;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0D0D0D);
+
+const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+camera.position.set(0, 2, 8);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(w, h);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+container.appendChild(renderer.domElement);
+
+// — Lights —
+const ambient = new THREE.AmbientLight(0x222233, 0.5);
+scene.add(ambient);
+
+const key = new THREE.DirectionalLight(0xFFEECC, 3);
+key.position.set(5, 8, 5);
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0x8888FF, 0.8);
+fill.position.set(-3, 1, 3);
+scene.add(fill);
+
+const rim = new THREE.DirectionalLight(0xC9A84C, 1.5);
+rim.position.set(-1, -2, -5);
+scene.add(rim);
+
+// — PMREM Generator for envMap —
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+pmremGenerator.compileEquirectangularShader();
+
+// Simple env map from scene
+const envScene = new THREE.Scene();
+envScene.background = new THREE.Color(0x1A1A24);
+const envTexture = pmremGenerator.fromScene(envScene).texture;
+
+// — Main Torus Knot (gold metal) —
+const geo1 = new THREE.TorusKnotGeometry(1.2, 0.4, 256, 32);
+const mat1 = new THREE.MeshStandardMaterial({
+  color: 0xC9A84C,
+  metalness: 0.95,
+  roughness: 0.25,
+  envMap: envTexture,
+  envMapIntensity: 2.0,
+});
+const knot = new THREE.Mesh(geo1, mat1);
+knot.position.y = 0.3;
+scene.add(knot);
+
+// — Small orbiting torus (silver) —
+const geo2 = new THREE.TorusGeometry(0.5, 0.15, 32, 32);
+const mat2 = new THREE.MeshStandardMaterial({
+  color: 0xCCCCDD,
+  metalness: 0.9,
+  roughness: 0.2,
+  envMap: envTexture,
+  envMapIntensity: 1.5,
+});
+const ring = new THREE.Mesh(geo2, mat2);
+ring.position.x = 2.2;
+ring.position.y = 0.5;
+ring.rotation.x = Math.PI / 3;
+scene.add(ring);
+
+// — Small orbiting sphere (gold) —
+const geo3 = new THREE.SphereGeometry(0.25, 32, 32);
+const mat3 = new THREE.MeshStandardMaterial({
+  color: 0xC9A84C,
+  metalness: 0.98,
+  roughness: 0.15,
+  envMap: envTexture,
+  envMapIntensity: 2.5,
+});
+const sphere = new THREE.Mesh(geo3, mat3);
+sphere.position.x = -2.0;
+sphere.position.y = -0.3;
+scene.add(sphere);
+
+// — Floor reflection hint —
+const geoGround = new THREE.PlaneGeometry(12, 8);
+const matGround = new THREE.MeshStandardMaterial({
+  color: 0x0D0D0D,
+  metalness: 0.8,
+  roughness: 0.6,
+  transparent: true,
+  opacity: 0.3,
+});
+const ground = new THREE.Mesh(geoGround, matGround);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -1.2;
+scene.add(ground);
+
+// — Particles (gold dust) —
+const pCount = 400;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(pCount * 3);
+for (let i = 0; i < pCount * 3; i++) pPos[i] = (Math.random() - 0.5) * 12;
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const pMat = new THREE.PointsMaterial({
+  color: 0xC9A84C,
+  size: 0.02,
+  transparent: true,
+  opacity: 0.4,
+  blending: THREE.AdditiveBlending,
+});
+const particles = new THREE.Points(pGeo, pMat);
+particles.position.y = 1;
+scene.add(particles);
+
+// — Mouse tracking —
+let mx = 0, my = 0;
+window.addEventListener('mousemove', (e) => {
+  mx = (e.clientX / w) * 2 - 1;
+  my = -(e.clientY / h) * 2 + 1;
+});
+
+// — Resize —
+window.addEventListener('resize', () => {
+  const w2 = container.clientWidth;
+  const h2 = container.clientHeight;
+  camera.aspect = w2 / h2;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w2, h2);
+});
+
+// — Animate —
+function animate() {
+  requestAnimationFrame(animate);
+  const t = Date.now() * 0.001;
+  knot.rotation.x = t * 0.15;
+  knot.rotation.y = t * 0.25;
+  ring.position.x = 2.2 + Math.sin(t * 0.5) * 0.3;
+  ring.position.z = Math.cos(t * 0.5) * 0.3;
+  ring.rotation.z = t * 0.4;
+  sphere.position.x = -2.0 + Math.sin(t * 0.7 + 1) * 0.4;
+  sphere.position.z = Math.cos(t * 0.7 + 1) * 0.4;
+  // Mouse parallax
+  knot.rotation.y += (mx * 0.3 - knot.rotation.y) * 0.02;
+  knot.rotation.x += (my * 0.2 - knot.rotation.x) * 0.02;
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+
+<section class="stats">
+<div class="w"><div class="stats-grid">
+<div class="stat-card"><div class="stat-num">99.99%</div><div class="stat-label">Uptime SLA</div></div>
+<div class="stat-card"><div class="stat-num">150+</div><div class="stat-label">Global Nodes</div></div>
+<div class="stat-card"><div class="stat-num">5K+</div><div class="stat-label">Enterprise Clients</div></div>
+<div class="stat-card"><div class="stat-num">&lt;10ms</div><div class="stat-label">Avg. Latency</div></div>
+</div></div>
+</section>
+
+<section class="features">
+<div class="w">
+<div class="sh"><div class="tag">✦ Capabilities</div><h2>Engineered for performance.</h2><p>From compute to storage to networking — unified infrastructure built for the most demanding workloads.</p></div>
+<div class="f-grid">
+<div class="f-card"><div class="f-icon">⚡</div><h3>High-Performance Compute</h3><p>AMD EPYC & NVIDIA H100 clusters. Auto-scaling, pay-per-use, up to 10x price-performance.</p></div>
+<div class="f-card"><div class="f-icon">▣</div><h3>Distributed Storage</h3><p>S3-compatible object storage with multi-region replication. 11 nines durability, enterprise encryption.</p></div>
+<div class="f-card"><div class="f-icon">◉</div><h3>Global Network</h3><p>150+ PoPs with Anycast routing. Sub-10ms latency worldwide. Built-in DDoS protection & WAF.</p></div>
+<div class="f-card"><div class="f-icon">⊞</div><h3>Container Orchestration</h3><p>Managed Kubernetes with auto-scaling, Istio service mesh, and GitOps deployment pipelines.</p></div>
+<div class="f-card"><div class="f-icon">⌘</div><h3>Security & Compliance</h3><p>SOC 2 Type II, ISO 27001, GDPR. Zero-trust with hardware-backed encryption everywhere.</p></div>
+<div class="f-card"><div class="f-icon">⟐</div><h3>AI Platform</h3><p>Fully managed ML training & inference. From data labeling to model serving — one platform.</p></div>
+</div>
+</div>
+</section>
+
+<section class="cta-section">
+<div class="w">
+<div class="cta-box">
+<h2>Ready to build on gold?</h2>
+<p>Join 5,000+ enterprises. Start free, scale as you grow.</p>
+<button class="btn-gold" onclick="alert('Demo')">Start Free Trial →</button>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="w">
+<div class="fg">
+<div class="fc"><h4>Metallix</h4><p>Enterprise cloud infrastructure. 150+ global nodes, 99.99% availability. Powering the next generation of digital business.</p></div>
+<div class="fc"><h4>Product</h4><ul><li><a href="#">Compute</a></li><li><a href="#">Storage</a></li><li><a href="#">Network</a></li><li><a href="#">Security</a></li></ul></div>
+<div class="fc"><h4>Resources</h4><ul><li><a href="#">Docs</a></li><li><a href="#">API</a></li><li><a href="#">Blog</a></li><li><a href="#">Community</a></li></ul></div>
+<div class="fc"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy</a></li></ul></div>
+</div>
+<div class="fb"><span>© 2026 Metallix. All rights reserved.</span><span>3D engine: Three.js · Design: BWVI</span></div>
+</div>
+</footer>
+
+</body>
+</html>

@@ -47,6 +47,32 @@ export async function generateCommand(args: string[]) {
     return;
   }
 
+  // --run mode: auto-call Agent CLI
+  const runMode = args.includes("--run");
+  if (runMode) {
+    try {
+      const { findBestAgent, runAgent } = await import("../engine/agent.js");
+      const agent = findBestAgent();
+      if (!agent) {
+        console.error(JSON.stringify({ error: "未检测到 Agent CLI，请安装 Claude Code / OpenCode / Codex", code: "NO_AGENT" }));
+        process.exit(1);
+      }
+      process.stderr.write(`Using agent: ${agent.name} (${agent.binary})\n`);
+      const prompt = composeGeneratePrompt(task, [], direction);
+      process.stderr.write("Running agent...\n");
+      const output = runAgent(agent, prompt.systemPrompt, prompt.userPrompt);
+      const htmlMatch = output.match(/<artifact[^>]*>([\s\S]*?)<\/artifact>/);
+      const html = htmlMatch ? htmlMatch[1] : output;
+      const filePath = join(process.cwd(), "index.html");
+      writeFileSync(filePath, html, "utf-8");
+      console.log(JSON.stringify({ status: "ok", agent: agent.name, file: filePath, size: html.length }, null, 2));
+    } catch (e: any) {
+      console.error(JSON.stringify({ error: `Agent 执行失败: ${e.message}` }));
+      process.exit(1);
+    }
+    return;
+  }
+
   const projectDir = findProjectDir();
   if (!projectDir) {
     console.error(JSON.stringify({ error: "未找到 .bwvi 项目目录，请先运行 bwvi init", code: "NO_PROJECT" }));

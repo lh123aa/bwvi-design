@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metallix — Enterprise Infrastructure</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --primary: #0D0D0D; --accent: #C9A84C; --surface: #1A1A1A;
+  --surface2: #22222A; --text: #E8E8E8; --text2: #888890;
+  --gold1: linear-gradient(135deg, #C9A84C, #E8D48B, #A68A3C);
+  --gold2: linear-gradient(135deg, #8A7A3C, #C9A84C, #6A5A2C);
+  --font-d: 'Space Grotesk', sans-serif;
+  --font-b: 'Inter', system-ui, sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--primary);color:var(--text);overflow-x:hidden}
+.w{max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* ₋₋ Background ₋₋ */
+#bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* ₋₋ Nav ₋₋ */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,13,13,0.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(201,168,76,0.08)}
+nav{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{font-family:var(--font-d);font-size:1.375rem;font-weight:700;background:var(--gold1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;letter-spacing:-0.02em}
+.logo span{font-weight:300}
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--text2);font-size:0.8125rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;transition:color 0.3s}
+.nav-links a:hover{color:var(--accent)}
+.cta-nav{padding:10px 28px;background:var(--gold1);border:none;color:var(--primary);font-weight:600;font-size:0.8125rem;cursor:pointer;border-radius:2px;text-transform:uppercase;letter-spacing:0.05em;font-family:var(--font-b);transition:opacity 0.3s}
+.cta-nav:hover{opacity:0.9}
+
+/* ₋₋ Hero ₋₋ */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;z-index:1;padding-top:80px}
+.hero-content{max-width:720px}
+.hero-kicker{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent);margin-bottom:20px;opacity:0.7}
+.hero h1{font-family:var(--font-d);font-size:clamp(3rem,6vw,5rem);font-weight:700;line-height:1.05;margin-bottom:24px;letter-spacing:-0.03em}
+.hero h1 em{font-style:normal;background:var(--gold1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.125rem;color:var(--text2);line-height:1.8;margin-bottom:40px;max-width:540px;font-weight:300}
+.hero-actions{display:flex;gap:16px}
+.btn-gold{padding:14px 36px;background:var(--gold1);border:none;color:var(--primary);font-weight:600;font-size:0.875rem;cursor:pointer;transition:all 0.3s;font-family:var(--font-b);letter-spacing:0.02em}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,0.2)}
+.btn-ghost{padding:14px 36px;background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--accent);font-weight:500;font-size:0.875rem;cursor:pointer;transition:all 0.3s;font-family:var(--font-b)}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(201,168,76,0.05)}
+
+/* ₋₋ Stats ₋₋ */
+.stats{padding:100px 0;position:relative;z-index:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(201,168,76,0.1)}
+.stat-card{padding:48px 32px;background:var(--surface);text-align:center}
+.stat-num{font-family:var(--font-d);font-size:2.75rem;font-weight:700;background:var(--gold1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.stat-label{color:var(--text2);font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.08em}
+
+/* ₋₋ Features ₋₋ */
+.features{padding:120px 0;position:relative;z-index:1}
+.features-header{text-align:center;margin-bottom:72px}
+.features-header .tag{display:inline-block;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--accent);margin-bottom:16px;border:1px solid rgba(201,168,76,0.2);padding:5px 14px}
+.features-header h2{font-family:var(--font-d);font-size:2.5rem;font-weight:700;margin-bottom:12px}
+.features-header p{color:var(--text2);font-size:1.0625rem;max-width:560px;margin:0 auto;font-weight:300}
+.f-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,0.08)}
+.f-card{padding:48px 36px;background:var(--surface);position:relative;overflow:hidden;transition:background 0.4s}
+.f-card:hover{background:var(--surface2)}
+.f-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:0;background:var(--gold1);transition:height 0.4s}
+.f-card:hover::before{height:100%}
+.f-icon{font-size:1.5rem;margin-bottom:20px;color:var(--accent)}
+.f-card h3{font-family:var(--font-d);font-size:1.125rem;font-weight:600;margin-bottom:10px}
+.f-card p{color:var(--text2);font-size:0.875rem;line-height:1.7;font-weight:300}
+
+/* ₋₋ Showcase ₋₋ */
+.showcase{padding:120px 0;position:relative;z-index:1}
+.showcase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,0.06)}
+.sc-card{padding:56px 36px;background:var(--surface);text-align:center;transition:background 0.4s}
+.sc-card:hover{background:var(--surface2)}
+.sc-num{font-family:var(--font-d);font-size:0.75rem;font-weight:700;color:var(--accent);margin-bottom:16px;letter-spacing:0.1em}
+.sc-card h3{font-family:var(--font-d);font-size:1.25rem;font-weight:600;margin-bottom:10px}
+.sc-card p{color:var(--text2);font-size:0.875rem;line-height:1.7;font-weight:300;max-width:320px;margin:0 auto}
+
+/* ₋₋ CTA ₋₋ */
+.cta{padding:120px 0;position:relative;z-index:1}
+.cta-box{padding:80px 64px;background:var(--surface);border:1px solid rgba(201,168,76,0.1);text-align:center;position:relative}
+.cta-box::before{content:'';position:absolute;top:-1px;left:10%;right:10%;height:1px;background:var(--gold1)}
+.cta-box h2{font-family:var(--font-d);font-size:2rem;font-weight:700;margin-bottom:12px}
+.cta-box p{color:var(--text2);font-size:1rem;margin-bottom:32px;font-weight:300}
+
+/* ₋₋ Footer ₋₋ */
+footer{border-top:1px solid rgba(201,168,76,0.06);padding:48px 0;position:relative;z-index:1}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
+.f-col h4{font-family:var(--font-d);font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent)}
+.f-col p{color:var(--text2);font-size:0.8125rem;line-height:1.8;font-weight:300}
+.f-col ul{list-style:none}
+.f-col li{margin-bottom:8px}
+.f-col a{color:var(--text2);text-decoration:none;font-size:0.8125rem;transition:color 0.3s;font-weight:300}
+.f-col a:hover{color:var(--accent)}
+.f-bottom{border-top:1px solid rgba(201,168,76,0.06);margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text2)}
+
+@media(max-width:768px){
+  .stats-grid,.f-grid,.showcase-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .cta-box{padding:40px 24px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+<script>
+const c=document.getElementById('bg'),x=c.getContext('2d');
+function r(){c.width=innerWidth;c.height=innerHeight}r();
+addEventListener('resize',r);
+let p=[],mx=0,my=0;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+for(let i=0;i<80;i++)p.push({x:Math.random()*c.width,y:Math.random()*c.height,z:Math.random()*1000,s:(Math.random()*1.5+0.5),ox:(Math.random()-.5)*.3,oy:(Math.random()-.5)*.3,oz:(Math.random()-.5)*.2});
+function a(){
+  x.clearRect(0,0,c.width,c.height);
+  p.forEach(p=>{
+    p.x+=p.ox;p.y+=p.oy;p.z+=p.oz;
+    let d=Math.hypot(mx-p.x,my-p.y);
+    if(d<200){p.x+=(mx-p.x)*.001;p.y+=(my-p.y)*.001}
+    if(p.x<0||p.x>c.width)p.ox*=-1;if(p.y<0||p.y>c.height)p.oy*=-1;
+    let sc=1+(p.z-500)/500,al=p.s*(1-Math.abs(p.z-500)/500);
+    x.beginPath();x.arc(p.x,p.y,p.s*sc,0,6.28);
+    x.fillStyle=`rgba(201,168,76,${al*0.3})`;x.fill();
+  });
+  p.forEach((a,i)=>{
+    for(let j=i+1;j<p.length;j++){
+      let dx=a.x-p[j].x,dy=a.y-p[j].y,d=Math.hypot(dx,dy);
+      if(d<100){x.beginPath();x.moveTo(a.x,a.y);x.lineTo(p[j].x,p[j].y);x.strokeStyle=`rgba(201,168,76,${0.03*(1-d/100)})`;x.lineWidth=.5;x.stroke()}
+    }
+  });
+  requestAnimationFrame(a)
+}
+a();
+</script>
+
+<header>
+<div class="w"><nav>
+<a href="/" class="logo">Metallix<span>.</span></a>
+<ul class="nav-links"><li><a href="#">Platform</a></li><li><a href="#">Solutions</a></li><li><a href="#">Docs</a></li><li><a href="#">Pricing</a></li></ul>
+<button class="cta-nav">Get Started</button>
+</nav></div>
+</header>
+
+<section class="hero">
+<div class="w">
+<div class="hero-content">
+<div class="hero-kicker">✦ Next-Gen Infrastructure</div>
+<h1>Build the<br>future on <em>gold</em>.</h1>
+<p>Enterprise-grade cloud infrastructure with 150+ global nodes, sub-10ms latency, and 99.99% availability. Designed for the most demanding workloads.</p>
+<div class="hero-actions">
+<button class="btn-gold" onclick="alert('Demo')">Deploy Now →</button>
+<button class="btn-ghost" onclick="alert('Demo')">Talk to Sales</button>
+</div>
+</div>
+</div>
+</section>
+
+<section class="stats">
+<div class="w"><div class="stats-grid">
+<div class="stat-card"><div class="stat-num">99.99%</div><div class="stat-label">Uptime SLA</div></div>
+<div class="stat-card"><div class="stat-num">150+</div><div class="stat-label">Global Nodes</div></div>
+<div class="stat-card"><div class="stat-num">5K+</div><div class="stat-label">Enterprise Clients</div></div>
+<div class="stat-card"><div class="stat-num">&lt;10ms</div><div class="stat-label">Avg. Latency</div></div>
+</div></div>
+</section>
+
+<section class="features">
+<div class="w">
+<div class="features-header">
+<div class="tag">✦ Capabilities</div>
+<h2>Enterprise infrastructure,<br>reimagined.</h2>
+<p>From compute to storage to networking — a unified platform built for scale.</p>
+</div>
+<div class="f-grid">
+<div class="f-card"><div class="f-icon">⚡</div><h3>High-Performance Compute</h3><p>AMD EPYC & NVIDIA H100 clusters. Auto-scaling, pay-per-use, up to 10x price-performance vs. legacy providers.</p></div>
+<div class="f-card"><div class="f-icon">▣</div><h3>Distributed Storage</h3><p>S3-compatible object storage with multi-region replication. 11 nines durability, enterprise-grade encryption.</p></div>
+<div class="f-card"><div class="f-icon">◉</div><h3>Global Network</h3><p>150+ PoPs with Anycast routing. Sub-10ms latency worldwide. Built-in DDoS protection and WAF.</p></div>
+<div class="f-card"><div class="f-icon">⊞</div><h3>Container Orchestration</h3><p>Managed Kubernetes with auto-scaling, Istio service mesh, and GitOps-driven deployment pipelines.</p></div>
+<div class="f-card"><div class="f-icon">⌘</div><h3>Security & Compliance</h3><p>SOC 2 Type II, ISO 27001, GDPR. Zero-trust architecture with hardware-backed encryption everywhere.</p></div>
+<div class="f-card"><div class="f-icon">⟐</div><h3>AI Platform</h3><p>Fully managed ML training & inference. From data labeling to model serving — one integrated platform.</p></div>
+</div>
+</div>
+</section>
+
+<section class="showcase">
+<div class="w"><div class="showcase-grid">
+<div class="sc-card"><div class="sc-num">01</div><h3>Cloud Native</h3><p>Built on Kubernetes, designed for microservices. Deploy any workload, anywhere, with consistent tooling.</p></div>
+<div class="sc-card"><div class="sc-num">02</div><h3>Zero Trust</h3><p>Security-first architecture with identity-based access, network segmentation, and continuous verification.</p></div>
+<div class="sc-card"><div class="sc-num">03</div><h3>Developer Experience</h3><p>Infrastructure as code, API-first design, and comprehensive CLI tools. Your developers will thank you.</p></div>
+</div></div>
+</section>
+
+<section class="cta">
+<div class="w">
+<div class="cta-box">
+<h2>Ready to build on gold?</h2>
+<p>Join 5,000+ enterprises already running on Metallix. Start free, scale as you grow.</p>
+<button class="btn-gold" onclick="alert('Demo')">Start Free Trial →</button>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="w">
+<div class="footer-grid">
+<div class="f-col"><h4>Metallix</h4><p>Enterprise cloud infrastructure platform. 150+ global nodes, 99.99% availability. Powering the next generation of digital business.</p></div>
+<div class="f-col"><h4>Product</h4><ul><li><a href="#">Compute</a></li><li><a href="#">Storage</a></li><li><a href="#">Network</a></li><li><a href="#">Security</a></li></ul></div>
+<div class="f-col"><h4>Resources</h4><ul><li><a href="#">Documentation</a></li><li><a href="#">API Reference</a></li><li><a href="#">Blog</a></li><li><a href="#">Community</a></li></ul></div>
+<div class="f-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy</a></li></ul></div>
+</div>
+<div class="f-bottom"><span>© 2026 Metallix. All rights reserved.</span><span>Design direction by BWVI</span></div>
+</div>
+</footer>
+
+</body>
+</html>

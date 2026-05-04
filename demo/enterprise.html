@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metallix — Enterprise Solution</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #0A0A0F;
+  --surface: #12121A;
+  --surface2: #1A1A26;
+  --border: rgba(255,255,255,0.06);
+  --text: #E8E8EE;
+  --text2: #8888A0;
+  --accent: #4A90D9;
+  --accent2: #C0C0D0;
+  --metal1: linear-gradient(135deg, #8A8A9A, #D0D0E0, #6A6A7A);
+  --metal2: linear-gradient(135deg, #5A5A6A, #B0B0C0, #4A4A5A);
+  --shadow: 0 0 60px rgba(74,144,217,0.15);
+  --font-d: 'Space Grotesk', sans-serif;
+  --font-b: 'Inter', system-ui, sans-serif;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);overflow-x:hidden;perspective:1200px}
+canvas#bg{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.w{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+
+/* ₋₋ 3D Header ₋₋ */
+header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+.logo{font-family:var(--font-d);font-size:1.5rem;font-weight:700;background:var(--metal1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{text-decoration:none;color:var(--text2);font-size:0.875rem;font-weight:500;transition:color 0.3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width 0.3s}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.contact-btn{padding:10px 24px;background:var(--metal1);border:none;color:var(--bg);font-weight:600;font-size:0.875rem;cursor:pointer;border-radius:4px;transition:transform 0.3s;font-family:var(--font-b)}
+.contact-btn:hover{transform:scale(1.05)}
+
+/* ₋₋ Hero ₋₋ */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;transform-style:preserve-3d}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.hero-badge{display:inline-block;padding:6px 16px;border:1px solid rgba(74,144,217,0.3);border-radius:20px;font-size:0.75rem;color:var(--accent);margin-bottom:24px;letter-spacing:0.05em}
+.hero h1{font-family:var(--font-d);font-size:clamp(3rem,5vw,4.5rem);font-weight:700;line-height:1.1;margin-bottom:24px;letter-spacing:-0.02em}
+.hero h1 .highlight{background:var(--metal1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.125rem;color:var(--text2);line-height:1.8;margin-bottom:32px;max-width:520px}
+.hero-actions{display:flex;gap:16px}
+.btn-primary{padding:14px 32px;background:var(--metal1);border:none;color:var(--bg);font-weight:600;font-size:0.9375rem;cursor:pointer;border-radius:4px;transition:transform 0.3s,box-shadow 0.3s;font-family:var(--font-b)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(74,144,217,0.3)}
+.btn-secondary{padding:14px 32px;background:transparent;border:1px solid var(--border);color:var(--text);font-weight:500;font-size:0.9375rem;cursor:pointer;border-radius:4px;transition:all 0.3s;font-family:var(--font-b)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ₋₋ 3D Cube ₋₋ */
+.cube-container{perspective:800px;display:flex;align-items:center;justify-content:center}
+.cube{width:280px;height:280px;position:relative;transform-style:preserve-3d;animation:spin 20s infinite linear}
+.cube-face{position:absolute;width:280px;height:280px;border:1px solid rgba(192,192,208,0.15);background:linear-gradient(135deg,rgba(74,144,217,0.08),rgba(192,192,208,0.04));backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:2rem;color:rgba(192,192,208,0.3);font-family:var(--font-d)}
+.cube-face.front{transform:translateZ(140px)}
+.cube-face.back{transform:rotateY(180deg) translateZ(140px)}
+.cube-face.right{transform:rotateY(90deg) translateZ(140px)}
+.cube-face.left{transform:rotateY(-90deg) translateZ(140px)}
+.cube-face.top{transform:rotateX(90deg) translateZ(140px)}
+.cube-face.bottom{transform:rotateX(-90deg) translateZ(140px)}
+@keyframes spin{0%{transform:rotateX(-20deg) rotateY(0deg)}100%{transform:rotateX(-20deg) rotateY(360deg)}}
+
+/* ₋₋ Stats ₋₋ */
+.stats{padding:100px 0;transform-style:preserve-3d}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.stat-card{padding:40px;background:var(--surface);border:1px solid var(--border);border-radius:8px;text-align:center;transition:transform 0.3s,box-shadow 0.3s;transform:translateZ(0)}
+.stat-card:hover{transform:translateY(-8px) translateZ(20px);box-shadow:0 20px 60px rgba(0,0,0,0.3);border-color:rgba(74,144,217,0.3)}
+.stat-number{font-family:var(--font-d);font-size:3rem;font-weight:700;background:var(--metal1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.stat-label{color:var(--text2);font-size:0.9375rem}
+
+/* ₋₋ Features ₋₋ */
+.features{padding:100px 0}
+.section-label{text-align:center;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);margin-bottom:16px}
+.section-title{text-align:center;font-family:var(--font-d);font-size:2.5rem;font-weight:700;margin-bottom:8px}
+.section-sub{text-align:center;color:var(--text2);font-size:1.0625rem;margin-bottom:64px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.feature-card{padding:40px;background:var(--surface);border:1px solid var(--border);border-radius:8px;transition:all 0.4s;transform:translateZ(0)}
+.feature-card:hover{transform:translateY(-8px) translateZ(30px);border-color:rgba(74,144,217,0.3);box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.f-icon{width:48px;height:48px;border-radius:12px;background:var(--metal2);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.25rem}
+.feature-card h3{font-family:var(--font-d);font-size:1.25rem;font-weight:600;margin-bottom:12px}
+.feature-card p{color:var(--text2);font-size:0.9375rem;line-height:1.7}
+
+/* ₋₋ Testimonials ₋₋ */
+.testimonials{padding:100px 0}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.t-card{padding:40px;background:var(--surface);border:1px solid var(--border);border-radius:8px;position:relative}
+.t-card::before{content:'"';position:absolute;top:20px;right:24px;font-size:4rem;font-family:var(--font-d);color:rgba(74,144,217,0.1);line-height:1}
+.t-card p{color:var(--text2);font-size:0.9375rem;line-height:1.8;margin-bottom:24px;font-style:italic}
+.t-author{font-weight:600;font-size:0.875rem}
+.t-role{color:var(--text2);font-size:0.8125rem}
+
+/* ₋₋ CTA ₋₋ */
+.cta-section{padding:100px 0}
+.cta-box{padding:80px;background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 50%,rgba(74,144,217,0.06),transparent 60%);animation:pulse 4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+.cta-box h2{font-family:var(--font-d);font-size:2.5rem;font-weight:700;margin-bottom:16px;position:relative}
+.cta-box p{color:var(--text2);font-size:1.0625rem;margin-bottom:32px;position:relative}
+.cta-box .btn-primary{font-size:1rem;padding:16px 40px}
+
+/* ₋₋ Footer ₋₋ */
+footer{border-top:1px solid var(--border);padding:40px 0;margin-top:40px}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.ft-col h4{font-family:var(--font-d);font-size:1rem;font-weight:600;margin-bottom:16px}
+.ft-col p{color:var(--text2);font-size:0.875rem;line-height:1.7}
+.ft-col ul{list-style:none}
+.ft-col li{margin-bottom:8px}
+.ft-col a{color:var(--text2);text-decoration:none;font-size:0.875rem;transition:color 0.2s}
+.ft-col a:hover{color:var(--accent)}
+.ft-bottom{border-top:1px solid var(--border);margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:0.8125rem;color:var(--text2)}
+
+@media(max-width:768px){
+  .hero-grid,.stats-grid,.feature-grid,.t-grid{grid-template-columns:1fr}
+  .ft-grid{grid-template-columns:1fr 1fr}
+  nav{flex-wrap:wrap;gap:12px}
+  .nav-links{display:none}
+  .cube{width:180px;height:180px}
+  .cube-face{width:180px;height:180px}
+  .cube-face.front{transform:translateZ(90px)}
+  .cube-face.back{transform:rotateY(180deg) translateZ(90px)}
+  .cube-face.right{transform:rotateY(90deg) translateZ(90px)}
+  .cube-face.left{transform:rotateY(-90deg) translateZ(90px)}
+  .cube-face.top{transform:rotateX(90deg) translateZ(90px)}
+  .cube-face.bottom{transform:rotateX(-90deg) translateZ(90px)}
+  .cta-box{padding:40px 24px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<script>
+// 3D Particle Background
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouseX = 0, mouseY = 0;
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.z = Math.random() * 1000;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.5;
+    this.speedY = (Math.random() - 0.5) * 0.5;
+    this.speedZ = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.5 + 0.1;
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.z += this.speedZ;
+    const dist = Math.hypot(mouseX - this.x, mouseY - this.y);
+    if (dist < 200) {
+      this.x += (mouseX - this.x) * 0.002;
+      this.y += (mouseY - this.y) * 0.002;
+    }
+    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    if (this.z < 0 || this.z > 1000) this.speedZ *= -1;
+  }
+  draw() {
+    const scale = 1 + (this.z - 500) / 500 * 0.5;
+    const alpha = this.opacity * (1 - Math.abs(this.z - 500) / 500);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size * scale, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(192, 192, 208, ${alpha})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Connection lines
+  particles.forEach((a, i) => {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = a.x - particles[j].x;
+      const dy = a.y - particles[j].y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(192, 192, 208, ${0.06 * (1 - dist / 120)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  });
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+<header>
+<div class="w">
+<nav>
+<a href="/" class="logo">Metallix</a>
+<ul class="nav-links">
+<li><a href="#">解决方案</a></li>
+<li><a href="#">产品</a></li>
+<li><a href="#">定价</a></li>
+<li><a href="#">文档</a></li>
+</ul>
+<button class="contact-btn">联系我们</button>
+</nav>
+</div>
+</header>
+
+<section class="hero">
+<div class="w">
+<div class="hero-grid">
+<div>
+<div class="hero-badge">✦ 新一代企业基础设施</div>
+<h1>构建未来的<br><span class="highlight">数字化基石</span></h1>
+<p>Metallix 为企业提供高性能、高可靠性的基础设施解决方案。从云原生到边缘计算，我们驱动下一代数字化转型。</p>
+<div class="hero-actions">
+<button class="btn-primary" onclick="alert('演示模式')">开始使用 →</button>
+<button class="btn-secondary" onclick="alert('演示模式')">预约演示</button>
+</div>
+</div>
+<div class="cube-container">
+<div class="cube">
+<div class="cube-face front">◈</div>
+<div class="cube-face back">◈</div>
+<div class="cube-face right">◈</div>
+<div class="cube-face left">◈</div>
+<div class="cube-face top">◈</div>
+<div class="cube-face bottom">◈</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="stats">
+<div class="w">
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-number">99.99%</div><div class="stat-label">服务可用性 SLA</div></div>
+<div class="stat-card"><div class="stat-number">5K+</div><div class="stat-label">企业客户</div></div>
+<div class="stat-card"><div class="stat-number">150+</div><div class="stat-label">全球节点</div></div>
+<div class="stat-card"><div class="stat-number">2M+</div><div class="stat-label">每秒请求</div></div>
+</div>
+</div>
+</section>
+
+<section class="features">
+<div class="w">
+<div class="section-label">Core Features</div>
+<h2 class="section-title">全栈基础设施能力</h2>
+<p class="section-sub">从计算到存储，从网络到安全，一体化的企业级解决方案</p>
+<div class="feature-grid">
+<div class="feature-card">
+<div class="f-icon">⚡</div>
+<h3>高性能计算</h3>
+<p>基于 AMD EPYC 和 NVIDIA H100 的算力集群。弹性伸缩，按需付费，最高可达 10 倍性能提升。</p>
+</div>
+<div class="feature-card">
+<div class="f-icon">▣</div>
+<h3>分布式存储</h3>
+<p>S3 兼容对象存储，跨区域多活复制。数据持久性 99.999999999%，企业级数据保护。</p>
+</div>
+<div class="feature-card">
+<div class="f-icon">◉</div>
+<h3>全球网络</h3>
+<p>150+ PoP 节点，Anycast 智能路由。平均延迟 <10ms，保障全球用户的流畅体验。</p>
+</div>
+<div class="feature-card">
+<div class="f-icon">⊞</div>
+<h3>容器编排</h3>
+<p>托管 Kubernetes 集群，自动扩缩容，集成 Istio 服务网格。让微服务部署像呼吸一样自然。</p>
+</div>
+<div class="feature-card">
+<div class="f-icon">⌘</div>
+<h3>安全合规</h3>
+<p>SOC 2 Type II、ISO 27001、GDPR 合规。内置 WAF、DDoS 防护、数据加密。</p>
+</div>
+<div class="feature-card">
+<div class="f-icon">⟐</div>
+<h3>AI 平台</h3>
+<p>全托管 ML 训练与推理平台。从数据标注到模型部署，一站式 AI 基础设施。</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="testimonials">
+<div class="w">
+<div class="section-label">Testimonials</div>
+<h2 class="section-title">客户怎么说</h2>
+<p class="section-sub">来自全球企业的真实反馈</p>
+<div class="t-grid">
+<div class="t-card">
+<p>迁移到 Metallix 后，我们的部署时间从 4 小时缩短到 8 分钟。基础设施团队现在可以专注于产品迭代。</p>
+<div class="t-author">张伟</div>
+<div class="t-role">CTO, TechCorp</div>
+</div>
+<div class="t-card">
+<p>全球多区域的部署在 Metallix 上变得前所未有的简单。一个配置文件，三分钟部署到全部节点。</p>
+<div class="t-author">Sarah Chen</div>
+<div class="t-role">VP Engineering, DataFlow</div>
+</div>
+<div class="t-card">
+<p>安全性是我们选择 Metallix 的主要原因。他们的合规认证和内置安全机制让我们节省了 70% 的安全运营成本。</p>
+<div class="t-author">Michael Liu</div>
+<div class="t-role">CISO, FinSecure</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="cta-section">
+<div class="w">
+<div class="cta-box">
+<h2>准备好构建未来了吗？</h2>
+<p>加入 5000+ 企业客户，体验 Metallix 企业级基础设施的强大能力。</p>
+<button class="btn-primary" onclick="alert('演示模式')">免费试用 →</button>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="w">
+<div class="ft-grid">
+<div class="ft-col">
+<h4>Metallix</h4>
+<p>企业级云基础设施平台，为数字化转型提供坚实的基础。全球 150+ 节点，服务 5000+ 企业客户。</p>
+</div>
+<div class="ft-col">
+<h4>产品</h4>
+<ul><li><a href="#">计算</a></li><li><a href="#">存储</a></li><li><a href="#">网络</a></li><li><a href="#">安全</a></li></ul>
+</div>
+<div class="ft-col">
+<h4>资源</h4>
+<ul><li><a href="#">文档</a></li><li><a href="#">API</a></li><li><a href="#">博客</a></li><li><a href="#">社区</a></li></ul>
+</div>
+<div class="ft-col">
+<h4>公司</h4>
+<ul><li><a href="#">关于</a></li><li><a href="#">招聘</a></li><li><a href="#">联系</a></li><li><a href="#">隐私</a></li></ul>
+</div>
+</div>
+<div class="ft-bottom">
+<span>© 2026 Metallix. All rights reserved.</span>
+<span>Powered by BWVI Design</span>
+</div>
+</div>
+</footer>
+
+</body>
+</html>

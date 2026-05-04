@@ -5,6 +5,18 @@ const CHUNK_DESCRIPTIONS: Record<string, string> = {
   "direction-advisor": "5 个基础视觉方向及推荐逻辑",
   "color-theory": "色板决策规则：品牌色优先、单 accent、oklch",
   "typography-pairing": "字体配对规则：display≠body、字阶至少 6 级",
+  "layout-patterns": "8 种布局模式：Hero/Card Grid/Dashboard/Split 等",
+  "motion-principles": "动效设计原则：时长、缓动、可访问性",
+  "content-guidelines": "内容规则：不填 Lorem ipsum、语气一致、数据真实",
+  "brand-protocol": "品牌资产 5 步提取协议：问→搜→下载→验→写",
+  "component-specs": "组件规格：Button/Card/Navbar/Input/Modal/Tabs",
+  "spacing-system": "间距系统：8px 基准、内外边距、行高、栅格",
+  "responsive-breakpoints": "响应式断点：桌面/平板/手机的列数和排版",
+  "icon-guidelines": "图标规范：SVG stroke、尺寸、与文本搭配",
+  "image-guidelines": "图片规则：真实照片、alt 文本、lazy loading",
+  "form-design": "表单设计：标签位置、错误提示、触控友好",
+  "navigation-patterns": "7 种导航模式：Top Nav/Sidebar/Sticky/Breadcrumb",
+  "data-visualization": "数据可视化：指标卡/图表/表格/进度条",
 };
 export async function knowledgeCommand(args: string[]) {
   const sub = args[0];
