@@ -1,27 +1,44 @@
 import { readFileSync } from "node:fs";
+import { analyzeHtml } from "./objective.js";
+import { buildReport } from "./self-review.js";
 
-export async function critiqueDiff(v1Html: string, v2Path: string) {
+export function critiqueDiff(v1Html: string, v2Path: string) {
   let v2Html: string;
   try {
     v2Html = readFileSync(v2Path, "utf-8");
   } catch {
-    return { error: `无法读取: ${v2Path}` };
+    return { error: `Cannot read: ${v2Path}` };
   }
 
-  const v1Tags = (v1Html.match(/<\w+/g) || []).length;
-  const v2Tags = (v2Html.match(/<\w+/g) || []).length;
-  const v1Words = v1Html.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
-  const v2Words = v2Html.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+  const m1 = analyzeHtml(v1Html);
+  const m2 = analyzeHtml(v2Html);
+  const r1 = buildReport(v1Html, m1);
+  const r2 = buildReport(v2Html, m2);
 
-  const changes: string[] = [];
-  if (v1Tags !== v2Tags) changes.push(`标签数: ${v1Tags} → ${v2Tags}`);
-  if (Math.abs(v1Words - v2Words) / Math.max(v1Words, 1) > 0.2) changes.push(`内容量: ${v1Words} → ${v2Words} 词`);
+  const metricDiffs: Record<string, { from: number; to: number; improved: boolean }> = {};
+  const keys = Object.keys(m1) as (keyof typeof m1)[];
+  for (const k of keys) {
+    const from = +((m1[k] as number) || 0);
+    const to = +((m2[k] as number) || 0);
+    if (from !== to) {
+      metricDiffs[k] = { from: +from.toFixed(2), to: +to.toFixed(2), improved: to > from };
+    }
+  }
+
+  const improvements = Object.values(metricDiffs).filter(d => d.improved).length;
+  const regressions = Object.values(metricDiffs).filter(d => !d.improved).length;
 
   return {
     diff: true,
-    v1: { tags: v1Tags, words: v1Words, size: v1Html.length },
-    v2: { tags: v2Tags, words: v2Words, size: v2Html.length },
-    changes,
-    assessment: changes.length === 0 ? "minor" : "significant",
+    score_change: { from: r1.weighted_score, to: r2.weighted_score, delta: +(r2.weighted_score - r1.weighted_score).toFixed(1) },
+    passed: r2.passed,
+    improved_metrics: improvements,
+    regressed_metrics: regressions,
+    v1_issues: r1.issues.length,
+    v2_issues: r2.issues.length,
+    metric_diffs: metricDiffs,
+    v1_summary: r1.summary,
+    v2_summary: r2.summary,
+    assessment: r2.weighted_score > r1.weighted_score ? "improved" : r2.weighted_score < r1.weighted_score ? "regressed" : "unchanged",
   };
 }
