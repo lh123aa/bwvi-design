@@ -1,0 +1,28 @@
+{
+  "name": "bwvi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Better Way of Visual Intelligence — Agent-native design decision protocol",
+  "bin": {
+    "bwvi": "./dist/bwvi.cjs"
+  },
+  "scripts": {
+    "start": "node dist/bwvi.cjs",
+    "dev": "npx tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "benchmark": "tsx src/index.ts benchmark run",
+    "build": "node scripts/build.mjs",
+    "start:esm": "node dist/bwvi.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "tsx": "^4.0.0",
+    "yaml": "^2.7.0"
+  }
+}
