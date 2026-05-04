@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 
 export async function templateCommand(args: string[]) {
@@ -44,7 +44,7 @@ export async function templateCommand(args: string[]) {
     if (!name || !dir) { console.error(JSON.stringify({ error: "Usage: template delete <name>" })); process.exit(1); }
     const fp = join(dir, name + ".json");
     if (!existsSync(fp)) { console.error(JSON.stringify({ error: "Template not found: " + name })); process.exit(1); }
-    require("fs").unlinkSync(fp);
+    unlinkSync(fp);
     console.log(JSON.stringify({ status: "ok", deleted: name }, null, 2));
     return;
   }
