@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { learnFromUrl, saveReference } from "../engine/learner.js";
 
-const KNOWN_BRANDS = {
+const KNOWN_BRANDS: Record<string, string> = {
   linear: "https://linear.app",
   stripe: "https://stripe.com",
   vercel: "https://vercel.com",

@@ -8,7 +8,7 @@ export async function historyCommand(args: string[]) {
 
   // Read feedback history
   const feedbackDir = join(bwviDir, "feedback");
-  const feedbacks = [];
+  const feedbacks: any[] = [];
   if (existsSync(feedbackDir)) {
     try {
       const files = readdirSync(feedbackDir).filter(f => f.endsWith(".json"));
@@ -18,7 +18,7 @@ export async function historyCommand(args: string[]) {
 
   // Read report history
   const reportDir = join(bwviDir, "reports");
-  const reports = [];
+  const reports: any[] = [];
   if (existsSync(reportDir)) {
     try {
       const files = readdirSync(reportDir).filter(f => f.endsWith(".json"));
@@ -40,9 +40,9 @@ export async function historyCommand(args: string[]) {
     failure_patterns: aggregateFailures(reports),
   }, null, 2));
 }
-function aggregateFailures(reports) {
-  var map = {};
-  reports.forEach(r => { if (r.failure_patterns) r.failure_patterns.forEach(fp => { map[fp.type] = (map[fp.type] || 0) + 1; }); });
-  return Object.entries(map).sort((a, b) => b[1] - a[1]).map(([type, count]) => ({ type, count }));
+function aggregateFailures(reports: any[]) {
+  const map: Record<string, number> = {};
+  reports.forEach((r: any) => { if (r.failure_patterns) r.failure_patterns.forEach((fp: any) => { map[fp.type] = (map[fp.type] || 0) + 1; }); });
+  return Object.entries(map).sort((a: any, b: any) => b[1] - a[1]).map(([type, count]: any) => ({ type, count }));
 }
 function findProjectDir() { var d = process.cwd(); for (var i = 0; i < 5; i++) { if (existsSync(join(d, ".bwvi"))) return d; var p = join(d, ".."); if (p === d) break; d = p; } return null; }

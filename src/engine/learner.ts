@@ -1,7 +1,6 @@
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { DESIGN_DIRECTIONS } from "./composer.js";
 
 const HEX_RE = /#[0-9a-fA-F]{6}\b/g;
 const RGB_RE = /rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+(?:\s*,\s*[\d.]+)?\s*\)/g;

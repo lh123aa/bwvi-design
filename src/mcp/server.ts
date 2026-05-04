@@ -10,14 +10,14 @@ import { generateDirectHtml } from "../cli/generate.js";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-const PALETTES = {
+const PALETTES: Record<string, Record<string, string>> = {
   "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
   "warm-minimal":      { primary: "#D97757", accent: "#8C6E5D", surface: "#FDF8F5", text: "#3D3D3D" },
   "tech-utility":      { primary: "#1E1E2E", accent: "#00E698", surface: "#FAFBFC", text: "#24292E" },
   "dark-luxury":       { primary: "#0D0D0D", accent: "#C9A84C", surface: "#1A1A1A", text: "#E8E8E8" },
   "playful-color":     { primary: "#FF6B6B", accent: "#4ECDC4", surface: "#FFF8F0", text: "#2C3E50" },
 };
-const FONTS = {
+const FONTS: Record<string, string> = {
   "editorial-monocle": "Georgia, serif",
   "warm-minimal": "Georgia, serif",
   "tech-utility": "Inter, sans-serif",
@@ -54,13 +54,13 @@ export async function startMcpServer() {
       }
       if (n === "generate_design") {
         const d = String(a.direction || "tech-utility");
-        const pp = PALETTES[d] || PALETTES["tech-utility"];
+        const pp = (PALETTES as any)[d] || (PALETTES as any)["tech-utility"];
         const f = FONTS[d] || FONTS["tech-utility"];
         return { content: [{ type: "text", text: generateDirectHtml(String(a.task || ""), d, pp, f) }] };
       }
       if (n === "critique_design") {
         const html = String(a.html || "");
-        const metrics = analyzeHtml(html, a.brand_colors);
+        const metrics = analyzeHtml(html, (a.brand_colors as string[] | undefined));
         const report = buildReport(html, metrics);
         return { content: [{ type: "text", text: JSON.stringify({ score: report.score, passed: report.passed }) }] };
       }

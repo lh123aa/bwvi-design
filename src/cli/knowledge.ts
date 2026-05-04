@@ -1,5 +1,6 @@
 import { loadChunk, listChunks } from "../knowledge/loader.js";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
 const CHUNK_DESCRIPTIONS: Record<string, string> = {
   "direction-advisor": "5 个基础视觉方向及推荐逻辑",
   "color-theory": "色板决策规则：品牌色优先、单 accent、oklch",
@@ -35,10 +36,10 @@ export async function knowledgeCommand(args: string[]) {
     var pd = findProjectDir();
     if (!pd) { console.error(JSON.stringify({ error: "No project found" })); process.exit(1); }
     var rd = join(pd, ".bwvi", "reports");
-    var reports = [];
+    const reports: any[] = [];
     if (existsSync(rd)) { try { readdirSync(rd).filter(function(f) { return f.endsWith(".json"); }).forEach(function(f) { try { reports.push(JSON.parse(readFileSync(join(rd, f), "utf-8"))); } catch {} }); } catch {} }
-    var pat = {};
-    reports.forEach(function(r) { if (r.failure_patterns) r.failure_patterns.forEach(function(fp) { pat[fp.type] = (pat[fp.type] || 0) + 1; }); });
+    const pat: Record<string, number> = {};
+    reports.forEach(function(r) { if (r.failure_patterns) r.failure_patterns.forEach(function(fp: any) { pat[fp.type] = (pat[fp.type] || 0) + 1; }); });
     var s = Object.entries(pat).sort(function(a,b) { return b[1] - a[1]; }).map(function(p) { return { pattern: p[0], count: p[1] }; });
     console.log(JSON.stringify({ projects_analyzed: reports.length, patterns: s }, null, 2));
     return;

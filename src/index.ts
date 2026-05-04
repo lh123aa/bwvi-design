@@ -1,4 +1,3 @@
-#!/usr/bin/env tsx
 import { initCommand } from "./cli/init.js";
 import { analyzeCommand } from "./cli/analyze.js";
 import { generateCommand } from "./cli/generate.js";
@@ -47,7 +46,7 @@ async function main() {
         const html1 = require("fs").readFileSync(f1, "utf-8");
         const result = await critiqueDiff(html1, f2);
         console.log(JSON.stringify(result, null, 2));
-      } catch(e) { console.error("Error:", e.message); process.exit(1); }
+      } catch(e) { console.error("Error:", (e as any).message); process.exit(1); }
       break;
     case "--help": case "-h": case undefined: printHelp(); break;
     default: console.error("unknown command: " + command); console.error("cmds: init, analyze, generate, critique, learn, benchmark, mcp"); process.exit(1);
@@ -79,4 +78,8 @@ function printHelp() {
   cmds.forEach(function(c) { console.log("  " + c); });
   console.log("\nbwvi <command> --help for details");
 }
-main().catch((err) => { console.error("Fatal:", err.message); process.exit(1); });
+
+main().catch((err) => {
+  console.error("Fatal:", err instanceof Error ? err.message : String(err));
+  process.exit(1);
+});
