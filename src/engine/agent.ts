@@ -47,7 +47,7 @@ export function runAgent(agent: AgentInfo, systemPrompt: string, userPrompt: str
       timeout: 120000,
       maxBuffer: 10 * 1024 * 1024,
       encoding: "utf-8",
-      shell: true,
+      shell: true as any,
     });
     return output;
   } catch (e: any) {

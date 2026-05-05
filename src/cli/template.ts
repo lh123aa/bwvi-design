@@ -53,8 +53,8 @@ export async function templateCommand(args: string[]) {
   process.exit(1);
 }
 
-function getPalette(name: string): Record<string, string> | null {
-  const palettes: Record<string, Record<string, string>> = {
+function getPalette(name: string): { primary: string; accent: string; surface: string; text: string } | null {
+  const palettes: Record<string, { primary: string; accent: string; surface: string; text: string }> = {
     "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
     "warm-minimal": { primary: "#D97757", accent: "#8C6E5D", surface: "#FDF8F5", text: "#3D3D3D" },
     "tech-utility": { primary: "#1E1E2E", accent: "#00E698", surface: "#FAFBFC", text: "#24292E" },

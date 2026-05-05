@@ -17,6 +17,8 @@ import { brandCommand } from "./cli/brand.js";
 import { pluginInitCommand } from "./cli/plugin.js";
 import { critiqueDiff } from "./critique/diff.js";
 import { templateCommand } from "./cli/template.js";
+import { testCommand } from "./cli/test.js";
+import { videoCommand } from "./cli/video.js";
 
 async function main() {
   const command = process.argv[2];
@@ -38,8 +40,10 @@ async function main() {
     case "debt": await debtCommand(args); break;
     case "history": await historyCommand(args); break;
     case "brand": await brandCommand(args); break;
+    case "video": await videoCommand(args); break;
     case "plugin": await pluginInitCommand(args); break;
     case "template": await templateCommand(args); break;
+    case "test": await testCommand(args); break;
     case "diff":
       const f1 = args[0];
       const f2 = args.find(a => !a.startsWith("-"));
@@ -51,7 +55,7 @@ async function main() {
       } catch(e) { console.error("Error:", (e as any).message); process.exit(1); }
       break;
     case "--help": case "-h": case undefined: printHelp(); break;
-    default: console.error("unknown command: " + command); console.error("cmds: init, analyze, generate, critique, learn, benchmark, mcp"); process.exit(1);
+    default: console.error("unknown command: " + command); process.exit(1);
   }
 }
 function printHelp() {
@@ -72,6 +76,8 @@ function printHelp() {
     "brand         <cache|fetch> Brand system",
     "plugin        Create plugin scaffold",
     "template      List/use/delete templates",
+    "test          Validate HTML (a11y, responsive, interactive)",
+    "video         Export HTML to MP4/GIF (requires ffmpeg)",
     "diff          Compare two HTML files",
     "benchmark     Run benchmark suite",
     "mcp           Start MCP server",

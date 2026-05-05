@@ -1,7 +1,12 @@
-import { existsSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { CheckpointManager } from "../checkpoint/manager.js";
 import { composeGeneratePrompt } from "../engine/composer.js";
+import { getBaseStyles } from "../templates/components.js";
+import { wrapWithDevice, type DeviceType } from "../frames/index.js";
+import { getStateMachineScript } from "../frames/state-machine.js";
+import { getBrand, type BrandSystem } from "../engine/brand-loader.js";
+import { render } from "../engine/renderer.js";
 
 const DIRECTION_PALETTES: Record<string, { primary: string; accent: string; surface: string; text: string }> = {
   "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
@@ -9,6 +14,11 @@ const DIRECTION_PALETTES: Record<string, { primary: string; accent: string; surf
   "tech-utility":      { primary: "#1E1E2E", accent: "#00E698", surface: "#FAFBFC", text: "#24292E" },
   "dark-luxury":       { primary: "#0D0D0D", accent: "#C9A84C", surface: "#1A1A1A", text: "#E8E8E8" },
   "playful-color":     { primary: "#FF6B6B", accent: "#4ECDC4", surface: "#FFF8F0", text: "#2C3E50" },
+  "corporate-trust":   { primary: "#2563EB", accent: "#059669", surface: "#F8FAFC", text: "#1E293B" },
+  "luxury-premium":    { primary: "#1C1917", accent: "#D6A354", surface: "#FAF9F7", text: "#292524" },
+  "nature-organic":    { primary: "#2D6A4F", accent: "#95B46A", surface: "#F6F7F4", text: "#1B2F22" },
+  "tech-gradient":     { primary: "#6C3BD6", accent: "#00D4AA", surface: "#FAFBFF", text: "#1A1A2E" },
+  "minimal-white":     { primary: "#18181B", accent: "#F43F5E", surface: "#FAFAFA", text: "#09090B" },
 };
 
 const DIRECTION_FONTS: Record<string, string> = {
@@ -17,10 +27,33 @@ const DIRECTION_FONTS: Record<string, string> = {
   "tech-utility":      "'Inter', system-ui, -apple-system, sans-serif",
   "dark-luxury":       "'Inter', 'Helvetica Neue', sans-serif",
   "playful-color":     "'DM Sans', system-ui, sans-serif",
+  "corporate-trust":   "'Inter', 'SF Pro', system-ui, sans-serif",
+  "luxury-premium":    "'Playfair Display', 'Georgia', serif",
+  "nature-organic":    "'DM Sans', system-ui, sans-serif",
+  "tech-gradient":     "'Space Grotesk', system-ui, sans-serif",
+  "minimal-white":     "'Inter', -apple-system, sans-serif",
 };
+
+const VALID_DIRECTIONS = Object.keys(DIRECTION_PALETTES);
 
 export async function generateCommand(args: string[]) {
   const direct = args.includes("--direct");
+  const runMode = args.includes("--run");
+  const deviceFlag = args.find(a => a.startsWith("--device="));
+  const device = deviceFlag ? deviceFlag.split("=")[1] as DeviceType : undefined;
+  const variantFlag = args.find(a => a.startsWith("--variant="));
+  const variant = variantFlag ? variantFlag.split("=")[1] : undefined;
+  const dark = args.includes("--dark");
+  const orientationFlag = args.find(a => a.startsWith("--orientation="));
+  const orientation = orientationFlag ? orientationFlag.split("=")[1] as "portrait" | "landscape" : "portrait";
+  const interactive = args.includes("--interactive");
+  const realImages = args.includes("--real-images");
+  const brandFlag = args.find(a => a.startsWith("--brand="));
+  const brandName = brandFlag ? brandFlag.split("=")[1] : undefined;
+  const brand = brandName ? getBrand(brandName) : undefined;
+  const engineFlag = args.find(a => a.startsWith("--engine="));
+  const engine = (engineFlag ? engineFlag.split("=")[1] : "direct") as "direct" | "od" | "huashu" | "agent";
+
   const nonFlagArgs = args.filter((a) => !a.startsWith("--"));
   const task = nonFlagArgs.join(" ");
   if (!task) {
@@ -29,26 +62,45 @@ export async function generateCommand(args: string[]) {
   }
 
   const directionFlag = args.find((a) => a.startsWith("--direction="));
-  const direction = directionFlag ? directionFlag.split("=")[1] as string : undefined;
-  const dir = direction || "tech-utility";
-  const validDirs = ["editorial-monocle","warm-minimal","tech-utility","dark-luxury","playful-color"];
-  if (dir && !validDirs.includes(dir)) {
-    console.error(JSON.stringify({ error: "无效方向: " + dir + "，可选: " + validDirs.join(", "), code: "INVALID_DIRECTION" }));
+  const direction = directionFlag ? directionFlag.split("=")[1] as string : "tech-utility";
+  if (!VALID_DIRECTIONS.includes(direction)) {
+    console.error(JSON.stringify({ error: "无效方向: " + direction + "，可选: " + VALID_DIRECTIONS.join(", "), code: "INVALID_DIRECTION" }));
     process.exit(1);
   }
 
   if (direct) {
-    const palette = DIRECTION_PALETTES[dir] || DIRECTION_PALETTES["tech-utility"];
-    const fontStack = DIRECTION_FONTS[dir] || DIRECTION_FONTS["tech-utility"];
-    const html = generateDirectHtml(task, dir, palette, fontStack);
-    const filePath = join(process.cwd(), "index.html");
+    const palette = brand ? { primary: brand.colors.primary, accent: brand.colors.accent, surface: brand.colors.surface, text: brand.colors.text } : DIRECTION_PALETTES[direction];
+    const fontStack = brand ? brand.typography.display : DIRECTION_FONTS[direction];
+
+    if (engine === "od" || engine === "huashu") {
+      const result = await render({
+        backend: engine, device, orientation, dark, variant, brandName: brand?.name,
+        brandColors: palette, fontStack, interactive,
+      });
+      const fileName = device ? `preview-${engine}-${device}.html` : `preview-${engine}.html`;
+      const filePath = join(demoDir(), fileName);
+      if (result.html) writeFileSync(filePath, result.html, "utf-8");
+      console.log(JSON.stringify({
+        status: result.html ? "ok" : "error",
+        engine, file: result.html ? filePath : null,
+        backendInfo: result.backendInfo,
+        direction, device: device || "none",
+        brand: brand?.name || null,
+        warnings: result.warnings,
+      }, null, 2));
+      return;
+    }
+
+    const html = generateDirectHtml(task, direction, palette, fontStack, {
+      device, variant, dark, orientation, interactive, realImages, brand: brand?.name
+    });
+    const fileName = device ? `preview-${device}.html` : "index.html";
+    const filePath = join(demoDir(), fileName);
     writeFileSync(filePath, html, "utf-8");
-    console.log(JSON.stringify({ status: "ok", file: filePath, direction: dir }, null, 2));
+    console.log(JSON.stringify({ status: "ok", file: filePath, direction, device: device || "none", brand: brand?.name || null, engine }, null, 2));
     return;
   }
 
-  // --run mode: auto-call Agent CLI
-  const runMode = args.includes("--run");
   if (runMode) {
     try {
       const { findBestAgent, runAgent } = await import("../engine/agent.js");
@@ -63,9 +115,10 @@ export async function generateCommand(args: string[]) {
       const output = runAgent(agent, prompt.systemPrompt, prompt.userPrompt);
       const htmlMatch = output.match(/<artifact[^>]*>([\s\S]*?)<\/artifact>/);
       const html = htmlMatch ? htmlMatch[1] : output;
-      const filePath = join(process.cwd(), "index.html");
-      writeFileSync(filePath, html, "utf-8");
-      console.log(JSON.stringify({ status: "ok", agent: agent.name, file: filePath, size: html.length }, null, 2));
+      const finalHtml = device ? wrapWithDevice(html, device, orientation, task) : html;
+      const filePath = join(demoDir(), "index.html");
+      writeFileSync(filePath, finalHtml, "utf-8");
+      console.log(JSON.stringify({ status: "ok", agent: agent.name, file: filePath, size: finalHtml.length, device: device || "none" }, null, 2));
     } catch (e: any) {
       console.error(JSON.stringify({ error: `Agent 执行失败: ${e.message}` }));
       process.exit(1);
@@ -84,8 +137,7 @@ export async function generateCommand(args: string[]) {
   const prompt = composeGeneratePrompt(task, decisions, direction);
 
   console.log(JSON.stringify({
-    task,
-    direction: dir,
+    task, direction, device: device || "none", interactive, engine,
     decisions_used: decisions.length,
     system_prompt: prompt.systemPrompt,
     user_prompt: prompt.userPrompt,
@@ -94,91 +146,80 @@ export async function generateCommand(args: string[]) {
   }, null, 2));
 }
 
-function generateDirectHtml(task: string, direction: string, palette: typeof DIRECTION_PALETTES[string], fontStack: string): string {
+interface DirectOptions {
+  device?: DeviceType;
+  variant?: string;
+  dark?: boolean;
+  orientation?: "portrait" | "landscape";
+  interactive?: boolean;
+  realImages?: boolean;
+  brand?: string;
+}
+
+export function generateDirectHtml(
+  task: string,
+  direction: string,
+  palette: typeof DIRECTION_PALETTES[string],
+  fontStack: string,
+  opts?: DirectOptions
+): string {
   const title = task.length > 60 ? task.slice(0, 60) + "..." : task;
-  return `<!DOCTYPE html>
+  const isDark = opts?.dark || direction === "dark-luxury";
+  const themeAttr = isDark ? ' data-theme="dark"' : '';
+  const animEnabled = true;
+
+  const base = { palette: { ...palette, muted: undefined }, fontDisplay: fontStack, animation: animEnabled, dark: isDark };
+  const baseStyles = getBaseStyles(base);
+
+  const body = `<div${themeAttr} style="font-family:system-ui,-apple-system,sans-serif;color:${palette.text};background:${isDark ? '#111' : palette.surface};min-height:100vh">
+<div style="max-width:1200px;margin:0 auto;padding:24px">
+<h1 style="font-size:2.5rem;font-weight:700;margin-bottom:8px;color:${palette.primary};font-family:${fontStack}">${escapeHtml(title)}</h1>
+<p style="color:${palette.text}88;margin-bottom:32px">
+<span style="display:inline-block;padding:2px 10px;background:${palette.accent};color:#fff;border-radius:12px;font-size:0.8rem;margin-right:8px">${direction}</span>
+${opts?.device ? `<span style="display:inline-block;padding:2px 10px;background:${palette.primary}20;color:${palette.primary};border-radius:12px;font-size:0.8rem">${opts.device}</span>` : ''}
+</p>
+<hr style="border:none;border-top:1px solid ${palette.text}15;margin-bottom:32px">
+<h2 style="font-size:1.5rem;font-weight:600;margin-bottom:16px;font-family:${fontStack}">Usage</h2>
+<pre style="background:${palette.text}08;padding:20px;border-radius:8px;overflow-x:auto;margin-bottom:24px;font-size:0.875rem"><code>bwvi init [project]          初始化项目
+bwvi analyze &lt;task&gt;          分析设计任务
+bwvi generate &lt;task&gt; --direct 直接生成 HTML
+bwvi generate &lt;task&gt; --device=iphone --variant=split  生成设备原型
+bwvi critique &lt;file&gt;         评审 HTML 文件</code></pre>
+<h2 style="font-size:1.5rem;font-weight:600;margin-bottom:16px;font-family:${fontStack}">Design Decisions</h2>
+<p style="line-height:1.7;color:${palette.text}bb">Direction: <strong>${direction}</strong><br>Brand: <strong>${opts?.brand || 'none'}</strong><br>Font: <strong>${fontStack}</strong><br>Device: <strong>${opts?.device || 'none'}</strong><br>Dark Mode: <strong>${isDark ? 'yes' : 'no'}</strong></p>
+<hr style="border:none;border-top:1px solid ${palette.text}15;margin:32px 0">
+<p style="text-align:center;font-size:0.875rem;color:${palette.text}66">Generated by BWVI · ${new Date().toISOString().slice(0, 10)}</p>
+</div></div>`;
+
+  const fullHtml = `<!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(title)}</title>
-<style>
-  :root {
-    --color-primary: ${palette.primary};
-    --color-accent: ${palette.accent};
-    --color-surface: ${palette.surface};
-    --color-text: ${palette.text};
-    --font-display: ${fontStack};
-    --font-body: system-ui, -apple-system, sans-serif;
-    --space-unit: 8px;
+${opts?.interactive ? getStateMachineScript() : ''}
+<style>:root{--color-primary:${palette.primary};--color-accent:${palette.accent};--color-surface:${palette.surface};--color-text:${palette.text};--font-display:${fontStack};--font-body:system-ui,-apple-system,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);color:var(--color-text);background:var(--color-surface);line-height:1.6}
+pre code{font-family:'SF Mono','Cascadia Code',monospace}
+${baseStyles}
+${isDark ? `[data-theme="dark"] body{background:#111;color:#e0e0e0}` : ''}
+</style></head><body>${body}</body></html>`;
+
+  if (opts?.device) {
+    return wrapWithDevice(body, opts.device, opts.orientation, title);
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: var(--font-body);
-    color: var(--color-text);
-    background: var(--color-surface);
-    line-height: 1.6;
-    padding: calc(var(--space-unit) * 6);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.3; }
-  h1 { font-size: 2.5rem; margin-bottom: calc(var(--space-unit) * 4); color: var(--color-primary); }
-  h2 { font-size: 1.75rem; margin-top: calc(var(--space-unit) * 6); margin-bottom: calc(var(--space-unit) * 2); }
-  p { margin-bottom: calc(var(--space-unit) * 2); }
-  code {
-    background: color-mix(in srgb, var(--color-primary) 10%, transparent);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.9em;
-  }
-  pre {
-    background: color-mix(in srgb, var(--color-text) 8%, transparent);
-    padding: calc(var(--space-unit) * 2);
-    border-radius: 8px;
-    overflow-x: auto;
-    margin-bottom: calc(var(--space-unit) * 3);
-  }
-  .tag {
-    display: inline-block;
-    background: var(--color-accent);
-    color: white;
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    margin-right: 4px;
-  }
-  hr { border: none; border-top: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent); margin: calc(var(--space-unit) * 6) 0; }
-</style>
-</head>
-<body>
-  <h1>${escapeHtml(task)}</h1>
-  <p><span class="tag">${direction}</span> <span class="tag">BWVI</span></p>
-  <hr>
-  <h2>Usage</h2>
-  <pre><code>bwvi init [project-name]      Initialize a new design project
-bwvi analyze &lt;task&gt;           Analyze a design task
-bwvi generate &lt;task&gt;          Generate design output
-bwvi critique &lt;file&gt;          Critique an HTML output file
-bwvi --help                    Show this help</code></pre>
-  <h2>Examples</h2>
-  <pre><code>bwvi init my-landing
-bwvi analyze "coffee brand landing page"
-bwvi generate "coffee brand landing page" --direction=warm-minimal
-bwvi critique output.html</code></pre>
-  <h2>Design Decisions</h2>
-  <p>BWVI uses a structured decision protocol: <strong>direction</strong> → <strong>palette</strong> → <strong>typography</strong> → <strong>layout</strong> → <strong>detail</strong>. Each decision is persisted, auditable, and can be rolled back.</p>
-  <hr>
-  <p style="text-align:center;font-size:0.875rem;opacity:0.6;">Generated by BWVI · ${new Date().toISOString().slice(0, 10)}</p>
-</body>
-</html>`;
+
+  return fullHtml;
 }
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-export { generateDirectHtml };
+function demoDir(): string {
+  const d = join(process.cwd(), "demo");
+  if (!existsSync(d)) mkdirSync(d, { recursive: true });
+  return d;
+}
 
 function findProjectDir(): string | null {
   let dir = process.cwd();

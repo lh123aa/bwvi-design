@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blush & Bloom — Clean Beauty Redefined</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --primary: #E8A0B4;
+  --primary-dark: #D47A94;
+  --accent: #F5C6A0;
+  --surface: #FDF8F5;
+  --text: #3D2C2E;
+  --muted: #8A7A7C;
+  --white: #FFFFFF;
+  --rose: #F8E8EE;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--surface);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Animations */
+@keyframes fade-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scale-in { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+.anim-fade-up { animation: fade-up 0.7s ease-out both; }
+.anim-fade-in { animation: fade-in 0.6s ease-out both; }
+.anim-scale { animation: scale-in 0.5s ease-out both; }
+.anim-float { animation: float 4s ease-in-out infinite; }
+.d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.2s; } .d3 { animation-delay: 0.3s; }
+.d4 { animation-delay: 0.4s; } .d5 { animation-delay: 0.5s; }
+.stagger > * { animation: fade-up 0.6s ease-out both; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* Navbar */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(253, 248, 245, 0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(61, 44, 46, 0.08);
+}
+.navbar-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center; height: 68px;
+}
+.navbar-logo {
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 600;
+  color: var(--primary-dark); text-decoration: none; letter-spacing: -0.02em;
+}
+.navbar-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+.navbar-links a {
+  text-decoration: none; font-size: 0.875rem; color: var(--muted);
+  font-weight: 500; transition: color 0.2s; letter-spacing: 0.01em;
+}
+.navbar-links a:hover { color: var(--primary-dark); }
+.navbar-cta {
+  padding: 10px 24px; background: var(--primary); color: var(--white);
+  border: none; border-radius: 100px; font-size: 0.8125rem; font-weight: 600;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.02em;
+}
+.navbar-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232, 160, 180, 0.35); }
+
+/* Hero */
+.hero {
+  min-height: 90vh; display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; padding: 120px 0 80px; overflow: hidden;
+}
+.hero-content { padding: 0 24px 0 80px; }
+.hero-tag {
+  display: inline-block; padding: 6px 16px; background: var(--rose);
+  color: var(--primary-dark); border-radius: 100px; font-size: 0.75rem;
+  font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: var(--font-display); font-size: clamp(2.8rem, 5vw, 4.2rem);
+  font-weight: 600; line-height: 1.1; color: var(--text);
+  margin-bottom: 20px; letter-spacing: -0.02em;
+}
+.hero h1 em { color: var(--primary-dark); font-style: italic; }
+.hero p {
+  font-size: 1.0625rem; color: var(--muted); line-height: 1.8;
+  margin-bottom: 36px; max-width: 480px;
+}
+.hero-buttons { display: flex; gap: 16px; align-items: center; }
+.hero-btn-primary {
+  padding: 16px 36px; background: var(--primary); color: var(--white);
+  border: none; border-radius: 100px; font-size: 0.9375rem; font-weight: 600;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.hero-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232, 160, 180, 0.4); }
+.hero-btn-secondary {
+  padding: 16px 36px; background: transparent; color: var(--text);
+  border: 1.5px solid rgba(61, 44, 46, 0.15); border-radius: 100px;
+  font-size: 0.9375rem; font-weight: 600; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.hero-btn-secondary:hover { border-color: var(--primary); }
+
+.hero-visual {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; padding: 40px;
+}
+.hero-circle {
+  width: 420px; height: 420px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--rose), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.hero-circle-inner {
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(255,255,255,0.5); backdrop-filter: blur(8px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.hero-circle-inner .product-icon { font-size: 3.5rem; }
+.hero-circle-inner .product-name {
+  font-family: var(--font-display); font-size: 1.25rem; color: var(--primary-dark);
+}
+.hero-badge {
+  position: absolute; padding: 12px 20px; background: var(--white);
+  border-radius: 16px; box-shadow: 0 8px 32px rgba(61,44,46,0.1);
+  font-size: 0.8125rem; display: flex; align-items: center; gap: 8px;
+}
+.hero-badge-1 { top: 15%; right: 5%; }
+.hero-badge-2 { bottom: 20%; left: 5%; }
+
+/* Sections */
+.section { padding: 100px 0; }
+.section-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-label {
+  display: inline-block; padding: 6px 16px; background: var(--rose);
+  color: var(--primary-dark); border-radius: 100px; font-size: 0.75rem;
+  font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+}
+.section h2 {
+  font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 600; line-height: 1.15; margin-bottom: 16px;
+}
+.section-sub {
+  color: var(--muted); font-size: 1.0625rem; max-width: 520px; line-height: 1.7;
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 48px;
+}
+.product-card {
+  background: var(--white); border-radius: 20px; padding: 32px;
+  border: 1px solid rgba(61, 44, 46, 0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: default; text-align: center;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(232, 160, 180, 0.15);
+}
+.product-image {
+  width: 120px; height: 120px; border-radius: 50%;
+  margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
+  font-size: 3rem;
+}
+.product-card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 8px; }
+.product-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+.product-price { font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); }
+.product-badge {
+  display: inline-block; padding: 4px 12px; background: var(--rose);
+  border-radius: 100px; font-size: 0.6875rem; font-weight: 600;
+  color: var(--primary-dark); margin-bottom: 12px; letter-spacing: 0.04em;
+}
+
+/* Benefits */
+.benefits-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+  margin-top: 48px;
+}
+.benefit-card {
+  padding: 40px 32px; text-align: center;
+  border-radius: 20px; transition: background 0.3s;
+}
+.benefit-card:hover { background: var(--white); }
+.benefit-icon {
+  width: 56px; height: 56px; border-radius: 16px;
+  background: var(--rose); display: flex; align-items: center;
+  justify-content: center; margin: 0 auto 20px; font-size: 1.5rem;
+}
+.benefit-card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 8px; }
+.benefit-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; }
+
+/* Testimonials */
+.testimonials { background: var(--white); }
+.testimonials-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 48px;
+}
+.testimonial-card {
+  padding: 32px; border: 1px solid rgba(61, 44, 46, 0.06);
+  border-radius: 20px;
+}
+.testimonial-stars { color: var(--accent); font-size: 1rem; margin-bottom: 16px; }
+.testimonial-card blockquote {
+  font-size: 0.9375rem; color: var(--muted); line-height: 1.8;
+  margin-bottom: 20px; font-style: italic;
+}
+.testimonial-author {
+  display: flex; align-items: center; gap: 12px;
+}
+.testimonial-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--rose); display: flex; align-items: center;
+  justify-content: center; font-weight: 600; font-size: 0.875rem;
+  color: var(--primary-dark);
+}
+.testimonial-name { font-size: 0.875rem; font-weight: 600; }
+.testimonial-role { font-size: 0.75rem; color: var(--muted); }
+
+/* Ingredients */
+.ingredients-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  margin-top: 48px;
+}
+.ingredient-card {
+  text-align: center; padding: 32px 16px;
+}
+.ingredient-dot {
+  width: 64px; height: 64px; border-radius: 50%;
+  margin: 0 auto 16px; display: flex; align-items: center;
+  justify-content: center; font-size: 1.5rem;
+}
+.ingredient-card h4 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 4px; }
+.ingredient-card p { font-size: 0.8125rem; color: var(--muted); }
+
+/* CTA */
+.cta-section {
+  padding: 120px 0; text-align: center;
+  background: linear-gradient(135deg, var(--rose), var(--surface));
+}
+.cta-section h2 {
+  font-family: var(--font-display); font-size: clamp(2rem, 3.5vw, 3rem);
+  margin-bottom: 16px;
+}
+.cta-section p { color: var(--muted); font-size: 1.0625rem; margin-bottom: 40px; max-width: 480px; margin-left: auto; margin-right: auto; }
+.cta-btn {
+  padding: 18px 48px; background: var(--primary); color: var(--white);
+  border: none; border-radius: 100px; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(232, 160, 180, 0.4); }
+
+.cta-guarantee {
+  display: flex; justify-content: center; gap: 48px; margin-top: 48px;
+}
+.cta-guarantee span {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.875rem; color: var(--muted);
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid rgba(61, 44, 46, 0.06);
+  padding: 64px 0 32px;
+}
+.footer-grid {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+}
+.footer-brand h3 {
+  font-family: var(--font-display); font-size: 1.5rem;
+  color: var(--primary-dark); margin-bottom: 12px;
+}
+.footer-brand p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; max-width: 320px; }
+.footer-col h4 {
+  font-size: 0.8125rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 20px; color: var(--text);
+}
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 12px; }
+.footer-col a {
+  text-decoration: none; font-size: 0.875rem; color: var(--muted);
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--primary-dark); }
+.footer-bottom {
+  max-width: 1200px; margin: 0 auto; padding: 32px 24px 0;
+  border-top: 1px solid rgba(61, 44, 46, 0.06); margin-top: 48px;
+  display: flex; justify-content: space-between;
+  font-size: 0.8125rem; color: var(--muted);
+}
+
+/* Newsletter form */
+.newsletter-form {
+  display: flex; gap: 12px; max-width: 440px; margin: 0 auto;
+}
+.newsletter-form input {
+  flex: 1; padding: 14px 20px; border: 1.5px solid rgba(61,44,46,0.1);
+  border-radius: 100px; font-size: 0.875rem; font-family: var(--font-body);
+  outline: none; transition: border-color 0.2s;
+}
+.newsletter-form input:focus { border-color: var(--primary); }
+.newsletter-form button {
+  padding: 14px 28px; background: var(--primary); color: var(--white);
+  border: none; border-radius: 100px; font-size: 0.875rem; font-weight: 600;
+  cursor: pointer; transition: background 0.2s;
+}
+.newsletter-form button:hover { background: var(--primary-dark); }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; text-align: center; padding-top: 100px; }
+  .hero-content { padding: 0 24px; }
+  .hero p { margin: 0 auto 36px; }
+  .hero-buttons { justify-content: center; }
+  .hero-circle { width: 320px; height: 320px; }
+  .hero-circle-inner { width: 240px; height: 240px; }
+  .products-grid, .benefits-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+  .ingredients-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .navbar-links { display: none; }
+  .products-grid, .benefits-grid, .testimonials-grid { grid-template-columns: 1fr; }
+  .ingredients-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .cta-guarantee { flex-direction: column; gap: 16px; align-items: center; }
+  .newsletter-form { flex-direction: column; }
+  .hero-circle { width: 240px; height: 240px; }
+  .hero-circle-inner { width: 180px; height: 180px; }
+  .hero-badge { display: none; }
+  .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar anim-fade-up">
+  <div class="navbar-inner">
+    <a href="#" class="navbar-logo">Blush & Bloom</a>
+    <ul class="navbar-links">
+      <li><a href="#products">Shop</a></li>
+      <li><a href="#benefits">Why Us</a></li>
+      <li><a href="#ingredients">Ingredients</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+    </ul>
+    <button class="navbar-cta">Get Started</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content anim-fade-up">
+    <div class="hero-tag">New Collection 2026</div>
+    <h1>Beauty that<br><em>feels</em> as good<br>as it looks</h1>
+    <p>Clean, dermatologist-tested skincare made with love in small batches. No compromises, just radiance.</p>
+    <div class="hero-buttons">
+      <button class="hero-btn-primary">Shop the Collection</button>
+      <button class="hero-btn-secondary">Explore Ingredients</button>
+    </div>
+  </div>
+  <div class="hero-visual anim-fade-in d2">
+    <div class="hero-circle">
+      <div class="hero-circle-inner">
+        <div class="product-icon">🌸</div>
+        <div class="product-name">Daily Glow</div>
+        <div style="font-size:0.875rem;color:var(--muted)">Vitamin C Serum</div>
+      </div>
+    </div>
+    <div class="hero-badge hero-badge-1 anim-float">
+      <span>🌱</span> 100% Clean
+    </div>
+    <div class="hero-badge hero-badge-2 anim-float" style="animation-delay:2s">
+      <span>✨</span> 15K+ Happy Users
+    </div>
+  </div>
+</section>
+
+<!-- Products -->
+<section class="section" id="products">
+  <div class="section-inner">
+    <div class="anim-fade-up">
+      <div class="section-label">Best Sellers</div>
+      <h2>Our most-loved essentials</h2>
+      <p class="section-sub">Formulated with nature's finest ingredients for your daily glow.</p>
+    </div>
+    <div class="products-grid stagger">
+      <div class="product-card">
+        <div class="product-image" style="background:var(--rose)">🌿</div>
+        <div class="product-badge">Best Seller</div>
+        <h3>Daily Glow Serum</h3>
+        <p>Vitamin C + Hyaluronic Acid for radiant, plump skin.</p>
+        <div style="display:flex;justify-content:center;gap:4px;margin-bottom:12px">
+          <span style="color:var(--accent)">★★★★★</span>
+        </div>
+        <div class="product-price">$38.00</div>
+      </div>
+      <div class="product-card">
+        <div class="product-image" style="background:#F0F7F0">🌺</div>
+        <div class="product-badge">New</div>
+        <h3>Dewy Moisturizer</h3>
+        <p>Lightweight hydration with squalane and ceramides.</p>
+        <div style="display:flex;justify-content:center;gap:4px;margin-bottom:12px">
+          <span style="color:var(--accent)">★★★★★</span>
+        </div>
+        <div class="product-price">$42.00</div>
+      </div>
+      <div class="product-card">
+        <div class="product-image" style="background:#FFF0E8">🧴</div>
+        <div class="product-badge">Eco Pack</div>
+        <h3>Gentle Cleanser</h3>
+        <p>Soothing gel cleanser with green tea and aloe vera.</p>
+        <div style="display:flex;justify-content:center;gap:4px;margin-bottom:12px">
+          <span style="color:var(--accent)">★★★★★</span>
+        </div>
+        <div class="product-price">$28.00</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits -->
+<section class="section" id="benefits" style="background:var(--white)">
+  <div class="section-inner">
+    <div class="anim-fade-up" style="text-align:center">
+      <div class="section-label">Why Blush & Bloom</div>
+      <h2>Beauty you can trust</h2>
+      <p class="section-sub" style="margin:0 auto">Every product is crafted with intention, from ingredient to packaging.</p>
+    </div>
+    <div class="benefits-grid stagger">
+      <div class="benefit-card">
+        <div class="benefit-icon">🌱</div>
+        <h3>Clean Ingredients</h3>
+        <p>No parabens, sulfates, or synthetic fragrances. Ever.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">🧪</div>
+        <h3>Dermatologist Tested</h3>
+        <p>All formulas pass rigorous clinical testing for safety.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="benefit-icon">♻️</div>
+        <h3>Sustainable Packaging</h3>
+        <p>100% recycled glass bottles and compostable shipping.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ingredients -->
+<section class="section" id="ingredients">
+  <div class="section-inner">
+    <div class="anim-fade-up" style="text-align:center">
+      <div class="section-label">Inside Our Formulas</div>
+      <h2>Powered by nature</h2>
+      <p class="section-sub" style="margin:0 auto">Every ingredient has a purpose. No filler, no fluff.</p>
+    </div>
+    <div class="ingredients-grid stagger">
+      <div class="ingredient-card">
+        <div class="ingredient-dot" style="background:var(--rose)">🧬</div>
+        <h4>Hyaluronic Acid</h4>
+        <p>Deep hydration boost</p>
+      </div>
+      <div class="ingredient-card">
+        <div class="ingredient-dot" style="background:#F0F7F0">🌿</div>
+        <h4>Vitamin C</h4>
+        <p>Brightening antioxidant</p>
+      </div>
+      <div class="ingredient-card">
+        <div class="ingredient-dot" style="background:#FFF0E8">🌸</div>
+        <h4>Squalane</h4>
+        <p>Moisture barrier support</p>
+      </div>
+      <div class="ingredient-card">
+        <div class="ingredient-dot" style="background:#F0EEFF">🌼</div>
+        <h4>Green Tea</h4>
+        <p>Soothing anti-inflammatory</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section testimonials" id="reviews">
+  <div class="section-inner">
+    <div class="anim-fade-up" style="text-align:center">
+      <div class="section-label">Real Reviews</div>
+      <h2>Loved by thousands</h2>
+      <p class="section-sub" style="margin:0 auto">Hear from our community of glowing skin.</p>
+    </div>
+    <div class="testimonials-grid stagger">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"My skin has never looked better. The Daily Glow Serum is absolutely magic — I've gotten so many compliments!"</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">S</div>
+          <div>
+            <div class="testimonial-name">Sarah Kim</div>
+            <div class="testimonial-role">Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"Finally, a clean beauty brand that actually works. The moisturizer is my holy grail — lightweight but so hydrating."</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">M</div>
+          <div>
+            <div class="testimonial-name">Mia Chen</div>
+            <div class="testimonial-role">Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <blockquote>"The packaging is gorgeous and the products are even better. Love that it's all sustainable too. 🙌</blockquote>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">L</div>
+          <div>
+            <div class="testimonial-name">Lisa Park</div>
+            <div class="testimonial-role">Verified Buyer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-inner anim-scale">
+    <h2>Ready to glow?</h2>
+    <p>Join 15,000+ happy customers and discover the difference clean beauty makes.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault();alert('Welcome to the Bloom club! ✨')">
+      <input type="email" placeholder="Enter your email" required>
+      <button type="submit">Get 15% Off</button>
+    </form>
+    <div class="cta-guarantee">
+      <span>✨ Free shipping over $50</span>
+      <span>🌱 100% Satisfaction Guaranteed</span>
+      <span>💳 Secure checkout</span>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Blush & Bloom</h3>
+      <p>Clean beauty crafted with love. We believe skincare should feel as good as it looks — for you and the planet.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">All Products</a></li>
+        <li><a href="#">Best Sellers</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Gift Sets</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Ingredients</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Blush & Bloom. All rights reserved.</span>
+    <span>Made with love in small batches 🌸</span>
+  </div>
+</footer>
+
+</body>
+</html>
