@@ -51,12 +51,12 @@
 
 ## 🖼 Screenshots
 
-| BWVI Generated | BWVI Generated | BWVI Generated |
-|:----------:|:----------:|:----------:|
-| ![](demo/screenshots/saas-cloudai.png) | ![](demo/screenshots/cosmetics-iphone.png) | ![](demo/screenshots/corporate-trust.png) |
-| SaaS Landing | Cosmetics iPhone | Corporate |
-| ![](demo/screenshots/playful-creative.png) | ![](demo/screenshots/photography.png) | ![](demo/screenshots/enterprise.png) |
-| Creative | Photography | Enterprise |
+| Demo page | Demo page |
+|:----------:|:----------:|
+| ![](demo/screenshots/photography.png) | ![](demo/screenshots/cosmetics.png) |
+| `photography.html` | `cosmetics.html` |
+| ![](demo/screenshots/enterprise.png) | ![](demo/screenshots/metallix-3d.png) |
+| `enterprise.html` | `metallix-3d.html` |
 
 ---
 
