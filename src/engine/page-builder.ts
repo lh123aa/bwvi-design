@@ -1,6 +1,6 @@
 import { findBlueprint, fillBlueprint, type BlueprintSection } from "../templates/content-presets.js";
 import type { HeroVariant, GridVariant } from "../templates/components.js";
-import { getBaseStyles, Navbar, Hero, StatsGrid, FeatureGrid, TestimonialGrid, CTASection, Footer, StatsCounter, Timeline, PriceCard } from "../templates/components.js";
+import { getBaseStyles, Navbar, Hero, StatsGrid, FeatureGrid, TestimonialGrid, CTASection, Footer, StatsCounter, Timeline, PriceCard, Form } from "../templates/components.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getStateMachineScript } from "../frames/state-machine.js";
 import { getBrand } from "./brand-loader.js";
@@ -112,6 +112,8 @@ function renderSection(section: BlueprintSection, base: any): string {
     case "footer": return Footer({ ...base, description: cfg.description, columns: cfg.columns, style: (section.variant as any) || "default" });
     case "pricing": return PriceCard({ ...base, name: cfg.name, price: cfg.price, features: cfg.features, cta: cfg.cta, featured: cfg.featured });
     case "timeline": return Timeline({ ...base, items: cfg.items });
+    case "form": return Form({ ...base, fields: cfg.fields, submit: cfg.submit });
+    case "stats_counter": return StatsCounter({ ...base, items: cfg.items });
     default: return "";
   }
 }

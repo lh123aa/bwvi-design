@@ -1,7 +1,7 @@
 import type { HeroVariant, GridVariant, NavStyle, CardStyle } from "./components.js";
 
 export interface BlueprintSection {
-  type: "navbar" | "hero" | "features" | "stats" | "testimonials" | "cta" | "footer" | "pricing" | "timeline";
+  type: "navbar" | "hero" | "features" | "stats" | "testimonials" | "cta" | "footer" | "pricing" | "timeline" | "form" | "stats_counter";
   variant?: string;
   data: Record<string, unknown>;
 }
@@ -164,6 +164,75 @@ const BLUEPRINTS: Blueprint[] = [
       { type: "testimonials", variant: "compact", data: { items: [{quote:"Amazing quality and fast shipping! Highly recommend.",author:"Lisa M.",role:"Verified Buyer"},{quote:"My go-to store for everything. Customer service is superb.",author:"Tom H.",role:"Verified Buyer"}] } },
       { type: "cta", variant: "", data: { title:"Join Our Community", subtitle:"Sign up and get 10% off your first order.", cta:"Get 10% Off" } },
       { type: "footer", variant: "default", data: { description:"{brand} — Curated for modern living.", columns:[{title:"Shop",links:[{label:"All Products",href:"#"},{label:"New Arrivals",href:"#"},{label:"Best Sellers",href:"#"},{label:"Sale",href:"#"}]},{title:"Help",links:[{label:"Shipping",href:"#"},{label:"Returns",href:"#"},{label:"FAQ",href:"#"},{label:"Contact",href:"#"}]}] } },
+    ],
+  },
+
+  // === MOBILE APP BLUEPRINTS ===
+  {
+    id: "mobile-onboarding", name: "App 引导页 Onboarding",
+    pageType: "app", industry: ["app", "mobile", "ios", "android", "onboarding", "引导"],
+    keywords: ["app", "mobile", "onboarding", "引导", "注册", "welcome", "start"],
+    direction: "playful-color",
+    sections: [
+      { type: "hero", variant: "fullscreen", data: { title:"Welcome to {brand}", subtitle:"{tagline} — {description}", cta:"Get Started" } },
+      { type: "stats_counter", variant: "", data: { items: [{value:"1M+",label:"Downloads"},{value:"4.8★",label:"Rating"},{value:"150+",label:"Countries"}] } },
+      { type: "features", variant: "list", data: { items: [{icon:"✨",title:"Smart Features",desc:"AI-powered recommendations just for you."},{icon:"🔒",title:"Private & Secure",desc:"Your data is encrypted end-to-end."},{icon:"⚡",title:"Lightning Fast",desc:"Optimized for the best experience."}] } },
+      { type: "form", variant: "", data: { fields: [{label:"Email",type:"email",placeholder:"your@email.com"}], submit:"Create Account" } },
+      { type: "footer", variant: "minimal", data: { description:"{brand} — {tagline}" } },
+    ],
+  },
+  {
+    id: "mobile-profile", name: "App 个人主页 Profile",
+    pageType: "app", industry: ["app", "mobile", "profile", "个人", "account", "user"],
+    keywords: ["profile", "个人", "账号", "account", "user", "设置"],
+    direction: "warm-minimal",
+    sections: [
+      { type: "navbar", variant: "centered", data: { logo: "{brand}", links: [{label:"Profile",href:"#"},{label:"Settings",href:"#"}], cta: "Edit" } },
+      { type: "stats_counter", variant: "", data: { items: [{value:"1.2K",label:"Followers"},{value:"340",label:"Following"},{value:"89",label:"Posts"}] } },
+      { type: "features", variant: "list", data: { items: [{icon:"📸",title:"My Photos",desc:"View your photo gallery"},{icon:"⭐",title:"Saved Items",desc:"Your bookmarked content"},{icon:"🏆",title:"Achievements",desc:"Badges and milestones"}] } },
+      { type: "cta", variant: "", data: { title:"Share Your Profile", subtitle:"Let friends find you on {brand}.", cta:"Share Profile" } },
+      { type: "footer", variant: "minimal", data: { description:"{brand}" } },
+    ],
+  },
+  {
+    id: "mobile-ecommerce-app", name: "App 电商购物",
+    pageType: "app", industry: ["app", "mobile", "shop", "store", "购物", "ecommerce"],
+    keywords: ["app", "购物", "shop", "store", "商品", "产品", "ecommerce", "buy"],
+    direction: "warm-minimal",
+    sections: [
+      { type: "navbar", variant: "default", data: { logo: "{brand}", links: [{label:"Home",href:"#"},{label:"Search",href:"#"},{label:"Cart",href:"#"},{label:"Account",href:"#"}], cta: "Cart" } },
+      { type: "hero", variant: "centered", data: { title:"Shop {tagline}", subtitle:"{description}", cta:"Browse" } },
+      { type: "features", variant: "grid", data: { items: [{icon:"🚚",title:"Free Shipping",desc:"On orders over $50"},{icon:"💯",title:"Easy Returns",desc:"30-day guarantee"},{icon:"🎁",title:"Gift Ready",desc:"Free gift wrapping"}] } },
+      { type: "stats", variant: "compact", data: { items: [{num:"10K+",label:"Products"},{num:"50K+",label:"Shoppers"},{num:"4.8★",label:"Rating"}] } },
+      { type: "cta", variant: "", data: { title:"Download the App", subtitle:"Get the best shopping experience on mobile.", cta:"Get the App" } },
+      { type: "footer", variant: "minimal", data: { description:"{brand}" } },
+    ],
+  },
+  {
+    id: "mobile-social", name: "App 社交 Social Feed",
+    pageType: "app", industry: ["app", "mobile", "social", "社交", "feed", "community"],
+    keywords: ["social", "社交", "feed", "community", "分享", "post"],
+    direction: "playful-color",
+    sections: [
+      { type: "navbar", variant: "centered", data: { logo: "{brand}", links: [{label:"Feed",href:"#"},{label:"Explore",href:"#"},{label:"Notifications",href:"#"},{label:"Profile",href:"#"}], cta: "Post" } },
+      { type: "hero", variant: "centered", data: { title:"{brand}", subtitle:"{tagline} — Share your story with the world.", cta:"Join Now" } },
+      { type: "stats_counter", variant: "", data: { items: [{value:"5M+",label:"Creators"},{value:"50M+",label:"Posts"},{value:"100M+",label:"Likes"}] } },
+      { type: "features", variant: "list", data: { items: [{icon:"📷",title:"Share Photos",desc:"Capture and share your moments."},{icon:"💬",title:"Connect",desc:"Message friends and followers."},{icon:"🔥",title:"Trending",desc:"Discover what's popular now."}] } },
+      { type: "cta", variant: "", data: { title:"Join the Community", subtitle:"Be part of something bigger.", cta:"Sign Up Free" } },
+      { type: "footer", variant: "minimal", data: { description:"{brand}" } },
+    ],
+  },
+  {
+    id: "mobile-settings", name: "App 设置页 Settings",
+    pageType: "app", industry: ["app", "mobile", "settings", "设置", "preferences", "config"],
+    keywords: ["settings", "设置", "配置", "preferences", "account", "privacy"],
+    direction: "tech-utility",
+    sections: [
+      { type: "navbar", variant: "centered", data: { logo: "Settings", links: [], cta: "" } },
+      { type: "hero", variant: "centered", data: { title:"Account Settings", subtitle:"Manage your preferences and privacy.", cta:"" } },
+      { type: "features", variant: "list", data: { items: [{icon:"👤",title:"Profile",desc:"Name, email, avatar"},{icon:"🔒",title:"Privacy",desc:"Password, security, data"},{icon:"🔔",title:"Notifications",desc:"Push, email, SMS"},{icon:"🎨",title:"Appearance",desc:"Theme, font, density"}] } },
+      { type: "cta", variant: "", data: { title:"Need help?", subtitle:"Contact our support team anytime.", cta:"Contact Support" } },
+      { type: "footer", variant: "minimal", data: { description:"{brand}" } },
     ],
   },
 ];

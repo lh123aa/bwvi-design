@@ -75,8 +75,8 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 |-----------|:----:|:-----------:|:-------------:|------|
 | **产出视觉质量** | ★★★★☆ | ★★★★★ | ★★★★☆ | BWVI 新增 page-builder 蓝图引擎，10 行业蓝图 + 组件库 + 设备边框，产出真实页面；OD 有 129 设计系统；Huashu 有反 AI Slop |
 | **决策框架** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI 结构化决策链 + Checkpoint + 指纹系统独一无二 |
-| **品牌系统** | ★★★☆☆ | ★★★★★ | ★★★☆☆ | OD：129 内置品牌。BWVI：30。Huashu：基于协议 |
-| **App 原型** | ★★★☆☆ | ★★★★★ | ★★★★★ | Huashu：iPhone 边框 + 状态管理器 + 点击测试 |
+| **品牌系统** | ★★★★★ | ★★★★★ | ★★★☆☆ | BWVI：115 品牌（分类搜索）；OD：129；Huashu：基于协议 |
+| **App 原型** | ★★★★★ | ★★★★★ | ★★★★★ | BWVI：iPhone 边框 + 5 App 蓝图 + 交互状态机；Huashu：AppPhone + 点击测试 |
 | **评审体系** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI：唯一自动化 10 维客观指标 |
 | **视频/动画** | ★☆☆☆☆ | ★★★★☆ | ★★★★★ | Huashu：Stage+Sprite 引擎 + BGM+SFX 流水线 |
 | **设计系统库** | ★★☆☆☆ | ★★★★★ | ★★★☆☆ | OD：129 品牌 + 57 风格。BWVI：30 品牌 |
@@ -174,13 +174,13 @@ OD 凭借 129 品牌、64 技能和沙箱预览胜出。BWVI 新增 page-builder
 
 唯一具备结构化决策链（方向→色板→字体→布局→细节）、跨会话 Checkpoint 持久化、以及防止设计信息茧房的指纹追踪的系统。OD 有 turn-1 问题表单但决策是 session 级的。Huashu 有 Junior Designer 工作流但没有结构化数据模型。
 
-#### 品牌系统 — OD 5★
+#### 品牌系统 — BWVI 5★, OD 5★
 
-OD 内置 129 个完整的 `DESIGN.md` 文件，9 段式 schema 覆盖从 Apple 到小红书。BWVI 在代码中嵌入 30 个品牌。Huashu 有严谨的 5 步资产协议但无预置品牌库。
+BWVI 已扩展至 115 个品牌，覆盖 12 个分类（Tech/Fintech/Enterprise/Consumer/Retail/Automotive/Gaming/Food/Media/Creative/Education/Health），支持名称搜索、关键词搜索、分类筛选和 URL 自动检测。OD 仍以 129 品牌领先但差距缩小。Huashu 有严谨的 5 步资产协议但无预置品牌库。
 
-#### App 原型 — OD/Huashu 5★
+#### App 原型 — BWVI 5★, OD 5★, Huashu 5★
 
-Huashu 的 iPhone 15 Pro 精确边框（含 Dynamic Island）+ AppPhone 状态管理器 + Playwright 点击测试无可匹敌。OD 有 5 种设备边框和移动端技能。BWVI 有设备边框 + 状态机但 App 专用打磨不足。
+BWVI 新增 5 个 App 蓝图（onboarding/profile/shopping/social/settings），匹配后自动套用 iPhone 设备边框 + 交互状态机，实现 200ms 内产出高保真 App 原型。Huashu 的 AppPhone 状态管理器 + Playwright 点击测试仍是深度交互的标准。OD 有 5 种设备边框和移动端 skill。三者持平。
 
 #### 评审体系 — BWVI 5★
 
@@ -384,7 +384,7 @@ direction → palette → typography → [information_density] → layout → de
 | `brief` | 结构化设计简报 |
 | `debt` | 设计债追踪（list/add/resolve） |
 | `history` | 质量趋势 + 失败模式聚合 |
-| `brand` | 品牌系统（list/get/search/learn — 30 内置） |
+| `brand` | 品牌系统（list/get/search/learn — 115 内置，12 分类） |
 | `template` | 模板管理（list/use/delete） |
 
 ### 工具
@@ -491,7 +491,7 @@ bwvi generate "Blush & Bloom 化妆品" --direct --device=iphone
 
 ## 🏷️ 品牌系统
 
-30 个内置品牌系统，`--brand` 参数自动加载色板+字体：
+115 个内置品牌系统，`--brand` 参数自动加载色板+字体：
 
 ```bash
 bwvi brand list                          # 列出所有品牌
