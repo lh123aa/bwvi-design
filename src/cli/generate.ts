@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { info, success, warn, errExit, result } from "./ux.js";
 import { CheckpointManager } from "../checkpoint/manager.js";
 import { composeGeneratePrompt } from "../engine/composer.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";
@@ -57,17 +58,11 @@ export async function generateCommand(args: string[]) {
 
   const nonFlagArgs = args.filter((a) => !a.startsWith("--"));
   const task = nonFlagArgs.join(" ");
-  if (!task) {
-    console.error(JSON.stringify({ error: "请提供任务描述", code: "MISSING_TASK" }));
-    process.exit(1);
-  }
+  if (!task) errExit("请提供任务描述（如: 咖啡品牌 landing page）", "MISSING_TASK");
 
   const directionFlag = args.find((a) => a.startsWith("--direction="));
   const direction = directionFlag ? directionFlag.split("=")[1] as string : "tech-utility";
-  if (!VALID_DIRECTIONS.includes(direction)) {
-    console.error(JSON.stringify({ error: "无效方向: " + direction + "，可选: " + VALID_DIRECTIONS.join(", "), code: "INVALID_DIRECTION" }));
-    process.exit(1);
-  }
+  if (!VALID_DIRECTIONS.includes(direction)) errExit("无效方向: " + direction + "，可选: " + VALID_DIRECTIONS.join(", "), "INVALID_DIRECTION");
 
   if (direct) {
     const palette = brand ? { primary: brand.colors.primary, accent: brand.colors.accent, surface: brand.colors.surface, text: brand.colors.text } : DIRECTION_PALETTES[direction];
@@ -96,14 +91,10 @@ export async function generateCommand(args: string[]) {
     const fileName = device ? `preview-${device}.html` : "index.html";
     const filePath = join(demoDir(), fileName);
     writeFileSync(filePath, pageResult.html, "utf-8");
-      console.log(JSON.stringify({
-        status: "ok", file: filePath, direction: pageResult.direction,
-        device: device || "none", brand: pageResult.brandUsed,
-        blueprint: pageResult.blueprintId,
-        match_confidence: Math.round(pageResult.matchConfidence * 100) / 100,
-        engine: "direct",
-      }, null, 2));
-      return;
+    info("蓝图匹配: " + pageResult.blueprintId + " (" + (pageResult.matchConfidence * 100).toFixed(0) + "%)");
+    info("方向: " + pageResult.direction + (pageResult.brandUsed ? " · 品牌: " + pageResult.brandUsed : ""));
+    result({ status: "ok", file: filePath, direction: pageResult.direction, device: device || "none", brand: pageResult.brandUsed, blueprint: pageResult.blueprintId, match_confidence: Math.round(pageResult.matchConfidence * 100) / 100, engine: "direct" });
+    success("已生成: " + filePath);
   }
 
   if (runMode) {

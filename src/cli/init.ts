@@ -2,12 +2,18 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: Record<string, unknown> = {
   name: "my-project",
   created_at: new Date().toISOString(),
   last_used: new Date().toISOString(),
   decisions_count: 0,
   completed: false,
+  default_direction: "tech-utility",
+  default_device: "none",
+  default_brand: null,
+  default_style: null,
+  dark_mode: false,
+  language: "zh-CN",
 };
 
 export async function initCommand(args: string[]) {
