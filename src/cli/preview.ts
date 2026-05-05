@@ -1,7 +1,8 @@
 import { getStyle, type StyleSystem } from "../engine/style-systems.js";
 import { Navbar, Hero, FeatureGrid, StatsGrid, TestimonialGrid, CTASection, Footer, Card, PriceCard, Form, StatsCounter, Timeline, getBaseStyles } from "../templates/components.js";
-import { writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { getDemoDir } from "./demo.js";
 
 function resolveStyle(args: string[]): StyleSystem {
   const id = args.find(x => x.startsWith("--style="))?.split("=")[1] || "minimal-white";
@@ -40,9 +41,7 @@ export async function previewCommand(args: string[]) {
 function outputHtml(body: string, style: StyleSystem, name: string) {
   const styles = getBaseStyles({ palette: style.palette, fontDisplay: style.typography.display, animation: true });
   const html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preview: ${name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif}${styles}</style></head><body>${body}</body></html>`;
-  const d = join(process.cwd(), "demo");
-  if (!existsSync(d)) mkdirSync(d, { recursive: true });
-  const filePath = join(d, `preview-${name}.html`);
+  const filePath = join(getDemoDir(), `preview-${name}.html`);
   writeFileSync(filePath, html, "utf-8");
   console.log(JSON.stringify({ status: "ok", component: name, file: filePath }, null, 2));
 }

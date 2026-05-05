@@ -1,6 +1,7 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { info, success, warn, errExit, result } from "./ux.js";
+import { getDemoDir } from "./demo.js";
 import { CheckpointManager } from "../checkpoint/manager.js";
 import { composeGeneratePrompt } from "../engine/composer.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";
@@ -192,12 +193,7 @@ function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function demoDir(): string {
-  const base = findProjectDir() || process.cwd();
-  const d = join(base, "demo");
-  if (!existsSync(d)) mkdirSync(d, { recursive: true });
-  return d;
-}
+function demoDir(): string { return getDemoDir(); }
 
 function findProjectDir(): string | null {
   let dir = process.cwd();

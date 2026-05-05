@@ -1,8 +1,9 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { CheckpointManager } from "../checkpoint/manager.js";
 import { buildPage } from "../engine/page-builder.js";
 import { info, success, warn, errExit, result } from "./ux.js";
+import { getDemoDir } from "./demo.js";
 
 interface ShowcaseDef {
   id: string; label: string; desc: string; direction: string;
@@ -33,9 +34,7 @@ export async function showcaseCommand(args: string[]) {
 
     const task = sc.label + " " + sc.desc;
     const pageResult = buildPage({ task, direction: sc.direction, device: sc.device as any, dark: sc.dark });
-    const demoPath = join(process.cwd(), "demo");
-    if (!existsSync(demoPath)) mkdirSync(demoPath, { recursive: true });
-    const htmlPath = join(demoPath, `showcase-${sc.id}.html`);
+    const htmlPath = join(getDemoDir(), `showcase-${sc.id}.html`);
     writeFileSync(htmlPath, pageResult.html, "utf-8");
 
     const projectDir = findProjectDir();

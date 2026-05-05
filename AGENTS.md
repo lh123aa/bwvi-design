@@ -86,3 +86,13 @@ direction → palette → typography → [information_density] → layout → de
 - `knowledge/` 和 `demo/` 应提交
 - `dist/` 不提交（CI 构建）
 - 发布前必须通过 `npm run benchmark`（5/5）
+
+## 生成文件规则
+
+所有命令生成的 HTML/demo 文件必须使用统一的 demo 目录：
+
+- **路径**: `E:\程序\bwvi design\bwvi\demo\`
+- **函数**: 调用 `getDemoDir()`（`src/cli/demo.ts`），自动优先检测 `.bwvi` 项目目录
+- **生成命令**: `generate --direct`, `showcase --pick`, `preview`, `video`, `export` 都必须通过 `getDemoDir()`
+- **禁止**: 不直接使用 `join(process.cwd(), "demo")`，统一走 `getDemoDir()`
+- **截图**: `demo/screenshots/` 只保留与 `demo/` 中 HTML 文件对应的截图
