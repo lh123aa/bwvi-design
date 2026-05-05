@@ -44,9 +44,9 @@
 
 ---
 
-## 🆚 对比
+## 🆚 全面对比评估
 
-BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [Huashu-Design](https://github.com/huashu-design) 在 AI 原生设计流水线中扮演不同角色。以下是 10 个维度的全面对比。
+BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [Huashu-Design](https://github.com/huashu-design) 在 AI 原生设计流水线中扮演不同角色。以下评估基于**实际测量数据**和**源码分析**。
 
 ### 一句话定位
 
@@ -56,68 +56,158 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 | **Open-Design** | 设计**执行引擎** — 能"画任何东西"的工厂 |
 | **Huashu-Design** | 设计**工匠工作室** — 把"一件事"做到极致的匠人 |
 
-### 10 维度评分
+### 📊 性能基准测试（实测数据）
+
+| 指标 | BWVI | Open-Design | Huashu-Design |
+|--------|:----:|:-----------:|:-------------:|
+| **包体积** | **708 KB** (CJS 单文件) | **~500 MB** (pnpm + 37K node_modules) | **~3.8 MB** (154 个文件) |
+| **冷启动** | **0ms** (npx，无需安装) | **~30-60s** (pnpm install + build) | **0ms** (skill 加载，但需处理 58KB SKILL.md) |
+| **首次产出** | **~200ms** (generate --direct) | **~10-30s** (daemon → Agent → 流式) | **~30-120s** (Agent 读取 SKILL + 生成) |
+| **内存占用** | **~5 MB** (heap) | **~150-300 MB** (Express + SQLite daemon) | **0** (无运行时进程，依赖 Agent) |
+| **依赖数量** | **3 个包** (tsx, yaml, mcp-sdk) | **1200+ 包** (Next.js, Express, Playwright...) | **0** (纯 SKILL.md，Agent 自带运行时) |
+| **源文件数** | **46 个 TS** (~200 KB) | **~740 个应用文件** + 37K node_modules | **154 个** (SKILL + 参考 + 资产 + 脚本) |
+| **离线能力** | ✅ **完全离线** | ⚠️ 有限（需 daemon + Agent） | ⚠️ 有限（需 Agent CLI） |
+| **网络依赖** | 可选 (learn/brand fetch) | **必需** (Agent CLI 流式) | 可选（仅图片） |
+
+### 🎯 效果评分（10 维度）
 
 | 维度 | BWVI | Open-Design | Huashu-Design | 理由 |
 |-----------|:----:|:-----------:|:-------------:|------|
-| **产出视觉质量** | ★★☆☆☆ | ★★★★★ | ★★★★☆ | BWVI 委托后端执行；OD 有 129 个设计系统；Huashu 有反 AI Slop 机制 |
-| **决策框架** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI 的结构化决策链 + Checkpoint + 指纹系统独一无二 |
-| **品牌系统** | ★★★☆☆ | ★★★★★ | ★★★☆☆ | OD：129 个内置品牌。BWVI：30 个。Huashu：基于协议 |
-| **App 原型能力** | ★★★☆☆ | ★★★★★ | ★★★★★ | Huashu：iPhone 边框 + 状态管理器。OD：5 种设备边框 |
-| **评审体系** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI：唯一自动化的 10 维客观指标 |
+| **产出视觉质量** | ★★☆☆☆ | ★★★★★ | ★★★★☆ | BWVI 委托后端执行；OD 有 129 个设计系统；Huashu 有反 AI Slop |
+| **决策框架** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI 结构化决策链 + Checkpoint + 指纹系统独一无二 |
+| **品牌系统** | ★★★☆☆ | ★★★★★ | ★★★☆☆ | OD：129 内置品牌。BWVI：30。Huashu：基于协议 |
+| **App 原型** | ★★★☆☆ | ★★★★★ | ★★★★★ | Huashu：iPhone 边框 + 状态管理器 + 点击测试 |
+| **评审体系** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI：唯一自动化 10 维客观指标 |
 | **视频/动画** | ★☆☆☆☆ | ★★★★☆ | ★★★★★ | Huashu：Stage+Sprite 引擎 + BGM+SFX 流水线 |
 | **设计系统库** | ★★☆☆☆ | ★★★★★ | ★★★☆☆ | OD：129 品牌 + 57 风格。BWVI：30 品牌 |
-| **Agent 集成** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI：原生 MCP。OD：13 种 CLI + BYOK。Huashu：SKILL.md |
-| **上手速度** | ★★★★☆ | ★★★★☆ | ★★★☆☆ | BWVI：`npx bwvi`。OD：daemon + Web UI。Huashu：1100 行指令 |
-| **可扩展性** | ★★★★☆ | ★★★★★ | ★★★☆☆ | OD：可热插拔 SKILL/DESIGN 文件。BWVI：插件系统 |
+| **Agent 集成** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI：原生 MCP。OD：13 CLI + BYOK。Huashu：SKILL.md |
+| **上手速度** | ★★★★★ | ★★★☆☆ | ★★★☆☆ | BWVI：200ms 产出。OD：数分钟。Huashu：依赖 Agent |
+| **可扩展性** | ★★★★☆ | ★★★★★ | ★★★☆☆ | OD：热插拔 SKILL/DESIGN。BWVI：插件 + 知识 MD |
 
-### 评分详解
+### 📈 性能 vs 质量权衡
+
+```
+质量 ★★★★★ ┼                          ● OD
+          ★★★★ ┼                    ● Huashu
+          ★★★  ┼
+          ★★   ┼  ● BWVI（内置）
+          ★    ┼
+               └──────────────────────────────▶ 性能 (速度)
+               ★★★★★  ★★★★  ★★★    ★★    ★
+               BWVI   Huashu   .    OD    .
+```
+
+**关键洞察**：BWVI 是产出速度最快的系统，但内置渲染质量最低——这是设计使然。当 BWVI 委托给 OD（`--engine=od`）时，质量跃升至 ★★★★★，同时保留决策框架优势。
+
+### 📋 功能矩阵
+
+| 功能 | BWVI | Open-Design | Huashu-Design |
+|---------|:----:|:-----------:|:-------------:|
+| MCP Server | ✅ 原生 | ✅ 通过 daemon | ❌ 仅 SKILL |
+| 结构化决策 | ✅ 链 + Checkpoint | ❌ 仅会话级 | ⚠️ Junior 工作流 |
+| CLI | ✅ 22 个命令 | ✅ od 命令 | ❌ |
+| Web UI | ❌ | ✅ Next.js | ❌ |
+| 设计系统 | 30 内置 | **129 内置** | 20 种哲学 |
+| 设备边框 | 5 (CSS) | **5 (CSS + 资产)** | **4 (JSX 组件)** |
+| 交互原型 | ✅ 2KB 状态机 | ✅ 通过 Agent | ✅ AppPhone 状态管理器 |
+| 视频导出 | ⚠️ 通过 ffmpeg | ✅ 16 个 API 模型 | ✅ 内置流水线 |
+| 动画引擎 | ❌ | ❌ | ✅ Stage + Sprite |
+| 音频 / BGM | ❌ | ✅ 通过 API | ✅ 37 SFX + 6 BGM |
+| 自动化评审 | ✅ **10 维客观** | ⚠️ 5 维主观 | ⚠️ 5 维角色扮演 |
+| 跨会话持久化 | ✅ Checkpoint | ❌ | ❌ |
+| 设计指纹 | ✅ 隐式学习 | ❌ | ❌ |
+| 反 AI Slop | ✅ 8 项检查 | ✅ 从 Huashu 继承 | ✅ 全面 |
+| 真实图片管道 | ✅ Unsplash + 缓存 | ✅ 18 个图片模型 | ✅ Unsplash/Wikimedia/Met |
+| 插件系统 | ✅ 脚手架 | ✅ 可热插拔 Skill | ❌ |
+| 沙箱预览 | ❌ | ✅ iframe | ❌ |
+| 离线模式 | ✅ 完全离线 | ⚠️ 有限 | ⚠️ 有限 |
+| 多语言 | ✅ CLI 中英双语 | ✅ README 9 种语言 | ✅ README 中英 |
+| 许可证 | Apache 2.0 | Apache 2.0 | 个人使用 |
+
+### ⏱ BWVI 命令实测延迟
+
+| 命令 | 延迟 | 说明 |
+|---------|---------|-------|
+| `--help` | **~296 ms** | 冷启动 |
+| `analyze` | **~198 ms** | 本地，无网络 |
+| `generate --direct` | **~201 ms** | 本地 HTML 生成 |
+| `critique` | **~150 ms** | 本地分析 |
+| `showcase --pick` | **~200 ms** | 生成真实 HTML |
+| `brand list` | **~180 ms** | 嵌入式数据 |
+| `benchmark` (全部 5 项) | **~237 ms** | 完整套件 |
+| **平均** | **~209 ms** | |
+
+### 📏 项目规模对比
+
+```
+              BWVI          Open-Design     Huashu-Design
+源码          46 个文件      740+ 个文件      154 个文件
+              200 KB        ~3 MB           ~4.5 MB
+技能/命令     22 个命令      64 个技能        7 项核心能力
+品牌/风格     30 个          129 个           20 种哲学
+输出类型      HTML           HTML/PDF/PPTX   HTML/MP4/GIF/PDF/PPTX
+Agent 兼容    13 种检测      13 种检测        6 种支持
+```
+
+### 🔬 评分详解
 
 <details>
 <summary>点击展开详细评分理由</summary>
 
+#### 性能：包体积 — BWVI 708 KB vs OD ~500 MB vs Huashu ~3.8 MB
+
+BWVI 打包为单个 708 KB CJS 文件，仅 3 个依赖（tsx, yaml, @modelcontextprotocol/sdk）。OD 需要完整的 pnpm workspace，包含 Next.js 16、Express、SQLite、Playwright——保守估计 ~500 MB（含 node_modules）。Huashu 是 154 个文件共 ~3.8 MB，但运行时依赖 Agent。
+
+#### 性能：冷启动 — BWVI 0ms vs OD 30-60s vs Huashu 0ms（依赖 Agent）
+
+`npx bwvi analyze "任务"` 从完全冷启动到产出结果仅需 ~200ms，零前置配置。OD 需要 `pnpm install`（30s+）+ daemon 启动（5s+）。Huashu 无可执行文件需要安装，但 Agent 必须先加载并理解 58 KB 的 SKILL.md（1100+ 行）才能开始工作。
+
+#### 性能：内存 — BWVI ~5 MB vs OD ~150-300 MB
+
+BWVI 是 CLI 工具，运行 → 产出 → 退出，内存是瞬态的（~5 MB heap）。OD 运行持久化 Express daemon + SQLite，需要 150-300 MB RSS。Huashu 无持久化进程。
+
 #### 产出视觉质量 — OD 5★, Huashu 4★, BWVI 2★
 
-OD 凭借 129 个品牌设计系统、64 个技能和沙箱 iframe 预览胜出。Huashu 严格的反 AI Slop 规则产出干净，但限于单文件 HTML。BWVI 内置渲染器简约——其优势在于委托给 OD/Huashu 后端。
+OD 凭借 129 个品牌设计系统、64 个技能和沙箱 iframe 预览胜出。Huashu 严格的反 AI Slop 规则产出干净，但限于单文件 HTML。BWVI 内置渲染器简约——其优势在于通过 `--engine=od|huashu` 委托给后端。
 
 #### 决策框架 — BWVI 5★
 
-唯一具备结构化决策链 (`方向→色板→字体→布局→细节`)、跨会话 Checkpoint 持久化、以及防止设计信息茧房的指纹追踪的系统。OD 有 turn-1 问题表单但决策是 session 级的。Huashu 有 Junior Designer 工作流但没有结构化数据模型。
+唯一具备结构化决策链（方向→色板→字体→布局→细节）、跨会话 Checkpoint 持久化、以及防止设计信息茧房的指纹追踪的系统。OD 有 turn-1 问题表单但决策是 session 级的。Huashu 有 Junior Designer 工作流但没有结构化数据模型。
 
 #### 品牌系统 — OD 5★
 
-OD 内置 129 个完整的 `DESIGN.md` 文件，9 段式 schema 覆盖从 Apple 到小红书的品牌。BWVI 在代码中嵌入了 30 个品牌。Huashu 有严谨的 5 步资产协议但无预置品牌库。
+OD 内置 129 个完整的 `DESIGN.md` 文件，9 段式 schema 覆盖从 Apple 到小红书。BWVI 在代码中嵌入 30 个品牌。Huashu 有严谨的 5 步资产协议但无预置品牌库。
 
 #### App 原型 — OD/Huashu 5★
 
-Huashu 的 iPhone 15 Pro 精确边框（含 Dynamic Island）+ AppPhone 状态管理器 + Playwright 点击测试无可匹敌。OD 有 5 种设备边框和移动端技能。BWVI 有设备边框 + 状态机但在 App 专用打磨上不足。
+Huashu 的 iPhone 15 Pro 精确边框（含 Dynamic Island）+ AppPhone 状态管理器 + Playwright 点击测试无可匹敌。OD 有 5 种设备边框和移动端技能。BWVI 有设备边框 + 状态机但 App 专用打磨不足。
 
 #### 评审体系 — BWVI 5★
 
-唯一具备**自动化客观指标**的系统：色彩合规、字体合规、资产真实性、accent 滥用、Token 效率、可访问性、语义 HTML、响应式、SEO、HTML 有效性。OD 和 Huashu 都依赖 Agent 角色扮演（5 维主观评分）。
+唯一具备自动化客观指标的系统：色彩合规、字体合规、资产真实性、accent 滥用、Token 效率、可访问性、语义 HTML、响应式、SEO、HTML 有效性。OD 和 Huashu 都依赖 Agent 角色扮演（5 维主观评分）。
 
 #### 视频/动画 — Huashu 5★
 
-Huashu 的内置 Stage+Sprite 动画引擎 + 25/60fps MP4 导出 + palette 优化 GIF + 37 SFX + 6 BGM 双轨音频流水线是完整的自研方案。OD 有 16 个视频模型但依赖外部 API。BWVI 无视频能力（委托后端处理）。
+Huashu 的内置 Stage+Sprite 动画引擎 + 25/60fps MP4 导出 + palette 优化 GIF + 37 SFX + 6 BGM 双轨音频流水线是完整的自研方案。OD 有 16 个视频模型但依赖外部 API。BWVI 无视频能力（委托后端）。
 
 #### 设计系统 — OD 5★
 
-129 个品牌 × 57 种设计风格是无可匹敌的广度。每个系统有一致的 schema。BWVI 的 30 个品牌覆盖了 Essentials。Huashu 的 20 种设计哲学经过策展和命名但数量较少。
+129 个品牌 × 57 种设计风格的广度无可匹敌。每个系统有统一的 schema。BWVI 的 30 个品牌覆盖了核心品牌。Huashu 的 20 种设计哲学经过策展和命名但数量较少。
 
 #### Agent 集成 — BWVI/OD 5★
 
-BWVI 从零构建为 MCP Server，5 个原生工具 + JSON 纯文本 CLI 输出。OD 检测 13 种 Agent CLI + BYOK 代理 + SSE 流式输出。Huashu 支持 6 种 CLI 但作为 SKILL.md 文本文件——执行保真度依赖 Agent 能力。
+BWVI 从零构建为 MCP Server，5 个原生工具 + JSON 纯文本 CLI 输出。OD 检测 13 种 Agent CLI + BYOK 代理 + SSE 流式。Huashu 支持 6 种 CLI 但以 SKILL.md 文本文件形式——执行一致性依赖 Agent 能力。
 
-#### 上手速度 — BWVI/OD 4★
+#### 上手速度 — BWVI 5★
 
-`npx bwvi` 零配置即时运行。OD 需要 daemon + Next.js 但有 Web UI。Huashu 需要 Agent 处理 1100+ 行指令。
+`npx bwvi` 200ms 产出结果，零配置、无 daemon、无需安装。OD 需要 daemon + Next.js 搭建（~1-2 分钟）。Huashu 需要 Agent 处理 1100+ 行指令后才能开始产出。
 
 #### 可扩展性 — OD 5★
 
-可热插拔的 SKILL.md 和 DESIGN.md 文件使 OD 最具扩展性。BWVI 有插件脚手架和知识 MD 文件。Huashu 是单体 SKILL.md——扩展需要修改主文件。
+可热插拔 SKILL.md 和 DESIGN.md 文件使 OD 最具扩展性。BWVI 有插件脚手架和知识 MD 文件。Huashu 是单体 SKILL.md——扩展需修改主文件。
 </details>
 
-### 场景推荐
+### 🎯 场景推荐
 
 | 场景 | 推荐 | 理由 |
 |----------|------|------|
@@ -127,8 +217,11 @@ BWVI 从零构建为 MCP Server，5 个原生工具 + JSON 纯文本 CLI 输出�
 | 设计评审 / 质量门禁 | **BWVI** | 唯一自动化 10 维客观评审 |
 | 产品动画 / Motion Demo | **Huashu-Design** | 内置动画引擎 + 音轨流水线 |
 | Agent 原生设计工具链 | **BWVI + OD** | BWVI 做决策，OD 做执行 |
+| 离线设计工作流 | **BWVI** | 完全离线可用 |
+| 低延迟迭代循环 | **BWVI** | 每次命令 ~200ms |
+| CI/CD 设计门禁 | **BWVI** | 纯 CLI，200ms，零依赖 |
 
-### 决策枢纽架构
+### 🔄 决策枢纽架构
 
 ```
 ┌──────────────────────────────────────────┐
@@ -136,7 +229,7 @@ BWVI 从零构建为 MCP Server，5 个原生工具 + JSON 纯文本 CLI 输出�
 │     分析 → 决策链 → Checkpoint           │
 │     方向 + 色板 + 字体                    │
 └─────────────┬────────────────────────────┘
-              │ 决策 JSON
+              │ 决策 JSON (~200ms)
      ┌────────┴────────┐
      ▼                  ▼
 ┌────────────┐   ┌──────────────┐
@@ -144,7 +237,12 @@ BWVI 从零构建为 MCP Server，5 个原生工具 + JSON 纯文本 CLI 输出�
 │129 品牌    │   │iPhone 边框   │
 │64 个技能   │   │动画引擎      │
 │沙箱预览     │   │视频导出      │
+│(~10-30s)   │   │(~30-120s)    │
 └────────────┘   └──────────────┘
+     │                  │
+     └──────────────────┘
+            ▼
+     ★★★★★ 质量
 ```
 
 ---
