@@ -1,7 +1,6 @@
 {
   "name": "bwvi",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.2.0",
   "type": "module",
   "description": "Better Way of Visual Intelligence — Agent-native design decision protocol",
   "bin": {
@@ -24,5 +23,13 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "tsx": "^4.0.0",
     "yaml": "^2.7.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lh123aa/bwvi-design.git"
+  },
+  "homepage": "https://github.com/lh123aa/bwvi-design",
+  "keywords": ["design", "ai-agent", "mcp", "cli", "prototyping", "design-system"],
+  "engines": { "node": ">=18" },
+  "files": ["dist/", "README.md", "README.zh-CN.md", "README.en.md", "LICENSE"]
 }

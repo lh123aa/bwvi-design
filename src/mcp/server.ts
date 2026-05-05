@@ -6,6 +6,8 @@ import { analyzeHtml } from "../critique/objective.js";
 import { buildReport } from "../critique/self-review.js";
 import { FingerprintTracker } from "../fingerprint/tracker.js";
 import { learnFromUrl, saveReference, injectToFingerprint } from "../engine/learner.js";
+import { listStyles } from "../engine/style-systems.js";
+import { listBrands, searchBrands } from "../engine/brand-loader.js";
 import { generateDirectHtml } from "../cli/generate.js";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -35,6 +37,9 @@ export async function startMcpServer() {
       { name: "critique_design", description: "Critique HTML output", inputSchema: { type: "object", properties: { html: { type: "string" }, brand_colors: { type: "array", items: { type: "string" } } }, required: ["html"] } },
       { name: "learn_design", description: "Learn design from URL", inputSchema: { type: "object", properties: { url: { type: "string" }, inject: { type: "boolean" } }, required: ["url"] } },
       { name: "list_directions", description: "List all directions", inputSchema: { type: "object", properties: {}, required: [] } },
+      { name: "list_styles", description: "List all visual styles", inputSchema: { type: "object", properties: {}, required: [] } },
+      { name: "list_brands", description: "Search/list brand systems", inputSchema: { type: "object", properties: { query: { type: "string" } }, required: [] } },
+      { name: "list_blueprints", description: "List all page blueprints", inputSchema: { type: "object", properties: {}, required: [] } },
     ],
   }));
   server.setRequestHandler(CallToolRequestSchema, async (req) => {
@@ -75,6 +80,16 @@ export async function startMcpServer() {
       }
       if (n === "list_directions") {
         return { content: [{ type: "text", text: JSON.stringify(DIRECTION_NAMES) }] };
+      }
+      if (n === "list_styles") {
+        return { content: [{ type: "text", text: JSON.stringify(listStyles()) }] };
+      }
+      if (n === "list_brands") {
+        const q = String(a.query || "");
+        return { content: [{ type: "text", text: JSON.stringify(q ? searchBrands(q) : listBrands()) }] };
+      }
+      if (n === "list_blueprints") {
+        return { content: [{ type: "text", text: "Use analyze_design to get blueprint recommendations" }] };
       }
       return { content: [{ type: "text", text: "Unknown tool: " + n }], isError: true };
     } catch (e) {

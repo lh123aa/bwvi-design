@@ -24,7 +24,16 @@ import { animateCommand } from "./cli/animate.js";
 import { exportCommand } from "./cli/export.js";
 import { previewCommand } from "./cli/preview.js";
 
+const BWVI_VERSION = "0.2.0";
+const COMMANDS = ["init","analyze","generate","critique","learn","showcase","checkpoint","feedback","knowledge","asset","brief","debt","history","brand","style","template","test","animate","export","preview","video","plugin","diff","benchmark","mcp"];
+const GENERATE_FLAGS = ["--direct","--run","--device=","--orientation=","--variant=","--style=","--brand=","--dark","--interactive","--engine=","--json"];
+const STYLE_IDS = ["minimal-white","clean-corporate","soft-minimal","warm-editorial","dark-luxury","neo-brutalism","glassmorphism","cyberpunk","playful-color","pastel-dream","kawaii-japan","nature-organic","corporate-trust","tech-utility","photography","music-vibe"];
+
 async function main() {
+  if (process.argv.includes("--version") || process.argv.includes("-v")) {
+    console.log("bwvi v" + BWVI_VERSION);
+    return;
+  }
   const command = process.argv[2];
   const args = process.argv.slice(3);
   switch (command) {
@@ -49,6 +58,18 @@ async function main() {
     case "animate": await animateCommand(args); break;
     case "export": await exportCommand(args); break;
     case "preview": await previewCommand(args); break;
+    case "completion":
+      {
+        const sh = args[0] || "bash";
+        if (sh === "bash") {
+          const cmds = COMMANDS.join(" ");
+          console.log("_bwvi_completions(){ local cur=${COMP_WORDS[COMP_CWORD]}; if [[ $COMP_CWORD -eq 1 ]]; then COMPREPLY=($(compgen -W '" + cmds + "' -- $cur)); fi }; complete -F _bwvi_completions bwvi");
+        } else if (sh === "powershell") {
+          const cmds = COMMANDS.join('","');
+          console.log('Register-ArgumentCompleter -Native -CommandName bwvi -ScriptBlock { param($w,$a,$p); $c=@("' + cmds + '"); $c | Where-Object {$_ -like "$w*"} | ForEach-Object {[System.Management.Automation.CompletionResult]::new($_)} }');
+        }
+      }
+      return;
     case "plugin": await pluginInitCommand(args); break;
     case "template": await templateCommand(args); break;
     case "test": await testCommand(args); break;

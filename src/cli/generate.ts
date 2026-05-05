@@ -58,6 +58,30 @@ export async function generateCommand(args: string[]) {
 
   const nonFlagArgs = args.filter((a) => !a.startsWith("--"));
   const task = nonFlagArgs.join(" ");
+  if (args.includes("--help") || args.includes("-h")) {
+    console.log(`bwvi generate <task> [options]
+
+Generate design output from a task description.
+
+Options:
+  --direct              Generate HTML directly (default mode)
+  --run                 Run via agent CLI (Claude/OpenCode)
+  --device=<type>       Device frame: iphone, pixel, ipad, macbook, browser
+  --orientation=<dir>   Device orientation: portrait, landscape
+  --variant=<v>         Component variant: fullscreen, centered, split, editorial
+  --style=<id>          Visual style: minimal-white, neo-brutalism, cyberpunk...
+  --brand=<name>        Brand system: linear, stripe, apple...
+  --dark                Enable dark mode
+  --interactive         Embed interactive state machine
+  --engine=<backend>    Render backend: direct, od, huashu, agent
+  --json                JSON output mode
+
+Examples:
+  bwvi generate "咖啡品牌 landing page" --direct
+  bwvi generate "App prototype" --device=iphone --interactive
+  bwvi generate "SaaS landing" --brand=linear --style=glassmorphism`);
+    return;
+  }
   if (!task) errExit("请提供任务描述（如: 咖啡品牌 landing page）", "MISSING_TASK");
 
   const directionFlag = args.find((a) => a.startsWith("--direction="));
