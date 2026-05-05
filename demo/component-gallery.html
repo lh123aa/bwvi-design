@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BWVI Component Gallery</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:#0A0A0A;color:#fff;padding:40px}
+h1{font-size:2rem;font-weight:700;margin-bottom:8px}
+.sub{color:rgba(255,255,255,0.4);margin-bottom:40px}
+.cat{margin-bottom:48px}
+.cat h2{font-size:1.25rem;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.card{border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;transition:border-color 0.3s;cursor:pointer;text-decoration:none;color:inherit}
+.card:hover{border-color:rgba(255,255,255,0.2)}
+.card-preview{height:200px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;overflow:hidden}
+.card-preview .label{position:absolute;bottom:8px;left:8px;font-size:0.6875rem;padding:4px 10px;border-radius:6px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px)}
+.card-info{padding:16px}
+.card-info h3{font-size:0.9375rem;font-weight:600;margin-bottom:4px}
+.card-info p{font-size:0.8125rem;color:rgba(255,255,255,0.4)}
+.card-info .variants{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.card-info .variants span{padding:2px 8px;border-radius:4px;font-size:0.6875rem;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5)}
+.c-1{background:linear-gradient(135deg,#FF6B9D,#FF6B6B)}
+.c-2{background:linear-gradient(135deg,#4D96FF,#9B59B6)}
+.c-3{background:linear-gradient(135deg,#FFD93D,#FFA94D)}
+.c-4{background:linear-gradient(135deg,#6BCB77,#4D96FF)}
+.c-5{background:linear-gradient(135deg,#9B59B6,#FF6B9D)}
+.c-6{background:linear-gradient(135deg,#FFA94D,#FF6B6B)}
+.c-7{background:linear-gradient(135deg,#2D1B69,#4D96FF)}
+.c-8{background:linear-gradient(135deg,#6C3BD6,#00D4AA)}
+.c-9{background:linear-gradient(135deg,#1A1A2E,#C44536)}
+.c-10{background:linear-gradient(135deg,#1DB954,#191414)}
+</style>
+</head>
+<body>
+<h1>🎨 BWVI Component Gallery</h1>
+<p class="sub">Preview all components and their variants. Click to preview in browser.</p>
+
+<div class="cat">
+<h2>📐 Layout</h2>
+<div class="grid">
+  <a class="card" href="../src/templates/components.ts" target="_blank">
+    <div class="card-preview c-1"><span>📐</span><span class="label">Navbar</span></div>
+    <div class="card-info"><h3>Navbar</h3><p>Navigation bar with logo, links, CTA</p><div class="variants"><span>default</span><span>transparent</span><span>centered</span></div></div>
+  </a>
+  <a class="card" href="../src/templates/components.ts" target="_blank">
+    <div class="card-preview c-8"><span>📐</span><span class="label">Footer</span></div>
+    <div class="card-info"><h3>Footer</h3><p>Multi-column page footer</p><div class="variants"><span>default</span><span>minimal</span></div></div>
+  </a>
+</div></div>
+
+<div class="cat">
+<h2>📣 Hero</h2>
+<div class="grid">
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-2"><span>📣</span><span class="label">Hero</span></div><div class="card-info"><h3>Hero fullscreen</h3><p>Full-viewport hero with centered content, dark background</p><div class="variants"><span>fullscreen</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-3"><span>📣</span><span class="label">Hero</span></div><div class="card-info"><h3>Hero centered</h3><p>Centered text on light background, standard landing hero</p><div class="variants"><span>centered</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-4"><span>📣</span><span class="label">Hero</span></div><div class="card-info"><h3>Hero split</h3><p>Left text + right image placeholder</p><div class="variants"><span>split</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-7"><span>📣</span><span class="label">Hero</span></div><div class="card-info"><h3>Hero editorial</h3><p>Large serif display, magazine-style layout</p><div class="variants"><span>editorial</span></div></div></a>
+</div></div>
+
+<div class="cat">
+<h2>📊 Data Display</h2>
+<div class="grid">
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-5"><span>📊</span><span class="label">StatsGrid</span></div><div class="card-info"><h3>Stats Grid</h3><p>Number + label grid</p><div class="variants"><span>grid</span><span>list</span><span>compact</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-6"><span>📊</span><span class="label">StatsCounter</span></div><div class="card-info"><h3>Stats Counter</h3><p>Large numbers with prefix/suffix</p><div class="variants"><span>default</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-9"><span>📊</span><span class="label">Timeline</span></div><div class="card-info"><h3>Timeline</h3><p>Year + title + description</p><div class="variants"><span>default</span></div></div></a>
+</div></div>
+
+<div class="cat">
+<h2>🧩 Content</h2>
+<div class="grid">
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-10"><span>🧩</span><span class="label">FeatureGrid</span></div><div class="card-info"><h3>Feature Grid</h3><p>Icon + title + description cards</p><div class="variants"><span>grid</span><span>list</span><span>compact</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-1"><span>🧩</span><span class="label">Card</span></div><div class="card-info"><h3>Card</h3><p>Generic content card</p><div class="variants"><span>flat</span><span>elevated</span><span>bordered</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-8"><span>🧩</span><span class="label">PriceCard</span></div><div class="card-info"><h3>Price Card</h3><p>Pricing card with features list</p><div class="variants"><span>default</span><span>featured</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-3"><span>🧩</span><span class="label">TestimonialGrid</span></div><div class="card-info"><h3>Testimonials</h3><p>Quote + author + role</p><div class="variants"><span>grid</span><span>compact</span></div></div></a>
+</div></div>
+
+<div class="cat">
+<h2>🔗 Interactive</h2>
+<div class="grid">
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-2"><span>🔗</span><span class="label">Form</span></div><div class="card-info"><h3>Form</h3><p>Contact form with multiple field types</p><div class="variants"><span>default</span></div></div></a>
+  <a class="card" href="../src/templates/components.ts" target="_blank"><div class="card-preview c-4"><span>🔗</span><span class="label">CTA</span></div><div class="card-info"><h3>CTA Section</h3><p>Call-to-action with gradient background</p><div class="variants"><span>default</span></div></div></a>
+  <a class="card" href="../src/frames/state-machine.ts" target="_blank"><div class="card-preview c-7"><span>🔗</span><span class="label">State Machine</span></div><div class="card-info"><h3>Interactive State Machine</h3><p>2KB JS: modal, tab, accordion, carousel, dark mode, toast</p><div class="variants"><span>modal</span><span>tab</span><span>accordion</span><span>carousel</span></div></div></a>
+</div></div>
+
+<div class="cat">
+<h2>📱 Device Frames</h2>
+<div class="grid">
+  <a class="card" href="../src/frames/index.ts" target="_blank"><div class="card-preview c-5"><span>📱</span><span class="label">iPhone 15</span></div><div class="card-info"><h3>iPhone 15 Pro</h3><p>Dynamic Island + status bar + home indicator</p><div class="variants"><span>portrait</span><span>landscape</span></div></div></a>
+  <a class="card" href="../src/frames/index.ts" target="_blank"><div class="card-preview c-6"><span>📱</span><span class="label">Pixel 9</span></div><div class="card-info"><h3>Pixel 9</h3><p>Camera punch-hole + navigation buttons</p><div class="variants"><span>portrait</span><span>landscape</span></div></div></a>
+  <a class="card" href="../src/frames/index.ts" target="_blank"><div class="card-preview c-9"><span>📱</span><span class="label">iPad</span></div><div class="card-info"><h3>iPad Pro</h3><p>Tablet bezel with notch</p><div class="variants"><span>portrait</span><span>landscape</span></div></div></a>
+  <a class="card" href="../src/frames/index.ts" target="_blank"><div class="card-preview c-10"><span>💻</span><span class="label">MacBook</span></div><div class="card-info"><h3>MacBook Pro</h3><p>Laptop frame with base</p><div class="variants"><span>landscape</span></div></div></a>
+  <a class="card" href="../src/frames/index.ts" target="_blank"><div class="card-preview c-3"><span>🌐</span><span class="label">Browser</span></div><div class="card-info"><h3>Browser Window</h3><p>Window chrome with traffic lights + URL bar</p><div class="variants"><span>responsive</span></div></div></a>
+</div></div>
+
+<div class="cat">
+<h2>🎨 Style Systems (56 total)</h2>
+<div class="grid">
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-1"><span>🎨</span><span class="label">minimal-white</span></div><div class="card-info"><h3>Minimal White</h3><p>Clean, white space, single accent</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-7"><span>🎨</span><span class="label">dark-luxury</span></div><div class="card-info"><h3>Dark Luxury</h3><p>Black + gold, premium feel</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-8"><span>🎨</span><span class="label">glassmorphism</span></div><div class="card-info"><h3>Glassmorphism</h3><p>Frosted glass, blurred backgrounds</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-2"><span>🎨</span><span class="label">neo-brutalism</span></div><div class="card-info"><h3>Neo Brutalism</h3><p>Bold borders, raw colors, shadows</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-3"><span>🎨</span><span class="label">cyberpunk</span></div><div class="card-info"><h3>Cyberpunk</h3><p>Neon pink/cyan, dark, futuristic</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-4"><span>🎨</span><span class="label">kawaii-japan</span></div><div class="card-info"><h3>Kawaii Japan</h3><p>Soft pinks, cute, playful</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-9"><span>🎨</span><span class="label">pastel-dream</span></div><div class="card-info"><h3>Pastel Dream</h3><p>Soft pastels, rounded, dreamy</p></div></a>
+  <a class="card" href="../src/engine/style-systems.ts" target="_blank"><div class="card-preview c-10"><span>🎨</span><span class="label">music-vibe</span></div><div class="card-info"><h3>Music Vibe</h3><p>Dark + vibrant accent, energetic</p></div></a>
+</div></div>
+</body>
+</html>
