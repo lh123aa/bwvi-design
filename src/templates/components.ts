@@ -1,9 +1,9 @@
-type Palette = { primary: string; accent: string; surface: string; text: string; muted?: string };
+export type Palette = { primary: string; accent: string; surface: string; text: string; muted?: string };
 
-type HeroVariant = "fullscreen" | "centered" | "split" | "editorial";
-type GridVariant = "grid" | "list" | "compact";
-type CardStyle = "flat" | "elevated" | "bordered";
-type NavStyle = "default" | "transparent" | "centered";
+export type HeroVariant = "fullscreen" | "centered" | "split" | "editorial";
+export type GridVariant = "grid" | "list" | "compact";
+export type CardStyle = "flat" | "elevated" | "bordered";
+export type NavStyle = "default" | "transparent" | "centered";
 
 interface AnimConfig {
   animation?: boolean;

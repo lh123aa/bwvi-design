@@ -1,0 +1,150 @@
+import { findBlueprint, fillBlueprint, type BlueprintSection } from "../templates/content-presets.js";
+import type { HeroVariant, GridVariant } from "../templates/components.js";
+import { getBaseStyles, Navbar, Hero, StatsGrid, FeatureGrid, TestimonialGrid, CTASection, Footer, StatsCounter, Timeline, PriceCard } from "../templates/components.js";
+import { wrapWithDevice, type DeviceType } from "../frames/index.js";
+import { getStateMachineScript } from "../frames/state-machine.js";
+import { getBrand } from "./brand-loader.js";
+
+const DIRECTION_PALETTES: Record<string, { primary: string; accent: string; surface: string; text: string }> = {
+  "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
+  "warm-minimal":      { primary: "#D97757", accent: "#8C6E5D", surface: "#FDF8F5", text: "#3D3D3D" },
+  "tech-utility":      { primary: "#1E1E2E", accent: "#00E698", surface: "#FAFBFC", text: "#24292E" },
+  "dark-luxury":       { primary: "#0D0D0D", accent: "#C9A84C", surface: "#1A1A1A", text: "#E8E8E8" },
+  "playful-color":     { primary: "#FF6B6B", accent: "#4ECDC4", surface: "#FFF8F0", text: "#2C3E50" },
+  "corporate-trust":   { primary: "#2563EB", accent: "#059669", surface: "#F8FAFC", text: "#1E293B" },
+  "luxury-premium":    { primary: "#1C1917", accent: "#D6A354", surface: "#FAF9F7", text: "#292524" },
+  "nature-organic":    { primary: "#2D6A4F", accent: "#95B46A", surface: "#F6F7F4", text: "#1B2F22" },
+  "tech-gradient":     { primary: "#6C3BD6", accent: "#00D4AA", surface: "#FAFBFF", text: "#1A1A2E" },
+  "minimal-white":     { primary: "#18181B", accent: "#F43F5E", surface: "#FAFAFA", text: "#09090B" },
+};
+
+const DIRECTION_FONTS: Record<string, string> = {
+  "editorial-monocle": "'Georgia', 'Times New Roman', serif",
+  "warm-minimal":      "'Georgia', 'Times New Roman', serif",
+  "tech-utility":      "'Inter', system-ui, -apple-system, sans-serif",
+  "dark-luxury":       "'Inter', 'Helvetica Neue', sans-serif",
+  "playful-color":     "'DM Sans', system-ui, sans-serif",
+  "corporate-trust":   "'Inter', 'SF Pro', system-ui, sans-serif",
+  "luxury-premium":    "'Playfair Display', 'Georgia', serif",
+  "nature-organic":    "'DM Sans', system-ui, sans-serif",
+  "tech-gradient":     "'Space Grotesk', system-ui, sans-serif",
+  "minimal-white":     "'Inter', -apple-system, sans-serif",
+};
+
+export interface PageBuildOptions {
+  task: string;
+  direction?: string;
+  brand?: string;
+  device?: DeviceType;
+  orientation?: "portrait" | "landscape";
+  dark?: boolean;
+  interactive?: boolean;
+}
+
+export interface PageBuildResult {
+  html: string;
+  blueprintId: string;
+  direction: string;
+  brandUsed: string | null;
+  matchConfidence: number;
+}
+
+export function buildPage(opts: PageBuildOptions): PageBuildResult {
+  const { blueprint, confidence } = findBlueprint(opts.task);
+  const direction = opts.direction || blueprint.direction;
+  const palette = DIRECTION_PALETTES[direction] || DIRECTION_PALETTES["tech-utility"];
+  const fontStack = DIRECTION_FONTS[direction] || DIRECTION_FONTS["tech-utility"];
+  const isDark = opts.dark || blueprint.dark || false;
+
+  let brandName = opts.brand || extractBrand(opts.task);
+  let tagline = extractTagline(opts.task, blueprint);
+  let description = extractDescription(opts.task);
+
+  // Apply brand colors if brand matches
+  if (brandName && !opts.brand) {
+    const brand = getBrand(brandName.toLowerCase());
+    if (brand) {
+      brandName = brand.name;
+    }
+  }
+
+  const filled = fillBlueprint(blueprint, brandName, tagline, description);
+  const base = { palette: { ...palette, muted: palette.text + "88" }, fontDisplay: fontStack, animation: true, dark: isDark };
+  const styles = getBaseStyles(base);
+
+  const sections = filled.sections.map((s) => renderSection(s, base)).join("\n");
+
+  const headScript = opts.interactive ? getStateMachineScript() : "";
+  const themeAttr = isDark ? ' data-theme="dark"' : '';
+
+  let html = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(brandName)} — ${escapeHtml(tagline)}</title>
+${headScript}
+<style>
+:root{--color-primary:${palette.primary};--color-accent:${palette.accent};--color-surface:${palette.surface};--color-text:${palette.text};--font-display:${fontStack};--font-body:system-ui,-apple-system,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);color:var(--color-text);background:${isDark ? '#111' : palette.surface};-webkit-font-smoothing:antialiased}
+${styles}
+${isDark ? `[data-theme="dark"] body{background:#111;color:#e0e0e0}` : ''}
+</style></head><body>
+<div${themeAttr} style="font-family:system-ui,-apple-system,sans-serif;color:${palette.text};background:${isDark ? '#111' : palette.surface}">
+${sections}
+</div>
+</body></html>`;
+
+  if (opts.device) {
+    html = wrapWithDevice(html, opts.device, opts.orientation, `${brandName} — ${tagline}`);
+  }
+
+  return { html, blueprintId: blueprint.id, direction, brandUsed: brandName, matchConfidence: confidence };
+}
+
+function renderSection(section: BlueprintSection, base: any): string {
+  const cfg = { ...base, ...section.data } as any;
+  switch (section.type) {
+    case "navbar": return Navbar({ ...base, logo: cfg.logo, links: cfg.links, cta: cfg.cta, style: (section.variant as any) || "default" });
+    case "hero": return Hero({ ...base, title: cfg.title, subtitle: cfg.subtitle, cta: cfg.cta, variant: (section.variant as HeroVariant) || "centered" });
+    case "features": return FeatureGrid({ ...base, items: cfg.items, variant: (section.variant as GridVariant) || "grid" });
+    case "stats": return StatsGrid({ ...base, items: cfg.items, variant: (section.variant as GridVariant) || "grid" });
+    case "testimonials": return TestimonialGrid({ ...base, items: cfg.items, variant: (section.variant as GridVariant) || "grid" });
+    case "cta": return CTASection({ ...base, title: cfg.title, subtitle: cfg.subtitle, cta: cfg.cta });
+    case "footer": return Footer({ ...base, description: cfg.description, columns: cfg.columns, style: (section.variant as any) || "default" });
+    case "pricing": return PriceCard({ ...base, name: cfg.name, price: cfg.price, features: cfg.features, cta: cfg.cta, featured: cfg.featured });
+    case "timeline": return Timeline({ ...base, items: cfg.items });
+    default: return "";
+  }
+}
+
+function extractBrand(task: string): string {
+  const clean = task.replace(/--?\w+(=\w+)?/g, "").trim();
+  const words = clean.split(/\s+/).filter(w => w.length > 1);
+  if (words.length <= 3) return words[0] || "Brand";
+  const startIdx = Math.max(0, Math.floor(words.length / 2) - 1);
+  return words.slice(startIdx, startIdx + 2).join(" ") || "Brand";
+}
+
+function extractTagline(task: string, blueprint: any): string {
+  if (blueprint.id === "landing-saas") return "Build Faster";
+  if (blueprint.id === "landing-cafe") return "Perfect Brew";
+  if (blueprint.id === "landing-cosmetics") return "feels as good as it looks";
+  if (blueprint.id === "landing-fitness") return "Body";
+  if (blueprint.id === "landing-education") return "Anything";
+  if (blueprint.id === "landing-fashion") return "Define Your Style";
+  if (blueprint.id === "landing-fintech") return "Money";
+  if (blueprint.id === "landing-ecommerce") return "Your Style";
+  return "Go Beyond";
+}
+
+function extractDescription(task: string): string {
+  const words = task.split(/\s+/).filter(w => !w.startsWith("--"));
+  if (words.length > 3) return words.slice(2).join(" ") || "Premium quality designed for modern needs.";
+  return "Premium quality designed for modern needs.";
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Re-export for generate.ts
+export { DIRECTION_PALETTES, DIRECTION_FONTS };

@@ -7,6 +7,7 @@ import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getStateMachineScript } from "../frames/state-machine.js";
 import { getBrand, type BrandSystem } from "../engine/brand-loader.js";
 import { render } from "../engine/renderer.js";
+import { buildPage } from "../engine/page-builder.js";
 
 const DIRECTION_PALETTES: Record<string, { primary: string; accent: string; surface: string; text: string }> = {
   "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
@@ -91,14 +92,18 @@ export async function generateCommand(args: string[]) {
       return;
     }
 
-    const html = generateDirectHtml(task, direction, palette, fontStack, {
-      device, variant, dark, orientation, interactive, realImages, brand: brand?.name
-    });
+    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive });
     const fileName = device ? `preview-${device}.html` : "index.html";
     const filePath = join(demoDir(), fileName);
-    writeFileSync(filePath, html, "utf-8");
-    console.log(JSON.stringify({ status: "ok", file: filePath, direction, device: device || "none", brand: brand?.name || null, engine }, null, 2));
-    return;
+    writeFileSync(filePath, pageResult.html, "utf-8");
+      console.log(JSON.stringify({
+        status: "ok", file: filePath, direction: pageResult.direction,
+        device: device || "none", brand: pageResult.brandUsed,
+        blueprint: pageResult.blueprintId,
+        match_confidence: Math.round(pageResult.matchConfidence * 100) / 100,
+        engine: "direct",
+      }, null, 2));
+      return;
   }
 
   if (runMode) {
