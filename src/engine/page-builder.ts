@@ -1,5 +1,6 @@
 import { findBlueprint, fillBlueprint, type BlueprintSection } from "../templates/content-presets.js";
 import type { HeroVariant, GridVariant } from "../templates/components.js";
+import { getStyle, recommendStyle } from "./style-systems.js";
 import { getBaseStyles, Navbar, Hero, StatsGrid, FeatureGrid, TestimonialGrid, CTASection, Footer, StatsCounter, Timeline, PriceCard, Form } from "../templates/components.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getStateMachineScript } from "../frames/state-machine.js";
@@ -39,6 +40,7 @@ export interface PageBuildOptions {
   orientation?: "portrait" | "landscape";
   dark?: boolean;
   interactive?: boolean;
+  styleId?: string;
 }
 
 export interface PageBuildResult {
@@ -52,9 +54,16 @@ export interface PageBuildResult {
 export function buildPage(opts: PageBuildOptions): PageBuildResult {
   const { blueprint, confidence } = findBlueprint(opts.task);
   const direction = opts.direction || blueprint.direction;
-  const palette = DIRECTION_PALETTES[direction] || DIRECTION_PALETTES["tech-utility"];
-  const fontStack = DIRECTION_FONTS[direction] || DIRECTION_FONTS["tech-utility"];
+  let palette = DIRECTION_PALETTES[direction] || DIRECTION_PALETTES["tech-utility"];
+  let fontStack = DIRECTION_FONTS[direction] || DIRECTION_FONTS["tech-utility"];
   const isDark = opts.dark || blueprint.dark || false;
+
+  // Apply style system if specified
+  const style = opts.styleId ? getStyle(opts.styleId) : null;
+  if (style) {
+    palette = style.palette;
+    fontStack = style.typography.display;
+  }
 
   let brandName = opts.brand || extractBrand(opts.task);
   let tagline = extractTagline(opts.task, blueprint);
