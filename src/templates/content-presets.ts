@@ -394,28 +394,76 @@ const BLUEPRINTS: Blueprint[] = [
   ]},
 ];
 
+function tokenize(s: string): string[] {
+  return s.toLowerCase().split(/[\s_\-\/\\,.;:!?()【】\[\]{}"'（）、。，；：！？]+/).filter(t => t.length > 1);
+}
+
+function idf(keywords: string[], allDocs: string[][]): Map<string, number> {
+  const df = new Map<string, number>();
+  for (const doc of allDocs) {
+    const seen = new Set(doc);
+    for (const term of seen) {
+      df.set(term, (df.get(term) || 0) + 1);
+    }
+  }
+  const total = allDocs.length;
+  const idfMap = new Map<string, number>();
+  for (const [term, count] of df) {
+    idfMap.set(term, Math.log(1 + (total - count + 0.5) / (count + 0.5)));
+  }
+  return idfMap;
+}
+
+const ALL_DOCS = BLUEPRINTS.map(b => [...b.keywords, ...b.industry.map(i => i.toLowerCase())]);
+const IDF_CACHE: Map<string, number> = idf([], ALL_DOCS);
+(function precomputeIdf() {
+  const allTerms = new Set<string>();
+  for (const doc of ALL_DOCS) for (const t of doc) allTerms.add(t);
+  for (const term of allTerms) {
+    let count = 0;
+    for (const doc of ALL_DOCS) if (doc.includes(term)) count++;
+    IDF_CACHE.set(term, Math.log(1 + (ALL_DOCS.length - count + 0.5) / (count + 0.5)));
+  }
+})();
+
 export function findBlueprint(task: string): { blueprint: Blueprint; confidence: number } {
   const lower = task.toLowerCase();
+  const taskTokens = tokenize(task);
   let best: Blueprint | null = null;
-  let bestScore = 0;
+  let bestScore = -Infinity;
 
   for (const bp of BLUEPRINTS) {
     let score = 0;
+    const bpTokens = [...bp.keywords.map(k => k.toLowerCase()), ...bp.industry.map(i => i.toLowerCase())];
+
+    // TF-IDF scoring
+    for (const tok of taskTokens) {
+      if (bpTokens.includes(tok)) {
+        score += IDF_CACHE.get(tok) || 1;
+      }
+    }
+
+    // Exact phrase bonus (2x)
     for (const kw of bp.keywords) {
       if (lower.includes(kw)) score += 2;
     }
+
+    // Industry bonus (3x)
     for (const ind of bp.industry) {
       if (lower.includes(ind.toLowerCase())) score += 3;
     }
-    if (bp.pageType === "landing" && /\b(landing|homepage|首页|落地|page|site)\b/.test(lower)) score += 1;
+
+    // Page type boost
+    if (bp.pageType === "landing" && /\b(landing|homepage|首页|落地|page|site)\b/.test(lower)) score += 1.5;
     if (bp.pageType === "dashboard" && /\b(dashboard|admin|后台)\b/.test(lower)) score += 3;
-    if (bp.pageType === "app" && /\b(app|mobile|ios|android|手机)\b/.test(lower)) score += 3;
+    if (bp.pageType === "app" && /\b(app|mobile|ios|android|手机|小程序)\b/.test(lower)) score += 3;
 
     if (score > bestScore) { bestScore = score; best = bp; }
   }
 
   if (!best) best = BLUEPRINTS[2]; // SaaS fallback
-  return { blueprint: best, confidence: bestScore > 0 ? Math.min(bestScore / 10, 1) : 0.1 };
+  const confidence = bestScore > 0 ? Math.min(bestScore / 15, 1) : 0.05;
+  return { blueprint: best, confidence };
 }
 
 export function fillBlueprint(blueprint: Blueprint, brand: string, tagline: string, description: string): Blueprint {
