@@ -5,8 +5,9 @@
   <p>
     <img src="https://img.shields.io/badge/version-0.2.0-5E6AD2" alt="版本">
     <img src="https://img.shields.io/badge/license-Apache%202.0-00D4AA" alt="许可证">
-    <img src="https://img.shields.io/badge/benchmark-5%2F5-00E698" alt="基准测试">
-    <img src="https://img.shields.io/badge/scores-10%E2%9C%85-00D4AA" alt="全五星">
+    <img src="https://img.shields.io/badge/tests-23%20passed-00E698" alt="测试">
+    <img src="https://img.shields.io/badge/benchmark-13%2F13-00D4AA" alt="基准测试">
+    <img src="https://img.shields.io/badge/scores-10%E2%9C%85-FF6B9D" alt="全五星">
   </p>
   <p>
     <a href="./README.en.md"><b>🌐 English</b></a>
@@ -61,7 +62,7 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 
 | 指标 | BWVI | Open-Design | Huashu-Design |
 |--------|:----:|:-----------:|:-------------:|
-| **包体积** | **827 KB** (CJS 单文件) | **~500 MB** (pnpm + 37K node_modules) | **~3.8 MB** (154 个文件) |
+| **包体积** | **873 KB** (CJS 单文件) | **~500 MB** (pnpm + 37K node_modules) | **~3.8 MB** (154 个文件) |
 | **冷启动** | **0ms** (npx，无需安装) | **~30-60s** (pnpm install + build) | **0ms** (skill 加载) |
 | **首次产出** | **~200ms** (generate --direct) | **~10-30s** (daemon → Agent → 流式) | **~30-120s** (Agent) |
 | **内存占用** | **~5 MB** (heap) | **~150-300 MB** (Express + SQLite) | **0** (无进程) |
