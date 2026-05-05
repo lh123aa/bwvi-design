@@ -20,6 +20,7 @@ import { templateCommand } from "./cli/template.js";
 import { testCommand } from "./cli/test.js";
 import { videoCommand } from "./cli/video.js";
 import { styleCommand } from "./cli/style.js";
+import { animateCommand } from "./cli/animate.js";
 
 async function main() {
   const command = process.argv[2];
@@ -43,6 +44,7 @@ async function main() {
     case "brand": await brandCommand(args); break;
     case "video": await videoCommand(args); break;
     case "style": await styleCommand(args); break;
+    case "animate": await animateCommand(args); break;
     case "plugin": await pluginInitCommand(args); break;
     case "template": await templateCommand(args); break;
     case "test": await testCommand(args); break;
@@ -79,6 +81,7 @@ function printHelp() {
     "plugin        Create plugin scaffold",
     "template      List/use/delete templates",
     "style         List/show/search visual styles (57 built-in)",
+    "animate       Embed animations / export MP4 (needs ffmpeg)",
     "test          Validate HTML (a11y, responsive, interactive)",
     "video         Export HTML to MP4/GIF (requires ffmpeg)",
     "diff          Compare two HTML files",
