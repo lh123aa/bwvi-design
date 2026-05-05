@@ -696,6 +696,19 @@ bwvi/
 
 ---
 
+## 🖼 产出展示
+
+所有页面均为 `bwvi generate --direct` 或 `bwvi showcase --pick` 的直接输出，零人工修改。
+
+| BWVI 生成 | BWVI 生成 | BWVI 生成 |
+|:----------:|:----------:|:----------:|
+| ![](demo/screenshots/saas-cloudai.png) | ![](demo/screenshots/cosmetics-iphone.png) | ![](demo/screenshots/corporate-trust.png) |
+| SaaS Landing (tech-utility) | 化妆品 iPhone 原型 (warm-minimal) | 企业官网 (corporate-trust) |
+| ![](demo/screenshots/playful-creative.png) | ![](demo/screenshots/photography.png) | ![](demo/screenshots/enterprise.png) |
+| 创意页面 (playful-color) | 摄影个人主页 (艺术手作) | 企业页面 (enterprise) |
+| ![](demo/screenshots/cosmetics-old.png) |
+| 化妆品品牌站 (手写 HTML) |
+
 ## ✅ 基准测试
 
 ```bash

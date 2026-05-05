@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>.bwvi-frame *{margin:0;padding:0;box-sizing:border-box}
+.bwvi-frame{display:flex;align-items:center;justify-content:center;padding:40px;background:#f0f0f0}
+.bwvi-device{position:relative;overflow:hidden;background:#fff}
+.bwvi-notch{position:absolute;z-index:10}
+.bwvi-status{position:absolute;z-index:10;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+
+.bwvi-iphone{width:390px;height:844px;border-radius:55px;border:8px solid #333;box-shadow:0 20px 60px rgba(0,0,0,0.3),inset 0 0 0 2px #555;position:relative;background:#fff}
+.bwvi-dynamic-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:120px;height:36px;background:#111;border-radius:20px;z-index:20}
+.bwvi-status-bar{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 28px 0;font-size:14px;font-weight:600;color:#111;z-index:15}
+.bwvi-home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#ddd;border-radius:3px;z-index:20}
+.bwvi-screen{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:47px;overflow-y:auto;overflow-x:hidden;background:#fff}
+.bwvi-screen::-webkit-scrollbar{display:none}
+</style>
+</head><body><div class="bwvi-frame bwvi-iphone">
+<div class="bwvi-dynamic-island"></div>
+<div class="bwvi-status-bar"><span>9:41</span><span>🔋</span></div>
+<div class="bwvi-screen"><div style="padding-top:60px;min-height:100%"><!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bloom cosmetics — feels as good as it looks</title>
+<script>
+(function(){'use strict';
+var S={theme:localStorage.getItem('bwvi-theme')||'light',toast:null};
+function q(s){return document.querySelectorAll(s)}
+function r(id){return document.getElementById(id)}
+function t(el){return el.getAttribute('data-bwvi-toggle')}
+function g(el){return el.getAttribute('data-bwvi-group')}
+function tar(el){return el.getAttribute('data-bwvi-target')}
+function val(el){return el.getAttribute('data-bwvi-value')}
+
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-bwvi-toggle]');
+  if(!el) return;
+  var type=t(el),target=tar(el),group=g(el),value=val(el);
+
+  if(type==='modal'||type==='dialog'){
+    var m=target?r(target):el.nextElementSibling;
+    if(m&&m.classList.contains('bwvi-modal')){
+      m.style.display=m.style.display==='none'?'flex':'none';
+      m.classList.toggle('bwvi-open');
+    }
+    return;
+  }
+
+  if(type==='tab'&&group){
+    q('[data-bwvi-group="'+group+'"]').forEach(function(x){x.classList.remove('bwvi-active')});
+    el.classList.add('bwvi-active');
+    q('[data-bwvi-panel="'+group+'"]').forEach(function(p){p.style.display='none'});
+    var panel=target?r(target):null;
+    if(panel){panel.style.display='block';panel.classList.add('bwvi-active')}
+    return;
+  }
+
+  if(type==='accordion'){
+    var body=target?r(target):el.nextElementSibling;
+    if(body){
+      var isOpen=body.style.maxHeight&&body.style.maxHeight!=='0px';
+      body.style.maxHeight=isOpen?'0px':body.scrollHeight+'px';
+      el.classList.toggle('bwvi-open');
+    }
+    return;
+  }
+
+  if(type==='darkmode'){
+    S.theme=S.theme==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',S.theme);
+    localStorage.setItem('bwvi-theme',S.theme);
+    return;
+  }
+
+  if(type==='toast'){
+    var msg=target||'Done!';
+    var toast=document.createElement('div');
+    toast.textContent=msg;
+    toast.className='bwvi-toast';
+    document.body.appendChild(toast);
+    setTimeout(function(){toast.classList.add('bwvi-toast-show')},10);
+    setTimeout(function(){toast.classList.remove('bwvi-toast-show');setTimeout(function(){toast.remove()},300)},2000);
+    return;
+  }
+});
+
+// Carousel
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-bwvi-carousel]');
+  if(!el) return;
+  var id=el.getAttribute('data-bwvi-carousel');
+  var dir=el.getAttribute('data-bwvi-dir')||'next';
+  var c=r(id);
+  if(!c) return;
+  var items=c.querySelectorAll('.bwvi-carousel-item');
+  if(!items.length) return;
+  var current=c.querySelector('.bwvi-carousel-active')||items[0];
+  var idx=Array.from(items).indexOf(current);
+  if(dir==='next') idx=(idx+1)%items.length;
+  else idx=(idx-1+items.length)%items.length;
+  items.forEach(function(it){it.classList.remove('bwvi-carousel-active')});
+  items[idx].classList.add('bwvi-carousel-active');
+  var dots=c.querySelectorAll('.bwvi-carousel-dot');
+  dots.forEach(function(d){d.classList.remove('bwvi-active')});
+  if(dots[idx]) dots[idx].classList.add('bwvi-active');
+});
+
+// Form submit
+document.addEventListener('submit',function(e){
+  var form=e.target.closest('[data-bwvi-form]');
+  if(!form) return;
+  e.preventDefault();
+  var msg=form.getAttribute('data-bwvi-form')||'Submitted!';
+  var toast=document.createElement('div');
+  toast.textContent=msg;
+  toast.className='bwvi-toast';
+  document.body.appendChild(toast);
+  setTimeout(function(){toast.classList.add('bwvi-toast-show')},10);
+  setTimeout(function(){toast.classList.remove('bwvi-toast-show');setTimeout(function(){toast.remove()},300)},2000);
+});
+
+// Toast styles
+var style=document.createElement('style');
+style.textContent='.bwvi-modal{display:none;position:fixed;inset:0;z-index:999;align-items:center;justify-content:center;background:rgba(0,0,0,0.5)}.bwvi-modal.bwvi-open{display:flex}.bwvi-modal-content{background:#fff;border-radius:12px;padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.2)}.bwvi-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;opacity:0;transition:all 0.3s;z-index:9999;pointer-events:none}.bwvi-toast.bwvi-toast-show{opacity:1;transform:translateX(-50%) translateY(0)}.bwvi-carousel-item{display:none}.bwvi-carousel-active{display:block}.bwvi-accordion-body{overflow:hidden;max-height:0;transition:max-height 0.3s ease}';
+document.head.appendChild(style);
+
+// Init: restore theme
+if(S.theme==='dark') document.documentElement.setAttribute('data-theme','dark');
+})();
+</script>
+<style>
+:root{--color-primary:#D97757;--color-accent:#8C6E5D;--color-surface:#FDF8F5;--color-text:#3D3D3D;--font-display:'Georgia', 'Times New Roman', serif;--font-body:system-ui,-apple-system,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);color:var(--color-text);background:#FDF8F5;-webkit-font-smoothing:antialiased}
+
+@keyframes bwvi-fade-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bwvi-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes bwvi-scale-in{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+@keyframes bwvi-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.bwvi-fade-up{animation:bwvi-fade-up .6s ease-out both}
+.bwvi-fade-in{animation:bwvi-fade-in .5s ease-out both}
+.bwvi-scale-in{animation:bwvi-scale-in .4s ease-out both}
+.bwvi-d1{animation-delay:0.1s}
+.bwvi-d2{animation-delay:0.2s}
+.bwvi-d3{animation-delay:0.30000000000000004s}
+.bwvi-d4{animation-delay:0.4s}
+.bwvi-d5{animation-delay:0.5s}
+.bwvi-d6{animation-delay:0.6000000000000001s}
+.bwvi-stagger>*{animation:bwvi-fade-up .5s ease-out both}
+.bwvi-stagger>*:nth-child(1){animation-delay:0.08s}
+.bwvi-stagger>*:nth-child(2){animation-delay:0.16s}
+.bwvi-stagger>*:nth-child(3){animation-delay:0.24s}
+.bwvi-stagger>*:nth-child(4){animation-delay:0.32s}
+.bwvi-stagger>*:nth-child(5){animation-delay:0.4s}
+.bwvi-stagger>*:nth-child(6){animation-delay:0.48s}
+
+
+</style></head><body>
+<div style="font-family:system-ui,-apple-system,sans-serif;color:#3D3D3D;background:#FDF8F5">
+<header style="position:fixed;top:0;left:0;right:0;z-index:100;background:#FDF8F5;border-bottom:1px solid #3D3D3D15;backdrop-filter:blur(12px)" class="bwvi-fade-up">
+<div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:64px">
+<a href="/" style="font-weight:700;font-size:1.25rem;color:#D97757;text-decoration:none;letter-spacing:-0.02em">Bloom cosmetics</a>
+<nav style="display:flex;gap:24px;list-style:none"><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Shop</a><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Ingredients</a><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">About</a><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Reviews</a></nav>
+<button style="padding:8px 20px;background:#D97757;color:#fff;border:none;border-radius:8px;font-size:0.875rem;cursor:pointer;transition:opacity 0.2s">Get Started</button>
+</div></header>
+
+<section style="min-height:80vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:80px 0">
+<div style="padding:0 24px 0 80px">
+<h1 style="font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.15;color:#3D3D3D;margin-bottom:20px;letter-spacing:-0.03em;font-family:'Georgia', 'Times New Roman', serif" class="bwvi-fade-up">Beauty that feels as good as it looks</h1>
+<p style="font-size:1.125rem;color:#3D3D3D88;line-height:1.8;margin-bottom:32px" class="bwvi-fade-up bwvi-d1">Bloom cosmetics beauty</p>
+<button style="padding:14px 32px;background:#D97757;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:500">Shop the Collection</button>
+</div>
+<div style="background:linear-gradient(135deg,#D9775715,#8C6E5D15);min-height:60vh;display:flex;align-items:center;justify-content:center;border-radius:12px;margin:24px">
+<span style="opacity:0.3;font-size:0.875rem">Image</span>
+</div>
+</section>
+<section style="padding:80px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
+<div class="bwvi-stagger" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px"><div style="padding:32px;background:#FDF8F5;border:1px solid #3D3D3D10;border-radius:12px;transition:transform 0.3s,box-shadow 0.3s;cursor:default">
+<div style="font-size:1.5rem;margin-bottom:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#D9775715;border-radius:10px">🌿</div>
+<h3 style="font-size:1.125rem;font-weight:600;margin-bottom:8px">Clean Ingredients</h3>
+<p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.7">No parabens, sulfates, or synthetic fragrances. Ever.</p>
+</div><div style="padding:32px;background:#FDF8F5;border:1px solid #3D3D3D10;border-radius:12px;transition:transform 0.3s,box-shadow 0.3s;cursor:default">
+<div style="font-size:1.5rem;margin-bottom:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#D9775715;border-radius:10px">🧪</div>
+<h3 style="font-size:1.125rem;font-weight:600;margin-bottom:8px">Dermatologist Tested</h3>
+<p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.7">All formulas pass rigorous clinical testing for safety.</p>
+</div><div style="padding:32px;background:#FDF8F5;border:1px solid #3D3D3D10;border-radius:12px;transition:transform 0.3s,box-shadow 0.3s;cursor:default">
+<div style="font-size:1.5rem;margin-bottom:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#D9775715;border-radius:10px">♻️</div>
+<h3 style="font-size:1.125rem;font-weight:600;margin-bottom:8px">Sustainable</h3>
+<p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.7">100% recycled glass bottles and compostable shipping.</p>
+</div>
+</div></div></section>
+<section style="padding:80px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
+<div class="bwvi-stagger" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px"><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
+<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">15K+</div>
+<div style="font-size:0.875rem;color:#3D3D3D88">Happy Users</div>
+</div><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
+<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">50+</div>
+<div style="font-size:0.875rem;color:#3D3D3D88">Products</div>
+</div><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
+<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">4.9★</div>
+<div style="font-size:0.875rem;color:#3D3D3D88">Rating</div>
+</div><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
+<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">30+</div>
+<div style="font-size:0.875rem;color:#3D3D3D88">Countries</div>
+</div>
+</div></div></section>
+<section style="padding:80px 0;background:#FDF8F5"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
+<div class="bwvi-stagger" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px"><div style="padding:32px;border:1px solid #3D3D3D10;border-radius:12px">
+<p style="font-size:0.9375rem;color:#3D3D3D88;line-height:1.8;margin-bottom:20px;font-style:italic">My skin has never looked better. The serum is absolutely magic!</p>
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:40px;height:40px;border-radius:50%;background:#D9775720;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:600;color:#D97757">S</div>
+<div><div style="font-weight:600;font-size:0.875rem">Sarah K.</div><div style="font-size:0.8125rem;color:#3D3D3D88">Verified Buyer</div></div>
+</div></div><div style="padding:32px;border:1px solid #3D3D3D10;border-radius:12px">
+<p style="font-size:0.9375rem;color:#3D3D3D88;line-height:1.8;margin-bottom:20px;font-style:italic">Finally, a clean beauty brand that actually works.</p>
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:40px;height:40px;border-radius:50%;background:#D9775720;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:600;color:#D97757">M</div>
+<div><div style="font-weight:600;font-size:0.875rem">Mia C.</div><div style="font-size:0.8125rem;color:#3D3D3D88">Verified Buyer</div></div>
+</div></div><div style="padding:32px;border:1px solid #3D3D3D10;border-radius:12px">
+<p style="font-size:0.9375rem;color:#3D3D3D88;line-height:1.8;margin-bottom:20px;font-style:italic">The packaging is gorgeous and the products are even better.</p>
+<div style="display:flex;align-items:center;gap:12px">
+<div style="width:40px;height:40px;border-radius:50%;background:#D9775720;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:600;color:#D97757">L</div>
+<div><div style="font-weight:600;font-size:0.875rem">Lisa P.</div><div style="font-size:0.8125rem;color:#3D3D3D88">Verified Buyer</div></div>
+</div></div>
+</div></div></section>
+<section style="padding:80px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
+<div style="padding:64px;background:linear-gradient(135deg,#D9775708,#8C6E5D08);border:1px solid #3D3D3D10;border-radius:16px;text-align:center" class="bwvi-fade-up">
+<h2 style="font-size:2rem;font-weight:700;margin-bottom:12px;color:#3D3D3D">Ready to Glow?</h2>
+<p style="color:#3D3D3D88;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto">Join 15,000+ happy customers discovering clean beauty.</p>
+<button style="padding:14px 36px;background:#8C6E5D;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:500;transition:transform 0.2s">Get 15% Off</button>
+</div></div></section>
+
+<footer style="border-top:1px solid #3D3D3D10;padding:48px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
+<div style="display:grid;grid-template-columns:2fr repeat(3,1fr);gap:48px">
+<div><p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.8">Bloom cosmetics — Clean beauty crafted with love.</p></div>
+<div><h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:#3D3D3D">Shop</h4><ul style="list-style:none"><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">All Products</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Best Sellers</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">New Arrivals</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Gift Sets</a></li></ul></div><div><h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:#3D3D3D">Company</h4><ul style="list-style:none"><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Our Story</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Ingredients</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Sustainability</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Press</a></li></ul></div><div><h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:#3D3D3D">Support</h4><ul style="list-style:none"><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">FAQ</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Shipping</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Returns</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Contact</a></li></ul></div>
+</div>
+<div style="border-top:1px solid #3D3D3D10;margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;font-size:0.8125rem;color:#3D3D3D88">
+<span>2026 Shop</span><span>BWVI</span>
+</div></div></footer>
+</div>
+</body></html></div></div>
+<div class="bwvi-home-indicator"></div>
+</div></body></html>

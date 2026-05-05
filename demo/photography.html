@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUMINA — Visual Stories</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+:root{--pink:#FF6B9D;--coral:#FF6B6B;--orange:#FFA94D;--yellow:#FFD93D;--green:#6BCB77;--teal:#4D96FF;--purple:#9B59B6;--deep:#2D1B69;--dark:#0A0A0A;--cream:#FFF8F0;--font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);background:var(--dark);color:#fff;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes drift{0%,100%{transform:translate(0,0)}33%{transform:translate(20px,-20px)}66%{transform:translate(-10px,10px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes glow{0%,100%{opacity:0.4}50%{opacity:0.8}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-5%,-5%)}20%{transform:translate(-10%,5%)}30%{transform:translate(5%,-10%)}40%{transform:translate(-5%,15%)}50%{transform:translate(-10%,5%)}60%{transform:translate(15%,5%)}70%{transform:translate(5%,10%)}80%{transform:translate(-15%,-5%)}90%{transform:translate(10%,10%)}}
+
+.fu{animation:fadeUp 0.8s ease-out both}
+.fi{animation:fadeIn 0.6s ease-out both}
+.si{animation:scaleIn 0.5s ease-out both}
+.fl{animation:float 4s ease-in-out infinite}
+.d1{animation-delay:0.1s}.d2{animation-delay:0.2s}.d3{animation-delay:0.3s}.d4{animation-delay:0.4s}.d5{animation-delay:0.5s}.d6{animation-delay:0.6s}.d7{animation-delay:0.7s}.d8{animation-delay:0.8s}
+
+/* Grain overlay */
+.grain{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain 0.5s infinite}
+
+/* Navbar */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:24px 48px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(10,10,10,0.8),transparent)}
+.navbar-logo{font-family:var(--font-display);font-size:1.75rem;color:#fff;text-decoration:none;font-weight:600;letter-spacing:-0.02em;background:linear-gradient(135deg,var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.navbar-links{display:flex;gap:32px;list-style:none}
+.navbar-links a{color:rgba(255,255,255,0.6);text-decoration:none;font-size:0.8125rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;transition:color 0.3s,transform 0.3s;position:relative}
+.navbar-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1.5px;background:linear-gradient(90deg,var(--pink),var(--orange));transition:width 0.3s}
+.navbar-links a:hover{color:#fff}.navbar-links a:hover::after{width:100%}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(255,107,157,0.15),transparent 70%),radial-gradient(ellipse 60% 50% at 30% 60%,rgba(77,150,255,0.1),transparent 70%),radial-gradient(ellipse 50% 40% at 70% 50%,rgba(107,203,119,0.08),transparent 70%)}
+.hero-orbs{position:absolute;inset:0;overflow:hidden}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.3}
+.hero-orb-1{width:600px;height:600px;background:var(--pink);top:-10%;left:-10%;animation:drift 12s ease-in-out infinite}
+.hero-orb-2{width:400px;height:400px;background:var(--teal);bottom:-5%;right:-5%;animation:drift 10s ease-in-out infinite reverse}
+.hero-orb-3{width:300px;height:300px;background:var(--orange);top:50%;left:50%;animation:drift 8s ease-in-out infinite 2s}
+.hero-content{position:relative;z-index:1;text-align:center;max-width:900px}
+.hero-tag{display:inline-block;padding:8px 24px;border:1px solid rgba(255,255,255,0.15);border-radius:100px;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:32px;backdrop-filter:blur(12px)}
+.hero h1{font-family:var(--font-display);font-size:clamp(3rem,7vw,6rem);font-weight:700;line-height:1.05;margin-bottom:24px;letter-spacing:-0.03em}
+.hero h1 .gradient-text{background:linear-gradient(135deg,var(--pink),var(--orange),var(--yellow),var(--green),var(--teal),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% 200%;animation:shimmer 4s linear infinite}
+.hero p{font-size:1.125rem;color:rgba(255,255,255,0.5);line-height:1.8;max-width:600px;margin:0 auto 40px;font-weight:300}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.hero-btn{padding:16px 40px;border-radius:100px;font-size:0.9375rem;font-weight:600;cursor:pointer;border:none;transition:transform 0.3s,box-shadow 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.hero-btn-primary{background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;box-shadow:0 8px 32px rgba(255,107,157,0.3)}
+.hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 48px rgba(255,107,157,0.4)}
+.hero-btn-secondary{background:rgba(255,255,255,0.08);color:#fff;backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12)}
+.hero-btn-secondary:hover{background:rgba(255,255,255,0.12);transform:translateY(-2px)}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:1;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,0.3);font-size:0.6875rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none}
+.hero-scroll-line{width:1px;height:40px;background:linear-gradient(180deg,var(--pink),transparent);animation:glow 2s ease-in-out infinite}
+
+/* Section common */
+.section{padding:120px 48px;position:relative}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-label{font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--pink);font-weight:600;margin-bottom:16px}
+.section h2{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.1;margin-bottom:16px}
+.section-sub{color:rgba(255,255,255,0.4);font-size:1.0625rem;line-height:1.7;max-width:480px;font-weight:300}
+
+/* Gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.gallery-item{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;aspect-ratio:3/4;background:linear-gradient(135deg,var(--deep),var(--purple))}
+.gallery-item:nth-child(2){aspect-ratio:3/5}
+.gallery-item:nth-child(5){aspect-ratio:4/3}
+.gallery-item:nth-child(7){aspect-ratio:4/5}
+.gallery-item-bg{position:absolute;inset:0;transition:transform 0.6s cubic-bezier(0.16,1,0.3,1),filter 0.6s ease}
+.gallery-item:hover .gallery-item-bg{transform:scale(1.08);filter:saturate(1.2)}
+.gallery-item-info{position:absolute;bottom:0;left:0;right:0;padding:24px;background:linear-gradient(transparent,rgba(0,0,0,0.7));transform:translateY(20px);opacity:0;transition:all 0.4s ease}
+.gallery-item:hover .gallery-item-info{transform:translateY(0);opacity:1}
+.gallery-item-info h3{font-size:1rem;font-weight:600;margin-bottom:4px}
+.gallery-item-info p{font-size:0.8125rem;color:rgba(255,255,255,0.6)}
+.gallery-item-overlay{position:absolute;inset:0;border-radius:12px;border:1px solid rgba(255,255,255,0.06);pointer-events:none}
+
+/* Colorful backgrounds for gallery items */
+.g-1{background:linear-gradient(135deg,#FF6B9D,#FF6B6B)}
+.g-2{background:linear-gradient(135deg,#4D96FF,#9B59B6)}
+.g-3{background:linear-gradient(135deg,#FFD93D,#FFA94D)}
+.g-4{background:linear-gradient(135deg,#6BCB77,#4D96FF)}
+.g-5{background:linear-gradient(135deg,#9B59B6,#FF6B9D)}
+.g-6{background:linear-gradient(135deg,#FFA94D,#FF6B6B)}
+.g-7{background:linear-gradient(135deg,#2D1B69,#4D96FF)}
+.g-8{background:linear-gradient(135deg,#FF6B9D,#9B59B6)}
+.g-9{background:linear-gradient(135deg,#6BCB77,#FFD93D)}
+
+.gallery-item-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;opacity:0.15;transition:opacity 0.4s,transform 0.4s}
+.gallery-item:hover .gallery-item-icon{opacity:0.3;transform:translate(-50%,-50%) scale(1.1)}
+
+/* Stats bar */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;padding:80px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)}
+.stat{text-align:center}
+.stat-num{font-family:var(--font-display);font-size:3rem;font-weight:700;background:linear-gradient(135deg,var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.stat-label{font-size:0.8125rem;color:rgba(255,255,255,0.4);margin-top:8px;letter-spacing:0.04em}
+
+/* Services */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.service-card{padding:40px;border:1px solid rgba(255,255,255,0.06);border-radius:16px;transition:all 0.4s ease;cursor:default;background:rgba(255,255,255,0.02)}
+.service-card:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12);transform:translateY(-4px)}
+.service-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:20px}
+.service-card h3{font-size:1.125rem;font-weight:600;margin-bottom:8px}
+.service-card p{font-size:0.875rem;color:rgba(255,255,255,0.4);line-height:1.7}
+.si-1{background:rgba(255,107,157,0.15);color:var(--pink)}
+.si-2{background:rgba(77,150,255,0.15);color:var(--teal)}
+.si-3{background:rgba(107,203,119,0.15);color:var(--green)}
+
+/* Testimonials */
+.testimonials-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px}
+.testimonial-card{padding:40px;border:1px solid rgba(255,255,255,0.06);border-radius:16px;background:rgba(255,255,255,0.02)}
+.testimonial-stars{color:var(--yellow);font-size:0.875rem;margin-bottom:16px}
+.testimonial-card blockquote{font-family:var(--font-display);font-size:1.125rem;font-style:italic;color:rgba(255,255,255,0.7);line-height:1.8;margin-bottom:24px}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.testimonial-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.875rem}
+.testimonial-name{font-size:0.875rem;font-weight:600}
+.testimonial-role{font-size:0.75rem;color:rgba(255,255,255,0.4)}
+
+/* CTA */
+.cta-section{text-align:center;padding:160px 48px;position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0}
+.cta-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(255,107,157,0.08),transparent)}
+.cta-content{position:relative;z-index:1;max-width:600px;margin:0 auto}
+.cta-content h2{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.5rem);font-weight:700;margin-bottom:20px}
+.cta-content p{color:rgba(255,255,255,0.4);margin-bottom:40px;font-size:1.0625rem;line-height:1.7}
+.cta-email{display:flex;gap:12px;max-width:440px;margin:0 auto}
+.cta-email input{flex:1;padding:16px 20px;border-radius:100px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:#fff;font-size:0.9375rem;font-family:var(--font-body);outline:none;transition:border-color 0.3s}
+.cta-email input:focus{border-color:var(--pink)}
+.cta-email input::placeholder{color:rgba(255,255,255,0.25)}
+.cta-email button{padding:16px 32px;border-radius:100px;border:none;background:linear-gradient(135deg,var(--pink),var(--orange));color:#fff;font-size:0.9375rem;font-weight:600;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s}
+.cta-email button:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,107,157,0.3)}
+
+/* Footer */
+.footer{padding:48px 48px 32px;border-top:1px solid rgba(255,255,255,0.06)}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:var(--font-display);font-size:1.25rem;background:linear-gradient(135deg,var(--pink),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.footer-links{display:flex;gap:24px;list-style:none}
+.footer-links a{color:rgba(255,255,255,0.3);text-decoration:none;font-size:0.8125rem;transition:color 0.3s}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:0.8125rem;color:rgba(255,255,255,0.2)}
+
+/* Cursor follower */
+.cursor-follower{position:fixed;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--orange));pointer-events:none;z-index:99999;mix-blend-mode:screen;transition:transform 0.15s ease;transform:translate(-50%,-50%)}
+
+/* Responsive */
+@media(max-width:1024px){.gallery,.services-grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.navbar{padding:20px 24px}.navbar-links{display:none}.hero{padding:100px 24px 60px}.section{padding:80px 24px}.gallery,.services-grid,.testimonials-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr);gap:16px}.stat-num{font-size:2rem}.cta-email{flex-direction:column}.footer{text-align:center;justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="cursor-follower" id="cursor"></div>
+<div class="grain"></div>
+
+<!-- Navbar -->
+<nav class="navbar fu">
+  <a href="#" class="navbar-logo">Lumina</a>
+  <ul class="navbar-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-gradient"></div>
+    <div class="hero-orbs">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-tag fu">Est. 2026 · Based in Shanghai</div>
+    <h1 class="fu d2">
+      Capturing<br>
+      <span class="gradient-text">Light & Emotion</span>
+    </h1>
+    <p class="fu d3">Contemporary visual storytelling for brands who dare to stand out. Wedding, portrait, and commercial photography with an artistic edge.</p>
+    <div class="hero-buttons fu d4">
+      <a href="#work" class="hero-btn hero-btn-primary">View Portfolio →</a>
+      <a href="#contact" class="hero-btn hero-btn-secondary">Book a Session</a>
+    </div>
+  </div>
+  <a href="#work" class="hero-scroll fu d5">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </a>
+</section>
+
+<!-- Stats -->
+<section class="section" style="padding:0 48px"><div class="section-inner">
+  <div class="stats">
+    <div class="stat fu"><div class="stat-num">500+</div><div class="stat-label">Projects Delivered</div></div>
+    <div class="stat fu d2"><div class="stat-num">200+</div><div class="stat-label">Happy Clients</div></div>
+    <div class="stat fu d3"><div class="stat-num">15</div><div class="stat-label">Years Experience</div></div>
+    <div class="stat fu d4"><div class="stat-num">4.9★</div><div class="stat-label">Average Rating</div></div>
+  </div>
+</div></section>
+
+<!-- Gallery / Work -->
+<section class="section" id="work">
+  <div class="section-inner">
+    <div class="section-label fu">Portfolio</div>
+    <h2 class="fu d2">Selected Works</h2>
+    <p class="section-sub fu d3">Each frame tells a story. Here are some of my favorite moments captured through the lens.</p>
+    <div class="gallery">
+      <div class="gallery-item fu"><div class="gallery-item-bg g-1"></div><div class="gallery-item-icon">🌅</div><div class="gallery-item-info"><h3>Golden Hour</h3><p>Editorial · 2026</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d2"><div class="gallery-item-bg g-2"></div><div class="gallery-item-icon">🌊</div><div class="gallery-item-info"><h3>Ocean Soul</h3><p>Fine Art · 2025</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d3"><div class="gallery-item-bg g-3"></div><div class="gallery-item-icon">🌸</div><div class="gallery-item-info"><h3>Spring Bloom</h3><p>Wedding · 2026</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d4"><div class="gallery-item-bg g-4"></div><div class="gallery-item-icon">🏔️</div><div class="gallery-item-info"><h3>Mountain Call</h3><p>Adventure · 2025</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d5"><div class="gallery-item-bg g-5"></div><div class="gallery-item-icon">✨</div><div class="gallery-item-info"><h3>Urban Nights</h3><p>Street · 2026</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d6"><div class="gallery-item-bg g-6"></div><div class="gallery-item-icon">🌺</div><div class="gallery-item-info"><h3>Wild Heart</h3><p>Portrait · 2025</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d7"><div class="gallery-item-bg g-7"></div><div class="gallery-item-icon">🎭</div><div class="gallery-item-info"><h3>Behind the Mask</h3><p>Conceptual · 2026</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d8"><div class="gallery-item-bg g-8"></div><div class="gallery-item-icon">🌙</div><div class="gallery-item-info"><h3>Midnight Tales</h3><p>Editorial · 2025</p></div><div class="gallery-item-overlay"></div></div>
+      <div class="gallery-item fu d9"><div class="gallery-item-bg g-9"></div><div class="gallery-item-icon">🎨</div><div class="gallery-item-info"><h3>Color Theory</h3><p>Fine Art · 2026</p></div><div class="gallery-item-overlay"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Services -->
+<section class="section" id="services" style="background:rgba(255,255,255,0.02)">
+  <div class="section-inner">
+    <div class="section-label fu">What I Do</div>
+    <h2 class="fu d2">Services</h2>
+    <p class="section-sub fu d3">From intimate portraits to large-scale commercial productions.</p>
+    <div class="services-grid">
+      <div class="service-card fu"><div class="service-icon si-1">📸</div><h3>Portrait Photography</h3><p>Individual and family portrait sessions in studio or on location. Natural light and creative direction included.</p></div>
+      <div class="service-card fu d2"><div class="service-icon si-2">💒</div><h3>Wedding & Events</h3><p>Full-day wedding coverage with a second shooter. Documentary-style storytelling with editorial polish.</p></div>
+      <div class="service-card fu d3"><div class="service-icon si-3">🏢</div><h3>Commercial Work</h3><p>Product, brand, and campaign photography for businesses. Fast turnaround and global delivery.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="section-label fu">Kind Words</div>
+    <h2 class="fu d2">What Clients Say</h2>
+    <p class="section-sub fu d3">The trust my clients place in me is my greatest honor.</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card fu"><div class="testimonial-stars">★★★★★</div><blockquote>"An absolute pleasure to work with. She has an incredible eye for light and composition that transforms ordinary moments into art."</blockquote><div class="testimonial-author"><div class="testimonial-avatar" style="background:rgba(255,107,157,0.15);color:var(--pink)">S</div><div><div class="testimonial-name">Sarah Chen</div><div class="testimonial-role">Art Director, Vogue China</div></div></div></div>
+      <div class="testimonial-card fu d2"><div class="testimonial-stars">★★★★★</div><blockquote>"Our wedding photos are breathtaking. Every time we look at them, we relive the emotions of that perfect day. Truly a master of her craft."</blockquote><div class="testimonial-author"><div class="testimonial-avatar" style="background:rgba(77,150,255,0.15);color:var(--teal)">J</div><div><div class="testimonial-name">James & Lisa Park</div><div class="testimonial-role">Wedding Clients</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-bg"><div class="cta-gradient"></div></div>
+  <div class="cta-content">
+    <h2 class="fu">Let's Create Together</h2>
+    <p class="fu d2">Available for commissions worldwide. Tell me about your vision, and I'll bring it to life through my lens.</p>
+    <form class="cta-email fu d3" onsubmit="event.preventDefault();alert('Thank you! I will get back to you within 24 hours ✨')">
+      <input type="email" placeholder="Your email address" required>
+      <button type="submit">Send Inquiry</button>
+    </form>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">Lumina</div>
+    <ul class="footer-links">
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Behance</a></li>
+      <li><a href="#">Twitter</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 Lumina Photography. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- Cursor follower -->
+<script>
+(function(){'use strict';
+var c=document.getElementById('cursor');
+if(c){document.addEventListener('mousemove',function(e){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px'});document.addEventListener('mouseleave',function(){c.style.opacity='0'});document.addEventListener('mouseenter',function(){c.style.opacity='1'})}
+// Scroll reveal
+var obs=new IntersectionObserver(function(e){e.forEach(function(ea){if(ea.isIntersecting){ea.target.style.opacity='1';ea.target.style.transform='translateY(0)';obs.unobserve(ea.target)}})},{threshold:0.1});
+document.querySelectorAll('.fu').forEach(function(el){el.style.opacity='0';el.style.transform='translateY(30px)';obs.observe(el)});
+})();
+</script>
+
+</body>
+</html>
