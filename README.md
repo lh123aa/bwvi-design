@@ -1,180 +1,352 @@
-# BWVI
+<div align="center">
+  <h1>BWVI</h1>
+  <p><strong>B</strong>etter <strong>W</strong>ay of <strong>V</strong>isual <strong>I</strong>ntelligence</p>
+  <p><em>Agent-native design decision protocol — CLI · MCP Server · Multi-backend</em></p>
+  <p>
+    <a href="#-comparison">Compare</a> ·
+    <a href="#-quick-start">Quick Start</a> ·
+    <a href="#-architecture">Architecture</a> ·
+    <a href="#-commands">Commands</a> ·
+    <a href="#-multi-backend">Backends</a>
+  </p>
+  <p>
+    <img src="https://img.shields.io/badge/version-0.1.0-5E6AD2" alt="version">
+    <img src="https://img.shields.io/badge/license-Apache%202.0-00D4AA" alt="license">
+    <img src="https://img.shields.io/badge/benchmark-5%2F5-00E698" alt="benchmark">
+    <img src="https://img.shields.io/badge/typescript-strict-3178C6" alt="typescript">
+  </p>
+  <br>
+</div>
 
-> **B**etter **W**ay of **V**isual **I**ntelligence — Agent-native design decision protocol.
+---
 
-CLI 工具 + MCP Server，让 AI Agent 拥有结构化的设计决策能力。不抢 Agent 的执行，给 Agent 更好的决策框架。
+**BWVI** is not a design tool. It's the **decision layer** between AI agents and design execution. It doesn't draw pixels — it ensures every pixel drawn has a reason.
 
-## 快速开始
+> CLI + MCP Server that gives AI agents a structured design decision framework.  
+> Output → Open-Design, Huashu-Design, or built-in renderer.
+
+---
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>🧠 Decision Chain</b><br>direction→palette→typography→layout→detail</td>
+      <td align="center"><b>📐 10 Directions</b><br>from editorial to playful</td>
+      <td align="center"><b>🏷️ 30 Brands</b><br>Linear · Stripe · Apple · Notion …</td>
+    </tr>
+    <tr>
+      <td align="center"><b>📱 5 Device Frames</b><br>iPhone · Pixel · iPad · MacBook · Browser</td>
+      <td align="center"><b>🔍 10-dim Critique</b><br>automated objective metrics</td>
+      <td align="center"><b>🔌 4 Render Backends</b><br>direct · OD · Huashu · agent</td>
+    </tr>
+  </table>
+</div>
+
+---
+
+## 🆚 Comparison
+
+BWVI, [Open-Design](https://github.com/nexu-io/open-design) (21.8k ★), and [Huashu-Design](https://github.com/huashu-design) serve different roles in the AI-native design pipeline. Here's how they compare across 10 dimensions.
+
+### One-Line Identity
+
+| System | Identity |
+|--------|----------|
+| **BWVI** | Design **decision protocol** — the architect who decides *what* to build |
+| **Open-Design** | Design **execution engine** — the factory that builds *anything* |
+| **Huashu-Design** | Design **craft studio** — the artisan who perfects *one thing* |
+
+### 10-Dimension Score
+
+| Dimension | BWVI | Open-Design | Huashu-Design | Why |
+|-----------|:----:|:-----------:|:-------------:|-----|
+| **Output Quality** | ★★☆☆☆ | ★★★★★ | ★★★★☆ | BWVI delegates to backends; OD has 129 design systems; Huashu has anti-slop rigor |
+| **Decision Framework** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI's structured chain + checkpoints + fingerprint is unique |
+| **Brand Systems** | ★★★☆☆ | ★★★★★ | ★★★☆☆ | OD: 129 built-in brands. BWVI: 30. Huashu: protocol-based |
+| **App Prototyping** | ★★★☆☆ | ★★★★★ | ★★★★★ | Huashu: iPhone bezel + state manager. OD: 5 device frames |
+| **Critique System** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI: only automated 10-dim objective metrics |
+| **Video/Animation** | ★☆☆☆☆ | ★★★★☆ | ★★★★★ | Huashu: Stage+Sprite engine + BGM+SFX pipeline |
+| **Design Systems Lib** | ★★☆☆☆ | ★★★★★ | ★★★☆☆ | OD: 129 brands + 57 styles. BWVI: 30 brands |
+| **Agent Integration** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI: native MCP. OD: 13 CLIs + BYOK. Huashu: SKILL.md |
+| **Onboarding Speed** | ★★★★☆ | ★★★★☆ | ★★★☆☆ | BWVI: `npx bwvi`. OD: daemon + web UI. Huashu: 1100-line SKILL |
+| **Extensibility** | ★★★★☆ | ★★★★★ | ★★★☆☆ | OD: droppable SKILL/DESIGN files. BWVI: plugin system |
+
+### Scoring Rationale
+
+<details>
+<summary>Click to expand detailed reasoning</summary>
+
+#### Output Quality — OD 5★, Huashu 4★, BWVI 2★
+
+OD wins with 129 brand design systems, 64 skills, and sandboxed iframe preview. Huashu's strict anti-slop rules produce clean output but limited to single-file HTML. BWVI's built-in renderer is minimal — its strength is delegating to OD/Huashu backends.
+
+#### Decision Framework — BWVI 5★
+
+The only system with a structured decision chain (`direction→palette→typography→layout→detail`), cross-session checkpoint persistence, and a fingerprint tracker that prevents design echo chambers. OD has a turn-1 question form but decisions are session-bound. Huashu has the Junior Designer workflow but no structured data model.
+
+#### Brand Systems — OD 5★
+
+OD ships 129 complete `DESIGN.md` files with 9-section schemas covering brands from Apple to Xiaohongshu. BWVI has 30 brands embedded in code. Huashu has a rigorous 5-step asset protocol but no pre-built brand library.
+
+#### App Prototyping — OD/Huashu 5★
+
+Huashu's iPhone 15 Pro bezel with Dynamic Island + AppPhone state manager + Playwright click tests is unmatched. OD has 5 device frames and mobile-app skills. BWVI has device frames + state machine but less app-specific polish.
+
+#### Critique System — BWVI 5★
+
+The only system with **automated objective metrics**: color compliance, font compliance, asset authenticity, accent overuse, token efficiency, accessibility, semantic HTML, responsive, SEO, and HTML validity. OD and Huashu both rely on agent role-play (5-dim subjective scoring).
+
+#### Video/Animation — Huashu 5★
+
+Huashu's built-in Stage+Sprite animation engine + 25/60fps MP4 export + palette-optimized GIF + 37 SFX + 6 BGM dual-track audio pipeline is a complete in-house solution. OD has 16 video models but depends on external APIs. BWVI has no video capability (delegates to backends).
+
+#### Design Systems — OD 5★
+
+129 brands × 57 design styles is unmatched breadth. Each system has a consistent schema. BWVI's 30 brands cover the essentials. Huashu's 20 design philosophies are curated and named but fewer in number.
+
+#### Agent Integration — BWVI/OD 5★
+
+BWVI was built from scratch as an MCP Server with 5 native tools and JSON-only CLI output. OD detects 13 agent CLIs + BYOK proxy + SSE streaming. Huashu works with 6 CLIs but as a SKILL.md text file — execution fidelity depends on the agent.
+
+#### Onboarding — BWVI/OD 4★
+
+`npx bwvi` works instantly with zero configuration. OD requires daemon + Next.js but has a web UI. Huashu requires the agent to process 1100+ lines of instructions.
+
+#### Extensibility — OD 5★
+
+Droppable SKILL.md and DESIGN.md files make OD the most extensible. BWVI has a plugin scaffold and knowledge MD files. Huashu is a monolithic SKILL.md — extensions require editing the master file.
+</details>
+
+### When to Use What
+
+| Scenario | Pick | Why |
+|----------|------|-----|
+| Quick landing page with brand polish | **Open-Design** | 129 brands + 64 skills + sandbox preview |
+| iOS app hi-fi prototype | **Huashu-Design** | iPhone bezel + state manager + click tests |
+| Multi-iteration brand project | **BWVI → OD** | BWVI decides direction, OD executes |
+| Design review / quality gate | **BWVI** | Only automated 10-dim objective critique |
+| Product animation / motion demo | **Huashu-Design** | Built-in animation engine + audio pipeline |
+| Agent-native design toolchain | **BWVI + OD** | BWVI for decisions, OD for execution |
+
+### The Decision Hub
+
+```
+┌──────────────────────────────────────────┐
+│                  BWVI                    │
+│     analyze → decision chain → checkpoint│
+│     direction + palette + typography     │
+└─────────────┬────────────────────────────┘
+              │ decision JSON
+     ┌────────┴────────┐
+     ▼                  ▼
+┌────────────┐   ┌──────────────┐
+│Open-Design │   │Huashu-Design │
+│129 brands  │   │iPhone frames │
+│64 skills   │   │animation eng │
+│sandbox     │   │video export  │
+└────────────┘   └──────────────┘
+```
+
+---
+
+## 🚀 Quick Start
 
 ```bash
 npx bwvi init my-project && cd my-project
-npx bwvi analyze "咖啡品牌 landing page"     # 分析任务 → 方向推荐
-npx bwvi showcase --pick landing-warm        # 选方向（真实 HTML 预览）
-npx bwvi generate "咖啡品牌" --direct        # 直接出 HTML
-npx bwvi critique index.html                 # 评审
-npx bwvi generate "咖啡 App" --device=iphone --interactive  # iPhone 交互原型
-npx bwvi test preview-iphone.html --a11y     # 验证
-npx bwvi feedback 8                          # 评分
+npx bwvi analyze "coffee brand landing page"
+npx bwvi showcase --pick landing-warm
+npx bwvi generate "coffee brand" --direct
+npx bwvi critique index.html
+npx bwvi feedback 8
 ```
 
-## 安装
+---
+
+## 📦 Install
 
 ```bash
-# 直接运行（无需安装）
+# Run instantly
 npx bwvi --help
 
-# 或全局安装
+# Or install globally
 npm install -g bwvi
 bwvi --help
 ```
 
-## 架构
+---
+
+## 🏛 Architecture
 
 ```
 src/
-├── types/          纯接口定义层，0 依赖
-│   ├── decision.ts    设计决策链 (direction→palette→typography→layout)
-│   ├── project.ts     项目配置 / Checkpoint
-│   ├── critique.ts    评审报告类型
-│   └── fingerprint.ts 设计指纹类型
+├── types/              Pure interfaces, zero deps
+│   ├── decision.ts     Decision chain types
+│   ├── project.ts      Project / Checkpoint config
+│   ├── critique.ts     Critique report types
+│   └── fingerprint.ts  Design fingerprint types
 │
-├── engine/         核心引擎
-│   ├── analyzer.ts    任务分析：方向推荐 + 5 direction 路由
-│   ├── composer.ts    Prompt 组装
-│   ├── agent.ts       Agent CLI 检测/调度（Claude/OpenCode/Codex 等）
-│   └── learner.ts     外部设计学习：URL → Design Token
+├── engine/             Core engines
+│   ├── analyzer.ts     Task analysis → 10 directions
+│   ├── composer.ts     Prompt assembly
+│   ├── agent.ts        Agent CLI detection (Claude/OpenCode/Codex...)
+│   ├── learner.ts      External design learning
+│   ├── brand-loader.ts 30 built-in brand systems
+│   ├── imager.ts       Real image pipeline (Unsplash + cache)
+│   ├── slop-guard.ts   Anti-AI-slop detection (8 checks)
+│   ├── renderer.ts     Multi-backend render dispatcher
+│   └── bridges/
+│       ├── od-bridge.ts      Open-Design daemon client
+│       └── huashu-bridge.ts  Huashu-Design agent invoker
 │
-├── checkpoint/     文件系统持久化
-│   └── manager.ts    Checkpoint: save/load/list/rollback
+├── frames/             Device bezels
+│   ├── index.ts        iPhone 15 / Pixel / iPad / MacBook / Browser
+│   └── state-machine.ts 2KB interactive state machine
 │
-├── critique/       评审引擎
-│   ├── objective.ts    10 维客观指标
-│   ├── self-review.ts  5 维主观自评
-│   └── diff.ts         版本对比
+├── checkpoint/         File-based persistence
+│   └── manager.ts      save/load/list/rollback
 │
-├── fingerprint/    设计指纹
-│   └── tracker.ts    隐式学习团队偏好，反信息茧房
+├── critique/           Critique engine
+│   ├── objective.ts    10-dim objective metrics
+│   ├── self-review.ts  5-dim subjective scoring
+│   └── diff.ts         Version comparison
 │
-├── knowledge/      知识加载器
-│   └── loader.ts     双层加载：MD 文件优先，源码 fallback
+├── fingerprint/        Design fingerprint
+│   └── tracker.ts      Implicit preference learning
 │
-├── templates/      组件库
-│   └── components.ts  Navbar/Hero/StatsGrid/FeatureGrid/PriceCard 等
+├── knowledge/          Knowledge loader
+│   └── loader.ts       Dual-layer (MD files + source fallback)
 │
-├── mcp/            MCP Server
-│   └── server.ts      stdio transport，5 个 tools
+├── templates/          Component library
+│   └── components.ts   Navbar/Hero/StatsGrid/FeatureGrid/PriceCard...
 │
-├── report/         项目报告
-│   └── generator.ts
+├── mcp/                MCP Server
+│   └── server.ts       stdio transport, 5 tools
 │
-└── cli/            19 个 CLI 命令
-    ├── init.ts / analyze.ts / generate.ts / critique.ts / learn.ts
-    ├── showcase.ts / checkpoint.ts / feedback.ts / knowledge.ts
-    ├── asset.ts / brief.ts / debt.ts / history.ts / brand.ts
-    ├── template.ts / plugin.ts / diff.ts / benchmark.ts
-    └── mcp → 转发到 mcp/server.ts
+├── report/             Project report generator
+│
+└── cli/                22 CLI commands
+    ├── init / analyze / generate / critique / learn
+    ├── showcase / checkpoint / feedback / knowledge
+    ├── asset / brief / debt / history / brand
+    ├── template / test / video / plugin / diff
+    ├── benchmark / mcp
+    └── → mcp routes to mcp/server.ts
 ```
 
-## 设计决策协议
+---
 
-核心抽象是一条**渐进约束的决策链**：
+## 🎯 Design Decision Protocol
+
+The core abstraction is a **progressive constraint chain**:
 
 ```
 direction → palette → typography → [information_density] → layout → detail_signature
 ```
 
-每步决策以 `DesignDecision` 实体持久化到 `.bwvi/checkpoints/`，支持跨会话恢复与回滚。
+Each decision is a `DesignDecision` entity persisted to `.bwvi/checkpoints/`, supporting cross-session recovery and rollback.
 
-| 原则 | 说明 |
-|------|------|
-| 先验证事实，再碰设计 | 先做 WebSearch → product-facts.md |
-| 展示假设再填充 | 出方向 → 用户确认 → 继续执行 |
-| 资产是设计的第一公民 | Logo/产品图不是 CSS 附庸 |
-| 用真材实料，不编造 | 禁止 Lorem ipsum、假 stats |
-| 一个细节 120%，其他 80% | 1 个签名细节，别处保持节奏 |
-| 渐进约束，不一次性锁死 | 沿决策链逐步积累 |
-| 决策可追溯，可回滚 | 所有决策持久化 JSON |
-| 不自我评审 | 自评有偏差，需交叉验证 |
-| 知识有版本 | 不永远最新版 |
-| 自举才能发布 | 自己的狗粮自己先吃 |
+| Principle | Description |
+|-----------|-------------|
+| 🔍 Verify facts first, then design | WebSearch → product-facts.md before any pixel |
+| 📋 Show assumptions before filling | Direction first, user confirms, then execute |
+| 🖼 Assets are first-class citizens | Logo/product shots are not CSS afterthoughts |
+| 🚫 Never fabricate | No Lorem ipsum, no fake stats |
+| ✨ One detail at 120%, rest at 80% | One signature detail, restraint elsewhere |
+| 🧱 Progressive constraints | Accumulate along the decision chain |
+| 🔄 Decisions are auditable & rollbackable | All decisions as persisted JSON |
+| 👁 No self-review without cross-validation | Built-in bias compensation |
+| 📚 Knowledge has versions | Never always-latest |
+| 🥩 Dogfood before shipping | Self-bootstrapping required |
 
-## 命令
+---
 
-### 核心
+## 📟 Commands
 
-| 命令 | 功能 |
-|------|------|
-| `init` | 创建 `.bwvi/` 项目结构 |
-| `analyze` | 分析设计任务 → 方向推荐 + 指纹参考 |
-| `generate` | 生成设计（`--direct` 直出 HTML / `--run` 调 Agent / 默认出 prompt） |
-| `critique` | 评审 HTML → 10 维客观指标 + 5 维自评 |
-| `learn` | 从 URL 学习设计 Token（`--inject` / `--template`） |
+### Core
 
-### 设计辅助
+| Command | Function |
+|---------|----------|
+| `init` | Create `.bwvi/` project structure |
+| `analyze` | Analyze task → direction recommendations + fingerprint |
+| `generate` | Generate design (`--direct` HTML / `--run` agent / default prompt) |
+| `critique` | Critique HTML → 10-dim objective + 5-dim subjective |
+| `learn` | Learn design tokens from URL (`--inject` / `--template`) |
 
-| 命令 | 功能 |
-|------|------|
-| `showcase` | 8 预制风格展示（`--pick` 选择） |
-| `checkpoint` | 决策管理（list/show/restore/rollback） |
-| `feedback` | 用户评分 1-10，自动更新指纹 |
-| `knowledge` | 知识块查看（list/show/improve/check_version） |
-| `asset` | 品牌资产搜索（logo/color \<brand\>） |
-| `brief` | 结构化设计简报 |
-| `debt` | 设计债追踪（list/add/resolve） |
-| `history` | 质量趋势 + 失败模式聚合 |
-| `brand` | 品牌系统列表/搜索/获取（30 内置品牌） |
-| `brand learn <url>` | 从 URL 学习品牌 Token |
-| `test` | HTML 验证（a11y/响应式/语义/交互） |
-| `template` | 模板管理（list/use/delete） |
-| `plugin` | 插件脚手架生成 |
-| `video` | HTML → MP4/GIF 导出（需 ffmpeg） |
-| `diff` | HTML 版本对比 |
-| `benchmark` | 5 用例测试套件 |
-| `mcp` | 启动 MCP Server（stdio transport） |
+### Design Assistant
 
-## 设备边框系统
+| Command | Function |
+|---------|----------|
+| `showcase` | 10 showcase directions with real HTML previews (`--pick`) |
+| `checkpoint` | Decision management (list/show/restore/rollback) |
+| `feedback` | Rate 1-10, auto-update fingerprint |
+| `knowledge` | Knowledge block viewer (list/show/improve/check_version) |
+| `asset` | Brand asset search (logo/color \<brand\>) |
+| `brief` | Structured design brief |
+| `debt` | Design debt tracker (list/add/resolve) |
+| `history` | Quality trends + failure pattern aggregation |
+| `brand` | Brand system (list/get/search/learn — 30 built-in) |
+| `template` | Template management (list/use/delete) |
 
-`bwvi generate` 支持 5 种设备边框包裹，`--device` 参数：
+### Tools
 
-| 设备 | 值 | 方向 |
-|------|-----|------|
+| Command | Function |
+|---------|----------|
+| `test` | HTML validation (a11y/responsive/semantic/interactive) |
+| `video` | HTML → MP4/GIF export (requires ffmpeg) |
+| `plugin` | Plugin scaffold generator |
+| `diff` | HTML version comparison |
+| `benchmark` | 5-test suite |
+| `mcp` | Start MCP Server (stdio transport) |
+
+---
+
+## 📱 Device Frames
+
+`bwvi generate` supports 5 device bezels via `--device`:
+
+| Device | Value | Orientation |
+|--------|-------|-------------|
 | iPhone 15 Pro | `iphone` | portrait / landscape |
 | Pixel 9 | `pixel` | portrait / landscape |
 | iPad Pro | `ipad` | portrait / landscape |
-| MacBook Pro | `macbook` | 仅 landscape |
-| 浏览器窗口 | `browser` | 自适应 |
+| MacBook Pro | `macbook` | landscape only |
+| Browser window | `browser` | responsive |
 
 ```bash
-bwvi generate "咖啡 App" --device=iphone --orientation=portrait
+bwvi generate "Coffee App" --device=iphone --orientation=portrait
 bwvi generate "Dashboard" --device=browser
 bwvi generate "Landing" --device=macbook
 ```
 
-## 交互原型模式
+---
 
-`--interactive` 参数在 HTML 中嵌入 2KB 无依赖状态机：
+## 🎮 Interactive Prototypes
 
-| 功能 | 用法 |
-|------|------|
-| Modal 弹窗 | `data-bwvi-toggle="modal" data-bwvi-target="id"` |
-| Tab 切换 | `data-bwvi-toggle="tab" data-bwvi-group="tabs"` |
+`--interactive` embeds a 2KB zero-dependency state machine:
+
+| Feature | Usage |
+|---------|-------|
+| Modal | `data-bwvi-toggle="modal" data-bwvi-target="id"` |
+| Tab switch | `data-bwvi-toggle="tab" data-bwvi-group="tabs"` |
 | Accordion | `data-bwvi-toggle="accordion"` |
 | Carousel | `data-bwvi-carousel="id"` |
-| 暗色模式 | `data-bwvi-toggle="darkmode"` |
-| Toast 提示 | `data-bwvi-toggle="toast"` |
-| 表单提交 | `data-bwvi-form="消息"` |
+| Dark mode | `data-bwvi-toggle="darkmode"` |
+| Toast | `data-bwvi-toggle="toast"` |
+| Form submit | `data-bwvi-form="message"` |
 
 ```bash
 bwvi generate "App onboarding" --device=iphone --interactive
 bwvi generate "Dashboard" --device=browser --interactive --dark
 ```
 
-## 组件变体
+---
 
-每个组件内置 3-4 种 variant：
+## 🧩 Component Variants
 
-| 组件 | 可选 variant |
-|------|-------------|
+Each component has 3-4 variants:
+
+| Component | Variants |
+|-----------|----------|
 | Hero | `fullscreen` / `centered` / `split` / `editorial` |
 | Navbar | `default` / `transparent` / `centered` |
 | FeatureGrid | `grid` / `list` / `compact` |
@@ -183,82 +355,92 @@ bwvi generate "Dashboard" --device=browser --interactive --dark
 | Card | `flat` / `elevated` / `bordered` |
 | Footer | `default` / `minimal` |
 
-## 品牌系统
+---
 
-30 个内置品牌系统，`--brand` 参数自动加载色板+字体：
+## 🏷️ Brand Systems
+
+30 built-in brands with auto-loaded palettes + typography via `--brand`:
 
 ```bash
-bwvi brand list                          # 列出所有品牌
-bwvi brand search developer              # 搜索品牌
-bwvi brand get linear                    # 查看品牌详情
-bwvi generate "SaaS" --brand=linear      # 使用 Linear 品牌
-bwvi generate "电商" --brand=stripe --device=iphone --interactive
+bwvi brand list                          # List all brands
+bwvi brand search developer              # Search brands
+bwvi brand get linear                    # View brand details
+bwvi generate "SaaS" --brand=linear      # Generate with Linear brand
 ```
 
-内置品牌：Linear, Stripe, Vercel, Apple, Notion, Airbnb, Figma, Supabase, Cursor, Shopify, Spotify, Coinbase, Tesla, Nike, IBM, NVIDIA, Miro, Framer, PostHog, Cal, Sanity, Replicate, Raycast, Intercom, Zapier, Webflow, Sentry, Claude, Xiaohongshu 等。
+**Included**: Linear, Stripe, Vercel, Apple, Notion, Airbnb, Figma, Supabase, Cursor, Shopify, Spotify, Coinbase, Tesla, Nike, IBM, NVIDIA, Miro, Framer, PostHog, Cal, Sanity, Replicate, Raycast, Intercom, Zapier, Webflow, Sentry, Claude, Xiaohongshu, and more.
 
-## 多后端渲染引擎
+---
 
-BWVI 支持 4 种渲染后端，通过 `--engine` 切换：
+## 🔌 Multi-Backend Rendering
 
-| 后端 | 值 | 产出质量 | 前置条件 |
-|------|-----|---------|----------|
-| BWVI 内置 | `direct` | ★★★☆☆ | 无 |
-| Open-Design | `od` | ★★★★★ | OD daemon 运行中 (`pnpm tools-dev run web`) |
-| Huashu-Design | `huashu` | ★★★★★ | Agent CLI (OpenCode/Claude Code) |
-| Agent CLI | `agent` | ★★★★☆ | Agent CLI 已安装 |
+4 render backends via `--engine`:
+
+| Backend | Flag | Quality | Prerequisite |
+|---------|------|---------|-------------|
+| BWVI built-in | `direct` | ★★★☆☆ | None |
+| Open-Design | `od` | ★★★★★ | OD daemon (`pnpm tools-dev run web`) |
+| Huashu-Design | `huashu` | ★★★★★ | Agent CLI (OpenCode/Claude) |
+| Agent CLI | `agent` | ★★★★☆ | Agent CLI installed |
 
 ```bash
 bwvi generate "SaaS landing" --engine=od --brand=linear --device=browser
-bwvi generate "移动 App 原型" --engine=huashu --device=iphone --interactive
-bwvi generate "快速原型" --engine=direct --device=iphone
+bwvi generate "App prototype" --engine=huashu --device=iphone --interactive
+bwvi generate "Quick mockup" --engine=direct --device=iphone
 ```
 
-当 BWVI 作为**决策枢纽**调用 OD/Huashu 后端时，产出视觉质量自动达到后端水平（★★★★★）。
+When BWVI delegates to OD or Huashu, output quality reaches the backend's level (★★★★★).
 
-## 评审体系
+---
 
-### 10 维客观指标
+## 🔍 Critique System
 
-| 指标 | 说明 |
-|------|------|
-| `color_compliance` | 页面颜色在品牌色盘内的比例 |
-| `font_compliance` | 使用 `--font-display` / `--font-body` |
-| `asset_authenticity` | 非 placeholder 资产比例 |
-| `accent_overuse` | accent 每屏 ≤2 次 |
-| `token_efficiency` | HTML 体积 / 有效内容 ≤3:1 |
-| `accessibility` | alt/aria/role/label/tabindex |
-| `semantic_html` | header/nav/main/section/article/footer |
-| `responsive` | viewport/@media/clamp/grid |
-| `seo_score` | title/description/lang/heading |
-| `html_validity` | doctype/charset/标签对 |
+### 10-dim Objective Metrics
 
-### 5 维主观自评
+| Metric | Description |
+|--------|-------------|
+| `color_compliance` | % of colors within brand palette |
+| `font_compliance` | Uses `--font-display` / `--font-body` |
+| `asset_authenticity` | Non-placeholder asset ratio |
+| `accent_overuse` | Accent ≤ 2 per viewport |
+| `token_efficiency` | HTML size / content ratio ≤ 3:1 |
+| `accessibility` | alt / aria / role / label / tabindex |
+| `semantic_html` | header / nav / main / section / article / footer |
+| `responsive` | viewport / @media / clamp / grid |
+| `seo_score` | title / description / lang / heading |
+| `html_validity` | doctype / charset / tag pairing |
 
-按项目类型加权（landing_page / dashboard / deck / default）：
+### 5-dim Subjective Scoring
 
-| 维度 | 说明 |
-|------|------|
-| `philosophy` | 设计哲学一致性 |
-| `hierarchy` | 信息层级 |
-| `detail` | 细节打磨 |
-| `function` | 功能完整性 |
-| `innovation` | 创新性 |
+Weighted by project type (landing / dashboard / deck / default):
 
-## 知识块系统
+| Dimension | Description |
+|-----------|-------------|
+| `philosophy` | Design philosophy consistency |
+| `hierarchy` | Information hierarchy clarity |
+| `detail` | Craft quality and polish |
+| `function` | Functional completeness |
+| `innovation` | Originality and creativity |
 
-15 个知识块，双层加载（`knowledge/` 目录 MD 文件优先，源码 fallback）：
+---
+
+## 📚 Knowledge System
+
+15 knowledge blocks, dual-layer loading (MD files preferred, source fallback):
 
 ```
-00-方向顾问.md   01-色板规则.md    02-字体规则.md    03-布局模式.md
-04-动效原则.md   05-内容规则.md    06-品牌协议.md    07-组件规格.md
-08-间距系统.md   09-响应式.md      10-图标规范.md    11-图片规范.md
-12-表单规范.md   13-导航模式.md    14-数据可视化.md
+00-direction-advisor.md   01-color-theory.md       02-typography.md
+03-layout-patterns.md     04-motion-principles.md  05-content-rules.md
+06-brand-protocol.md      07-component-specs.md    08-spacing-system.md
+09-responsive.md          10-icon-specs.md         11-image-specs.md
+12-form-specs.md          13-navigation.md         14-data-viz.md
 ```
 
-## MCP Server
+---
 
-与 Agent 集成：
+## 🤖 MCP Server
+
+Agent integration via MCP:
 
 ```json
 {
@@ -271,37 +453,33 @@ bwvi generate "快速原型" --engine=direct --device=iphone
 }
 ```
 
-Agent 可直接调用 5 个 Tool：
+5 native MCP tools:
 
-| Tool | 功能 |
-|------|------|
-| `analyze_design` | 分析设计任务 → 方向 + 指纹 |
-| `generate_design` | 按方向生成 HTML |
-| `critique_design` | 评审 HTML → 评分 |
-| `learn_design` | 从 URL 学习设计 |
-| `list_directions` | 列举所有方向 |
+| Tool | Function |
+|------|----------|
+| `analyze_design` | Analyze task → direction + fingerprint |
+| `generate_design` | Generate HTML by direction |
+| `critique_design` | Critique HTML → score |
+| `learn_design` | Learn design from URL |
+| `list_directions` | List all available directions |
 
-## 运行模式
+---
 
-| 模式 | 检测条件 | 功能范围 |
-|------|----------|----------|
-| online | 网络可达 + 多模型 key | 资产搜索/交叉评审/知识更新 |
-| limited | 网络可达但无多模型 key | 本地知识/生成/self-plus 评审 |
-| offline | 网络不可达 | 仅缓存知识/生成/objective 评审 |
-
-## 跨会话分工
+## 🔄 Cross-Session Workflow
 
 ```bash
-# 会话 1: 用户选方向
+# Session 1: User picks direction
 bwvi showcase --pick landing-editorial
-# → 写入 .bwvi/checkpoints/
+# → Saved to .bwvi/checkpoints/
 
-# 新开会话 2: 设计师读决策
+# Session 2 (new terminal): Designer reads decision
 bwvi checkpoint list
-# → 方向已定，直接 generate
+# → Direction locked, proceed to generate
 ```
 
-## API
+---
+
+## 📋 API Reference
 
 ```bash
 bwvi analyze "SaaS landing page"
@@ -311,12 +489,12 @@ bwvi learn https://linear.app
 bwvi showcase --pick dashboard-clean
 bwvi checkpoint list
 bwvi checkpoint restore dec_direction_123
-bwvi feedback 8 "排版不错"
+bwvi feedback 8 "Great layout"
 bwvi knowledge list
 bwvi knowledge improve
 bwvi asset color stripe
-bwvi brief "咖啡品牌, 受众:投资人, 语气:专业"
-bwvi debt add "Logo 需要替换为官方 SVG"
+bwvi brief "coffee brand, audience:investors, tone:professional"
+bwvi debt add "Logo needs official SVG replacement"
 bwvi history
 bwvi brand fetch linear
 bwvi plugin my-plugin
@@ -326,48 +504,51 @@ bwvi video index.html --fps=60 --format=mp4
 bwvi benchmark
 ```
 
-## 开发
+---
+
+## 🛠 Development
 
 ```bash
-# 依赖安装
+# Install
 npm install
 
-# 开发模式（TS 直接运行）
+# Dev mode (TS direct)
 npm run dev -- analyze "SaaS landing page"
 
-# 类型检查
+# Type check
 npm run typecheck
 
-# 打包
+# Build
 npm run build
 
-# 生产运行
+# Production
 npm start
 
-# 基准测试
+# Benchmark
 npm run benchmark
 ```
 
-### 技术栈
+### Stack
 
-- **语言**: TypeScript 5.7+ (strict mode)
-- **运行时**: Node.js 20+ (ES2022)
-- **打包**: esbuild（CJS + ESM 双格式）
+- **Language**: TypeScript 5.7+ (strict mode)
+- **Runtime**: Node.js 20+ (ES2022)
+- **Bundler**: esbuild (CJS + ESM dual format)
 - **MCP**: `@modelcontextprotocol/sdk` v1.29+ (stdio transport)
-- **配置**: YAML
+- **Config**: YAML
 
-### 项目结构
+### Project Structure
 
 ```
 bwvi/
-├── src/             TypeScript 源码
-├── dist/            构建产物 (CJS + ESM)
-├── scripts/         构建脚本
-├── knowledge/       知识块 (15 个 MD 文件)
-├── demo/            演示 HTML (9 个)
-├── docs/            设计文档
-├── specs/           架构规范
-├── .bwvi/           运行时生成（不在版本控制）
+├── src/                TypeScript source
+├── dist/               Build output (CJS + ESM)
+├── scripts/            Build scripts
+├── knowledge/          15 knowledge blocks (MD)
+├── demo/               Showcase previews (generated)
+├── docs/               Design documentation
+├── specs/              Architecture specs
+├── brand-systems/      (reserved for future brand JSON files)
+├── .bwvi/              Runtime (gitignored)
 │   ├── config.json
 │   ├── checkpoints/
 │   ├── fingerprint.yaml
@@ -382,21 +563,25 @@ bwvi/
 └── README.md
 ```
 
-## Benchmark
+---
+
+## ✅ Benchmark
 
 ```bash
 bwvi benchmark
-# → 5/5 通过 (0.2s)
+# → 5/5 passed (0.2s)
 ```
 
-| 用例 | 描述 |
-|------|------|
-| TC01 | 品牌 landing page → 方向 + HTML + 评审 ≥ 5.0 |
-| TC02 | 冷启动 → 无品牌无参考也能产出 |
-| TC03 | 迭代优化 → v2 评分 > v1 |
-| TC04 | 中断恢复 → checkpoint 恢复后决策完整 |
-| TC05 | 外部学习 → learnFromUrl 成功 |
+| Test | Description |
+|------|-------------|
+| TC01 | Brand landing → direction + HTML + critique ≥ 5.0 |
+| TC02 | Cold start → output with no brand/reference |
+| TC03 | Iteration → v2 score > v1 |
+| TC04 | Recovery → checkpoint resume, complete decisions |
+| TC05 | External learning → learnFromUrl succeeds |
 
-## 许可证
+---
+
+## 📄 License
 
 Apache-2.0
