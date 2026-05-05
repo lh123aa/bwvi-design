@@ -37,6 +37,14 @@ export async function runBenchmark(): Promise<void> {
   results.push(await tc03Iteration(tmpDir));
   results.push(await tc04Recovery(tmpDir));
   results.push(await tc05Learn(tmpDir));
+  results.push(await tc06StyleList());
+  results.push(await tc07BrandSearch());
+  results.push(await tc08GenerateWithStyle());
+  results.push(await tc09MCPTools());
+  results.push(await tc10DeviceFrame());
+  results.push(await tc11AnimationCSS());
+  results.push(await tc12SlopGuard());
+  results.push(await tc13ImageGenProviderList());
 
   // Cleanup
   execSync(`rmdir /s /q "${tmpDir}"`, { stdio: "ignore" });
@@ -276,4 +284,89 @@ async function tc05Learn(tmpDir: string): Promise<TestResult> {
   }
 
   return { name: "TC05: 外部学习", passed, score: undefined, details, duration_ms: Date.now() - start };
+}
+
+async function tc06StyleList(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try {
+    const st = await import("../engine/style-systems.js");
+    const lst = st.listStyles();
+    d.push(`风格数量: ${lst.length}`);
+    if (lst.length >= 50) { p = true; d.push("✓ 风格列表完整"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC06: 风格列表", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc07BrandSearch(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try {
+    const br = await import("../engine/brand-loader.js");
+    const lst = br.listBrands();
+    d.push(`品牌数量: ${lst.length}`);
+    const search = br.searchBrands("payment");
+    d.push(`搜索 payment: ${search.length} 个`);
+    if (lst.length >= 100) { p = true; d.push("✓ 品牌系统完整"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC07: 品牌搜索", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc08GenerateWithStyle(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try { const { buildPage } = await import("../engine/page-builder.js");
+    const r = buildPage({ task: "test", direction: "tech-utility", styleId: "glassmorphism" });
+    d.push(`风格 applied: ${r.html.length > 1000 ? "✅" : "⚠️"}`);
+    if (r.html.length > 1000) { p = true; d.push("✓ 风格渲染成功"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC08: 风格渲染", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc09MCPTools(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try { const { listStyles } = await import("../engine/style-systems.js");
+    const { listBrands } = await import("../engine/brand-loader.js");
+    const st = listStyles(); const br = listBrands();
+    d.push(`MCP 可用数据: ${st.length} 风格, ${br.length} 品牌`);
+    if (st.length > 0 && br.length > 0) { p = true; d.push("✓ MCP 数据源正常"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC09: MCP 数据源", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc10DeviceFrame(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try { const { wrapWithDevice } = await import("../frames/index.js");
+    const html = wrapWithDevice("<p>test</p>", "iphone");
+    d.push(`iPhone 边框: ${html.length} bytes`);
+    if (html.includes("bwvi-iphone")) { p = true; d.push("✓ 设备边框渲染正确"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC10: 设备边框", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc11AnimationCSS(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try { const { getAnimationCSS } = await import("../engine/animation-engine.js");
+    const css = getAnimationCSS();
+    d.push(`动画 CSS: ${css.length} bytes`);
+    if (css.includes("bwi-fade-up") && css.includes("bwi-bounce-in")) { p = true; d.push("✓ 动画引擎正常"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC11: 动画引擎", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc12SlopGuard(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try { const { checkSlop } = await import("../engine/slop-guard.js");
+    const r1 = checkSlop("<p>Good content</p>"); const r2 = checkSlop("<p>Lorem ipsum dolor</p>");
+    d.push(`干净 HTML: ${r1.score}/10, 含 slop: ${r2.score}/10`);
+    if (r1.clean && !r2.clean) { p = true; d.push("✓ Slop 检测正确"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC12: Slop 检测", passed: p, details: d, duration_ms: Date.now() - s };
+}
+
+async function tc13ImageGenProviderList(): Promise<TestResult> {
+  const s = Date.now(); const d: string[] = []; let p = false;
+  try { const { listProviders } = await import("../engine/image-gen.js");
+    const provs = listProviders();
+    d.push(`图片提供商: ${provs.length} 个`);
+    if (provs.length >= 5) { p = true; d.push("✓ AI 生图配置正常"); }
+  } catch(e: any) { d.push(`错误: ${e.message}`); }
+  return { name: "TC13: AI 生图配置", passed: p, details: d, duration_ms: Date.now() - s };
 }

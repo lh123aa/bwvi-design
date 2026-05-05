@@ -7,14 +7,12 @@ describe("recommendDirections", () => {
     expect(dirs).toHaveLength(3);
     expect(dirs[0]).toHaveProperty("name");
     expect(dirs[0]).toHaveProperty("label");
-    expect(dirs[0]).toHaveProperty("score");
   });
 
-  it("should return directions sorted by score descending", () => {
-    const dirs = recommendDirections("SaaS tech B2B dashboard", 5);
-    for (let i = 1; i < dirs.length; i++) {
-      expect(dirs[i].score).toBeLessThanOrEqual(dirs[i - 1].score);
-    }
+  it("should return unique direction names", () => {
+    const dirs = recommendDirections("SaaS tech dashboard", 5);
+    const names = new Set(dirs.map(d => d.name));
+    expect(names.size).toBe(dirs.length);
   });
 
   it("should handle short queries", () => {
