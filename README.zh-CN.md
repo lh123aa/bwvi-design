@@ -73,16 +73,16 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 
 | 维度 | BWVI | Open-Design | Huashu-Design | 理由 |
 |-----------|:----:|:-----------:|:-------------:|------|
-| **产出视觉质量** | ★★★★☆ | ★★★★★ | ★★★★☆ | BWVI 新增 page-builder 蓝图引擎，10 行业蓝图 + 组件库 + 设备边框，产出真实页面；OD 有 129 设计系统；Huashu 有反 AI Slop |
+| **产出视觉质量** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI 50+ 行业蓝图 + 组件库 + 设备边框 + 56 风格 + 动画引擎；OD 有 129 设计系统；Huashu 有反 AI Slop |
 | **决策框架** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI 结构化决策链 + Checkpoint + 指纹系统独一无二 |
 | **品牌系统** | ★★★★★ | ★★★★★ | ★★★☆☆ | BWVI：115 品牌（分类搜索）；OD：129；Huashu：基于协议 |
 | **App 原型** | ★★★★★ | ★★★★★ | ★★★★★ | BWVI：iPhone 边框 + 5 App 蓝图 + 交互状态机；Huashu：AppPhone + 点击测试 |
 | **评审体系** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI：唯一自动化 10 维客观指标 |
 | **视频/动画** | ★★★★★ | ★★★★☆ | ★★★★★ | BWVI：Stage+Sprite 动画引擎 + scroll-trigger + MP4 导出 + BGM |
-| **设计系统库** | ★★☆☆☆ | ★★★★★ | ★★★☆☆ | OD：129 品牌 + 57 风格。BWVI：30 品牌 |
+| **设计系统库** | ★★★★★ | ★★★★★ | ★★★☆☆ | BWVI：115 品牌 + 56 风格 + 50+ 蓝图；OD：129 品牌 + 57 风格 |
 | **Agent 集成** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI：原生 MCP。OD：13 CLI + BYOK。Huashu：SKILL.md |
 | **上手速度** | ★★★★★ | ★★★☆☆ | ★★★☆☆ | BWVI：200ms 产出。OD：数分钟。Huashu：依赖 Agent |
-| **可扩展性** | ★★★★☆ | ★★★★★ | ★★★☆☆ | OD：热插拔 SKILL/DESIGN。BWVI：插件 + 知识 MD |
+| **可扩展性** | ★★★★★ | ★★★★★ | ★★★☆☆ | BWVI：插件 + 知识 MD + npm CI + CHANGELOG；OD：热插拔 SKILL/DESIGN |
 
 ### 📈 性能 vs 质量权衡
 
