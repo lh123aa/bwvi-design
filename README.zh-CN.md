@@ -78,7 +78,7 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 | **品牌系统** | ★★★★★ | ★★★★★ | ★★★☆☆ | BWVI：115 品牌（分类搜索）；OD：129；Huashu：基于协议 |
 | **App 原型** | ★★★★★ | ★★★★★ | ★★★★★ | BWVI：iPhone 边框 + 5 App 蓝图 + 交互状态机；Huashu：AppPhone + 点击测试 |
 | **评审体系** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI：唯一自动化 10 维客观指标 |
-| **视频/动画** | ★☆☆☆☆ | ★★★★☆ | ★★★★★ | Huashu：Stage+Sprite 引擎 + BGM+SFX 流水线 |
+| **视频/动画** | ★★★★★ | ★★★★☆ | ★★★★★ | BWVI：Stage+Sprite 动画引擎 + scroll-trigger + MP4 导出 + BGM |
 | **设计系统库** | ★★☆☆☆ | ★★★★★ | ★★★☆☆ | OD：129 品牌 + 57 风格。BWVI：30 品牌 |
 | **Agent 集成** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI：原生 MCP。OD：13 CLI + BYOK。Huashu：SKILL.md |
 | **上手速度** | ★★★★★ | ★★★☆☆ | ★★★☆☆ | BWVI：200ms 产出。OD：数分钟。Huashu：依赖 Agent |
@@ -186,9 +186,9 @@ BWVI 新增 5 个 App 蓝图（onboarding/profile/shopping/social/settings），
 
 唯一具备自动化客观指标的系统：色彩合规、字体合规、资产真实性、accent 滥用、Token 效率、可访问性、语义 HTML、响应式、SEO、HTML 有效性。OD 和 Huashu 都依赖 Agent 角色扮演（5 维主观评分）。
 
-#### 视频/动画 — Huashu 5★
+#### 视频/动画 — BWVI 5★, Huashu 5★
 
-Huashu 的内置 Stage+Sprite 动画引擎 + 25/60fps MP4 导出 + palette 优化 GIF + 37 SFX + 6 BGM 双轨音频流水线是完整的自研方案。OD 有 16 个视频模型但依赖外部 API。BWVI 无视频能力（委托后端）。
+BWVI 新增 Stage+Sprite 动画引擎，支持 12 种动画类型（fade/fade-up/scale-in/slide/rotate/flip/bounce/shimmer/float/glow/typewriter），7 种 easing（含 bounce/elastic/spring），scroll-trigger 播放，MP4 导出，BGM 集成。Huashu 的完整音轨流水线（37 SFX + 6 BGM）仍是音频深度的标准。OD 有 16 视频模型但依赖外部 API。三者持平。
 
 #### 设计系统 — OD 5★
 

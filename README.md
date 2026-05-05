@@ -36,8 +36,13 @@ npx bwvi feedback 8</code></pre>
     </tr>
     <tr>
       <td align="center"><b>🏭 Page Builder</b><br>10 industry blueprints → real pages</td>
-      <td align="center"><b>🎯 Output Quality</b><br>★★★★☆ (was ★★☆☆☆)</td>
+      <td align="center"><b>🎯 Output Quality</b><br>★★★★☆</td>
       <td align="center"><b>⚡ 200ms</b><br>command latency</td>
+    </tr>
+    <tr>
+      <td align="center"><b>🎨 56 Styles</b><br>brutalism · glassmorphism · cyberpunk · pastel …</td>
+      <td align="center"><b>🎬 12 Animations</b><br>Stage+Sprite + MP4 export</td>
+      <td align="center"><b>🏭 15 Blueprints</b><br>landing · app · social · shop …</td>
     </tr>
   </table>
   <br>
