@@ -1,6 +1,7 @@
 import { findBlueprint, fillBlueprint, type BlueprintSection } from "../templates/content-presets.js";
 import type { HeroVariant, GridVariant } from "../templates/components.js";
 import { getStyle, recommendStyle } from "./style-systems.js";
+import { analyzeHtmlForImages, resolveImages } from "./imager.js";
 import { getBaseStyles, Navbar, Hero, StatsGrid, FeatureGrid, TestimonialGrid, CTASection, Footer, StatsCounter, Timeline, PriceCard, Form } from "../templates/components.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getStateMachineScript } from "../frames/state-machine.js";
@@ -41,6 +42,7 @@ export interface PageBuildOptions {
   dark?: boolean;
   interactive?: boolean;
   styleId?: string;
+  aiImages?: boolean;
 }
 
 export interface PageBuildResult {
@@ -63,6 +65,14 @@ export function buildPage(opts: PageBuildOptions): PageBuildResult {
   if (style) {
     palette = style.palette;
     fontStack = style.typography.display;
+  }
+
+  // AI image generation placeholder (requires configured API key)
+  if (opts.aiImages) {
+    try {
+      const specs = analyzeHtmlForImages("");
+      resolveImages(specs).catch(() => {}); // async, fire and forget
+    } catch {}
   }
 
   let brandName = opts.brand || extractBrand(opts.task);

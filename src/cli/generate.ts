@@ -56,6 +56,7 @@ export async function generateCommand(args: string[]) {
   const engine = (engineFlag ? engineFlag.split("=")[1] : "direct") as "direct" | "od" | "huashu" | "agent";
   const styleFlag = args.find(a => a.startsWith("--style="));
   const styleId = styleFlag ? styleFlag.split("=")[1] : undefined;
+  const aiImages = args.includes("--ai-images");
 
   const nonFlagArgs = args.filter((a) => !a.startsWith("--"));
   const task = nonFlagArgs.join(" ");
@@ -112,7 +113,7 @@ Examples:
       return;
     }
 
-    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive, styleId });
+    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive, styleId, aiImages });
     const fileName = device ? `preview-${device}.html` : "index.html";
     const filePath = join(demoDir(), fileName);
     writeFileSync(filePath, pageResult.html, "utf-8");

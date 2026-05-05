@@ -24,6 +24,7 @@ import { animateCommand } from "./cli/animate.js";
 import { imageCommand } from "./cli/image.js";
 import { exportCommand } from "./cli/export.js";
 import { previewCommand } from "./cli/preview.js";
+import { serveCommand } from "./cli/serve.js";
 
 const BWVI_VERSION = "0.2.0";
 const COMMANDS = ["init","analyze","generate","critique","learn","showcase","checkpoint","feedback","knowledge","asset","brief","debt","history","brand","style","template","test","animate","export","preview","video","plugin","diff","benchmark","mcp"];
@@ -60,6 +61,7 @@ async function main() {
     case "image": await imageCommand(args); break;
     case "export": await exportCommand(args); break;
     case "preview": await previewCommand(args); break;
+    case "serve": await serveCommand(args); break;
     case "completion":
       {
         const sh = args[0] || "bash";
