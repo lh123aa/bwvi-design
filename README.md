@@ -34,6 +34,11 @@ npx bwvi feedback 8</code></pre>
       <td align="center"><b>🔍 10-dim Critique</b><br>automated objective metrics</td>
       <td align="center"><b>🔌 4 Render Backends</b><br>direct · OD · Huashu · agent</td>
     </tr>
+    <tr>
+      <td align="center"><b>🏭 Page Builder</b><br>10 industry blueprints → real pages</td>
+      <td align="center"><b>🎯 Output Quality</b><br>★★★★☆ (was ★★☆☆☆)</td>
+      <td align="center"><b>⚡ 200ms</b><br>command latency</td>
+    </tr>
   </table>
   <br>
   <p>

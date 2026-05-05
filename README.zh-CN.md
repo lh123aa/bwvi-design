@@ -73,7 +73,7 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 
 | 维度 | BWVI | Open-Design | Huashu-Design | 理由 |
 |-----------|:----:|:-----------:|:-------------:|------|
-| **产出视觉质量** | ★★☆☆☆ | ★★★★★ | ★★★★☆ | BWVI 委托后端执行；OD 有 129 个设计系统；Huashu 有反 AI Slop |
+| **产出视觉质量** | ★★★★☆ | ★★★★★ | ★★★★☆ | BWVI 新增 page-builder 蓝图引擎，10 行业蓝图 + 组件库 + 设备边框，产出真实页面；OD 有 129 设计系统；Huashu 有反 AI Slop |
 | **决策框架** | ★★★★★ | ★★★☆☆ | ★★★★☆ | BWVI 结构化决策链 + Checkpoint + 指纹系统独一无二 |
 | **品牌系统** | ★★★☆☆ | ★★★★★ | ★★★☆☆ | OD：129 内置品牌。BWVI：30。Huashu：基于协议 |
 | **App 原型** | ★★★☆☆ | ★★★★★ | ★★★★★ | Huashu：iPhone 边框 + 状态管理器 + 点击测试 |
@@ -166,9 +166,9 @@ BWVI 打包为单个 708 KB CJS 文件，仅 3 个依赖（tsx, yaml, @modelcont
 
 BWVI 是 CLI 工具，运行 → 产出 → 退出，内存是瞬态的（~5 MB heap）。OD 运行持久化 Express daemon + SQLite，需要 150-300 MB RSS。Huashu 无持久化进程。
 
-#### 产出视觉质量 — OD 5★, Huashu 4★, BWVI 2★
+#### 产出视觉质量 — OD 5★, BWVI 4★, Huashu 4★
 
-OD 凭借 129 个品牌设计系统、64 个技能和沙箱 iframe 预览胜出。Huashu 严格的反 AI Slop 规则产出干净，但限于单文件 HTML。BWVI 内置渲染器简约——其优势在于通过 `--engine=od|huashu` 委托给后端。
+OD 凭借 129 品牌、64 技能和沙箱预览胜出。BWVI 新增 page-builder 蓝图引擎后，`generate --direct` 不再输出文档页，而是匹配行业蓝图→填充真实内容→调用组件库→应用品牌色+动画+设备边框，产出真实可用的 landing page。Huashu 反 AI Slop 严格但限于单文件 HTML。BWVI 通过 `--engine=od|huashu` 可跃升至 ★★★★★。
 
 #### 决策框架 — BWVI 5★
 
@@ -291,6 +291,7 @@ src/
 │   ├── brand-loader.ts 30 个内置品牌系统
 │   ├── imager.ts       真实图片管道 (Unsplash + 缓存)
 │   ├── slop-guard.ts   反 AI Slop 检测（8 项检查）
+│   ├── page-builder.ts 页面组装引擎（蓝图匹配→组件填充→HTML 输出）
 │   ├── renderer.ts     多后端渲染调度器
 │   └── bridges/
 │       ├── od-bridge.ts      Open-Design daemon 客户端
@@ -315,7 +316,8 @@ src/
 │   └── loader.ts       双层加载 (MD 文件 + 源码 fallback)
 │
 ├── templates/          组件库
-│   └── components.ts   Navbar/Hero/StatsGrid/FeatureGrid/PriceCard...
+│   ├── components.ts      Navbar/Hero/StatsGrid/FeatureGrid/PriceCard...
+│   └── content-presets.ts 10 个行业蓝图（咖啡/美妆/SaaS/餐厅/健身/时尚/教育/房产/金融/电商）
 │
 ├── mcp/                MCP Server
 │   └── server.ts       stdio transport, 5 个 tools
@@ -454,6 +456,38 @@ bwvi generate "Dashboard" --device=browser --interactive --dark
 | Footer | `default` / `minimal` |
 
 ---
+
+## 🏭 Page Builder 蓝图引擎
+
+`generate --direct` 不再输出文档页，而是自动匹配行业蓝图，生成真实页面。
+
+```bash
+bwvi generate "咖啡品牌 豆蔻咖啡 landing page" --direct
+# → 匹配 blueprint: landing-cafe
+# → 方向: warm-minimal
+# → 输出: Navbar + Hero(split) + FeatureGrid + Stats + Testimonials + CTA + Footer
+# → 评分: ★★★★☆
+
+bwvi generate "Blush & Bloom 化妆品" --direct --device=iphone
+# → iPhone 设备边框 + 化妆品蓝图 + 交互原型
+```
+
+### 已覆盖行业（10 个蓝图）
+
+| 蓝图 ID | 行业 | 推荐方向 |
+|---------|------|----------|
+| `landing-cafe` | 咖啡/餐饮 | warm-minimal |
+| `landing-cosmetics` | 化妆品/美妆 | warm-minimal |
+| `landing-saas` | SaaS/科技 | tech-utility |
+| `landing-restaurant` | 餐厅/美食 | luxury-premium |
+| `landing-fitness` | 健身/运动 | corporate-trust |
+| `landing-fashion` | 时尚/服饰 | dark-luxury |
+| `landing-education` | 教育/课程 | playful-color |
+| `landing-realestate` | 房产/物业 | corporate-trust |
+| `landing-fintech` | 金融/Fintech | corporate-trust |
+| `landing-ecommerce` | 电商/零售 | warm-minimal |
+
+新增蓝图只需在 `src/templates/content-presets.ts` 添加 JSON 条目即可。
 
 ## 🏷️ 品牌系统
 
