@@ -21,6 +21,7 @@ import { testCommand } from "./cli/test.js";
 import { videoCommand } from "./cli/video.js";
 import { styleCommand } from "./cli/style.js";
 import { animateCommand } from "./cli/animate.js";
+import { imageCommand } from "./cli/image.js";
 import { exportCommand } from "./cli/export.js";
 import { previewCommand } from "./cli/preview.js";
 
@@ -56,6 +57,7 @@ async function main() {
     case "video": await videoCommand(args); break;
     case "style": await styleCommand(args); break;
     case "animate": await animateCommand(args); break;
+    case "image": await imageCommand(args); break;
     case "export": await exportCommand(args); break;
     case "preview": await previewCommand(args); break;
     case "completion":
@@ -106,8 +108,9 @@ function printHelp() {
     "plugin        Create plugin scaffold",
     "template      List/use/delete templates",
     "style         List/show/search visual styles (57 built-in)",
+    "image         Generate image via AI (DALL·E / SD / Tongyi / Seedream) requires API key",
     "animate       Embed animations / export MP4 (needs ffmpeg)",
-    "export        Export HTML to PDF/PNG (needs Playwright)",
+    "export        Export HTML to PDF/PNG/PPTX/DOCX",
     "preview       Preview a component (hero, navbar, features...)",
     "test          Validate HTML (a11y, responsive, interactive)",
     "video         Export HTML to MP4/GIF (requires ffmpeg)",
