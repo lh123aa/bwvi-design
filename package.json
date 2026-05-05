@@ -10,14 +10,15 @@
     "start": "node dist/bwvi.cjs",
     "dev": "npx tsx src/index.ts",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "benchmark": "tsx src/index.ts benchmark run",
     "build": "node scripts/build.mjs",
-    "start:esm": "node dist/bwvi.mjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build && npm test"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
