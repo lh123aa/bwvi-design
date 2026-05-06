@@ -5,7 +5,7 @@
   <p>
     <img src="https://img.shields.io/badge/version-0.2.0-5E6AD2" alt="版本">
     <img src="https://img.shields.io/badge/license-Apache%202.0-00D4AA" alt="许可证">
-    <img src="https://img.shields.io/badge/tests-23%20passed-00E698" alt="测试">
+    <img src="https://img.shields.io/badge/tests-80%20passed-00E698" alt="测试">
     <img src="https://img.shields.io/badge/benchmark-13%2F13-00D4AA" alt="基准测试">
     <img src="https://img.shields.io/badge/scores-10%E2%9C%85-FF6B9D" alt="全五星">
   </p>
@@ -529,6 +529,7 @@ npm run typecheck        # 类型检查（tsc --noEmit）
 npm run build            # 生产构建（esbuild CJS+ESM）
 npm start                # 运行 dist/bwvi.cjs
 npm run benchmark        # 13 用例基准测试
+npm test                 # 80 用例单元测试
 npm run build && npm start  # 完整构建+运行
 ```
 

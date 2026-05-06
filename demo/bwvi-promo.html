@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BWVI — Better Way of Visual Intelligence</title>
+<style>
+/* ===== 基础重置 ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#0A0A0F;color:#E8E8F0;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+section{padding:100px 24px;position:relative}
+
+/* ===== 动画注入标记 ===== */
+.bwi-anim{animation-fill-mode:both;will-change:transform,opacity}
+
+/* ===== Hero 区域 ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(135deg,#0A0A0F 0%,#1A1A3E 50%,#0A0A0F 100%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(94,106,210,0.15) 0%,transparent 70%);top:-200px;right:-200px;animation:bwi-glow 4s ease-in-out infinite}
+.hero::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(0,230,152,0.1) 0%,transparent 70%);bottom:-100px;left:-100px;animation:bwi-glow 5s ease-in-out infinite 1s}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:rgba(94,106,210,0.15);border:1px solid rgba(94,106,210,0.3);border-radius:100px;font-size:0.875rem;color:#5E6AD2;margin-bottom:32px;letter-spacing:0.02em}
+.hero h1{font-size:clamp(3rem,8vw,6rem);font-weight:800;line-height:1.05;margin-bottom:24px;letter-spacing:-0.03em;background:linear-gradient(135deg,#E8E8F0 0%,#5E6AD2 50%,#00E698 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.25rem;color:rgba(232,232,240,0.6);max-width:600px;line-height:1.8;margin-bottom:48px}
+.hero-actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all 0.3s;border:none}
+.btn-primary{background:#5E6AD2;color:#fff;box-shadow:0 4px 20px rgba(94,106,210,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(94,106,210,0.4)}
+.btn-secondary{background:rgba(255,255,255,0.05);color:#E8E8F0;border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary:hover{background:rgba(255,255,255,0.1)}
+.btn-accent{background:#00E698;color:#0A0A0F}
+.btn-accent:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,230,152,0.3)}
+
+/* ===== 卡片网格 ===== */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:1200px;margin:0 auto}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:32px;transition:all 0.3s}
+.card:hover{transform:translateY(-4px);background:rgba(255,255,255,0.06);border-color:rgba(94,106,210,0.3)}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:16px}
+.card h3{font-size:1.125rem;font-weight:600;margin-bottom:8px;color:#E8E8F0}
+.card p{font-size:0.875rem;color:rgba(232,232,240,0.5);line-height:1.7}
+
+/* ===== Section 标题 ===== */
+.section-header{text-align:center;margin-bottom:64px}
+.section-header h2{font-size:clamp(2rem,4vw,3rem);font-weight:700;margin-bottom:16px;letter-spacing:-0.02em}
+.section-header p{color:rgba(232,232,240,0.5);font-size:1.125rem;max-width:600px;margin:0 auto;line-height:1.7}
+.section-tag{display:inline-block;padding:4px 16px;background:rgba(94,106,210,0.1);border-radius:100px;font-size:0.8rem;color:#5E6AD2;margin-bottom:16px;letter-spacing:0.05em}
+
+/* ===== 品牌色块墙 ===== */
+.brand-wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:12px;max-width:900px;margin:0 auto}
+.brand-dot{width:100%;aspect-ratio:1;border-radius:12px;position:relative;cursor:pointer;transition:transform 0.3s,tw,box-shadow 0.3s}
+.brand-dot:hover{transform:scale(1.15);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.brand-dot::after{content:attr(data-name);position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:0.65rem;color:rgba(232,232,240,0.4);white-space:nowrap;opacity:0;transition:opacity 0.3s}
+.brand-dot:hover::after{opacity:1}
+
+/* ===== 交互区域 ===== */
+.interactive-demo{max-width:800px;margin:0 auto;background:rgba(255,255,255,0.02);border-radius:20px;border:1px solid rgba(255,255,255,0.06);overflow:hidden}
+.tab-bar{display:flex;border-bottom:1px solid rgba(255,255,255,0.06)}
+.tab-item{padding:16px 24px;cursor:pointer;font-size:0.9rem;color:rgba(232,232,240,0.4);transition:all 0.3s;border-bottom:2px solid transparent}
+.tab-item:hover{color:#E8E8F0}
+.tab-item.bwvi-active{color:#5E6AD2;border-bottom-color:#5E6AD2}
+.tab-panel{display:none;padding:32px}
+.tab-panel.bwvi-active{display:block}
+.modal-trigger{padding:12px 24px;background:rgba(94,106,210,0.15);border:1px solid rgba(94,106,210,0.3);border-radius:10px;color:#5E6AD2;cursor:pointer;transition:all 0.3s}
+.modal-trigger:hover{background:rgba(94,106,210,0.25)}
+.bwvi-modal{display:none}
+.bwvi-modal.bwvi-open{display:flex}
+.accordion-item{border-bottom:1px solid rgba(255,255,255,0.06)}
+.accordion-header{padding:16px 24px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.3s;font-weight:500}
+.accordion-header:hover{background:rgba(255,255,255,0.03)}
+.accordion-body{overflow:hidden;max-height:0;transition:max-height 0.4s ease}
+.accordion-body-inner{padding:0 24px 20px;color:rgba(232,232,240,0.6);line-height:1.8;font-size:0.9rem}
+
+/* ===== 统计数字 ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;max-width:1000px;margin:0 auto;text-align:center}
+.stat-item .stat-number{font-size:3.5rem;font-weight:800;background:linear-gradient(135deg,#5E6AD2,#00E698);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2}
+.stat-item .stat-label{font-size:0.9rem;color:rgba(232,232,240,0.5);margin-top:8px}
+
+/* ===== 设备墙 ===== */
+.device-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;max-width:800px;margin:0 auto}
+.device-card{text-align:center;padding:24px;background:rgba(255,255,255,0.03);border-radius:16px;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s}
+.device-card:hover{transform:translateY(-4px);border-color:rgba(0,230,152,0.3)}
+.device-icon{font-size:2.5rem;margin-bottom:12px}
+.device-name{font-weight:600;font-size:0.95rem}
+.device-orient{font-size:0.8rem;color:rgba(232,232,240,0.4)}
+
+/* ===== 决策链 ===== */
+.chain{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:1000px;margin:0 auto}
+.chain-step{display:flex;align-items:center;gap:8px;padding:12px 24px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;font-size:0.9rem;transition:all 0.3s}
+.chain-step:hover{background:rgba(94,106,210,0.1);border-color:rgba(94,106,210,0.3)}
+.chain-arrow{color:rgba(232,232,240,0.2);font-size:1.2rem}
+
+/* ===== 动画 Demo ===== */
+.anim-demo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.anim-demo-box{padding:32px 16px;text-align:center;background:rgba(255,255,255,0.03);border-radius:12px;border:1px solid rgba(255,255,255,0.06);font-size:0.8rem;color:rgba(232,232,240,0.5)}
+
+/* ===== 风格展示 ===== */
+.style-flow{display:flex;gap:12px;overflow-x:auto;padding:24px 0;max-width:100%;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory}
+.style-chip{flex-shrink:0;padding:8px 20px;border-radius:100px;font-size:0.85rem;cursor:pointer;transition:all 0.3s;scroll-snap-align:start;border:1px solid rgba(255,255,255,0.1);color:rgba(232,232,240,0.7)}
+.style-chip:hover{transform:translateY(-2px);border-color:rgba(94,106,210,0.5);color:#E8E8F0}
+
+/* ===== 时间线 ===== */
+.timeline{max-width:700px;margin:0 auto;position:relative;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:15px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,rgba(94,106,210,0.5),rgba(0,230,152,0.5))}
+.timeline-item{position:relative;padding:16px 0 16px 32px}
+.timeline-item::before{content:'';position:absolute;left:-28px;top:24px;width:12px;height:12px;border-radius:50%;background:#5E6AD2;border:2px solid #0A0A0F}
+.timeline-item:nth-child(2)::before{background:#00E698}
+.timeline-item:nth-child(3)::before{background:#D97757}
+.timeline-time{font-size:0.8rem;color:rgba(232,232,240,0.3);margin-bottom:4px;font-family:monospace}
+.timeline-title{font-weight:600;margin-bottom:4px}
+.timeline-desc{font-size:0.875rem;color:rgba(232,232,240,0.5);line-height:1.6}
+
+/* ===== CTA Footer ===== */
+.cta-section{text-align:center;padding:120px 24px;background:linear-gradient(135deg,#0A0A0F,#1A1A3E)}
+.cta-section h2{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;margin-bottom:16px}
+.cta-section p{color:rgba(232,232,240,0.5);max-width:500px;margin:0 auto 32px;line-height:1.7}
+.install-cmd{display:inline-flex;align-items:center;gap:12px;padding:16px 32px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-family:monospace;font-size:1.1rem;color:#00E698;margin-bottom:16px}
+.install-cmd span{color:rgba(232,232,240,0.3)}
+
+/* ===== Toast ===== */
+.bwvi-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#5E6AD2;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;opacity:0;transition:all 0.3s;z-index:9999;pointer-events:none}
+.bwvi-toast.bwvi-toast-show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== Carousel ===== */
+.bwvi-carousel-item{display:none}
+.bwvi-carousel-active{display:block}
+.carousel-container{max-width:600px;margin:0 auto;position:relative}
+.carousel-slide{background:rgba(255,255,255,0.03);border-radius:16px;padding:48px 32px;text-align:center;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.carousel-slide .emoji{font-size:3rem;margin-bottom:16px}
+.carousel-slide h4{font-size:1.2rem;margin-bottom:8px}
+.carousel-slide p{color:rgba(232,232,240,0.5);font-size:0.9rem}
+.carousel-nav{display:flex;justify-content:center;gap:8px;margin-top:20px}
+.carousel-nav button{padding:8px 20px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#E8E8F0;cursor:pointer;transition:all 0.3s}
+.carousel-nav button:hover{background:rgba(94,106,210,0.2)}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  section{padding:60px 16px}
+  .hero h1{font-size:2.5rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:24px}
+  .stat-item .stat-number{font-size:2.5rem}
+  .chain{flex-direction:column;align-items:center}
+  .chain-arrow{transform:rotate(90deg)}
+}
+
+/* ===== Glow 动画 ===== */
+@keyframes bwi-glow{
+  0%,100%{opacity:0.5}
+  50%{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero-badge bwi-anim bwi-fade-in bwi-dur-2" style="animation-delay:0.2s">✦ v0.2.0 · Apache 2.0</div>
+  <h1 class="bwi-anim bwi-fade-up bwi-dur-3 bwi-ease-spring" style="animation-delay:0.4s">BWVI</h1>
+  <p class="bwi-anim bwi-fade-up bwi-dur-3" style="animation-delay:0.7s"><strong>B</strong>etter <strong>W</strong>ay of <strong>V</strong>isual <strong>I</strong>ntelligence<br>Agent 原生设计决策协议 · CLI · MCP Server · 多后端渲染</p>
+  <div class="hero-actions bwi-anim bwi-fade-up bwi-dur-3" style="animation-delay:1s">
+    <button class="btn btn-accent" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">🚀 探索能力</button>
+    <button class="btn btn-secondary" data-bwvi-toggle="modal" data-bwvi-target="videoModal">▶ 观看演示</button>
+    <button class="btn btn-secondary" data-bwvi-toggle="darkmode">🌓 切换主题</button>
+  </div>
+</section>
+
+<!-- ===== Modal Demo ===== -->
+<div id="videoModal" class="bwvi-modal">
+  <div style="background:#1A1A2E;border-radius:20px;padding:40px;max-width:500px;width:90%;margin:auto;position:relative;border:1px solid rgba(255,255,255,0.1)">
+    <button style="position:absolute;top:16px;right:16px;background:none;border:none;color:rgba(232,232,240,0.5);font-size:1.5rem;cursor:pointer" data-bwvi-toggle="modal" data-bwvi-target="videoModal">✕</button>
+    <h3 style="font-size:1.5rem;margin-bottom:16px">🎬 BWVI 演示</h3>
+    <p style="color:rgba(232,232,240,0.6);line-height:1.7;margin-bottom:24px">BWVI 是一个 Agent 原生的设计决策协议。它不画像素——它确保每个像素都有理由。</p>
+    <div style="display:flex;gap:12px">
+      <code style="flex:1;padding:12px 16px;background:rgba(0,0,0,0.3);border-radius:8px;font-size:0.85rem;color:#00E698">npx bwvi generate "品牌 landing" --direct</code>
+      <button class="btn btn-primary" style="padding:12px 20px;font-size:0.85rem" data-bwvi-toggle="toast" data-bwvi-target="命令已复制！">复制</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 统计数字 ===== -->
+<section id="features" style="padding-top:80px">
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">📊 数字</div>
+    <h2 class="bwi-anim bwi-fade-up">系统能力一览</h2>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.1s"><div class="stat-number">115</div><div class="stat-label">内置品牌系统</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.2s"><div class="stat-number">56</div><div class="stat-label">视觉风格</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.3s"><div class="stat-number">50+</div><div class="stat-label">行业蓝图</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.4s"><div class="stat-number">12</div><div class="stat-label">动画类型</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.5s"><div class="stat-number">7</div><div class="stat-label">Easing 曲线</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.6s"><div class="stat-number">5</div><div class="stat-label">设备边框</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.7s"><div class="stat-number">25</div><div class="stat-label">CLI 命令</div></div>
+    <div class="stat-item bwi-anim bwi-fade-up" style="animation-delay:0.8s"><div class="stat-number">80</div><div class="stat-label">单元测试</div></div>
+  </div>
+</section>
+
+<!-- ===== 决策链 ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">🧠 核心抽象</div>
+    <h2 class="bwi-anim bwi-fade-up">设计决策链</h2>
+    <p class="bwi-anim bwi-fade-up" style="animation-delay:0.2s">渐进约束，每步决策都有理由</p>
+  </div>
+  <div class="chain bwi-anim bwi-fade-up" style="animation-delay:0.3s">
+    <div class="chain-step"><span>🔍</span> direction</div>
+    <span class="chain-arrow">→</span>
+    <div class="chain-step"><span>🎨</span> palette</div>
+    <span class="chain-arrow">→</span>
+    <div class="chain-step"><span>📝</span> typography</div>
+    <span class="chain-arrow">→</span>
+    <div class="chain-step"><span>📐</span> layout</div>
+    <span class="chain-arrow">→</span>
+    <div class="chain-step"><span>✨</span> detail</div>
+  </div>
+</section>
+
+<!-- ===== 品牌墙 ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">🏷️ 115 品牌</div>
+    <h2 class="bwi-anim bwi-fade-up">内置品牌系统</h2>
+    <p class="bwi-anim bwi-fade-up" style="animation-delay:0.2s">12 分类 · 从 Linear 到 Xiaohongshu</p>
+  </div>
+  <div class="brand-wall bwi-anim bwi-fade-up" style="animation-delay:0.3s">
+    <div class="brand-dot" style="background:#5E6AD2" data-name="Linear"></div>
+    <div class="brand-dot" style="background:#635BFF" data-name="Stripe"></div>
+    <div class="brand-dot" style="background:#000000" data-name="Vercel"></div>
+    <div class="brand-dot" style="background:#181717" data-name="GitHub"></div>
+    <div class="brand-dot" style="background:#1D1D1F" data-name="Apple"></div>
+    <div class="brand-dot" style="background:#4285F4" data-name="Google"></div>
+    <div class="brand-dot" style="background:#00A4EF" data-name="Microsoft"></div>
+    <div class="brand-dot" style="background:#0668E1" data-name="Meta"></div>
+    <div class="brand-dot" style="background:#FF9900" data-name="Amazon"></div>
+    <div class="brand-dot" style="background:#E50914" data-name="Netflix"></div>
+    <div class="brand-dot" style="background:#000000" data-name="Notion"></div>
+    <div class="brand-dot" style="background:#1E1E1E" data-name="Figma"></div>
+    <div class="brand-dot" style="background:#FF5A5F" data-name="Airbnb"></div>
+    <div class="brand-dot" style="background:#FF6B35" data-name="Stripe"></div>
+    <div class="brand-dot" style="background:#008060" data-name="Shopify"></div>
+    <div class="brand-dot" style="background:#1DB954" data-name="Spotify"></div>
+    <div class="brand-dot" style="background:#0052FF" data-name="Coinbase"></div>
+    <div class="brand-dot" style="background:#E82127" data-name="Tesla"></div>
+    <div class="brand-dot" style="background:#000000" data-name="Nike"></div>
+    <div class="brand-dot" style="background:#0062FF" data-name="IBM"></div>
+    <div class="brand-dot" style="background:#76B900" data-name="NVIDIA"></div>
+    <div class="brand-dot" style="background:#FFD02F" data-name="Miro"></div>
+    <div class="brand-dot" style="background:#CC4C39" data-name="Claude"></div>
+    <div class="brand-dot" style="background:#FF2442" data-name="Xiaohongshu"></div>
+    <div class="brand-dot" style="background:#07C160" data-name="WeChat"></div>
+    <div class="brand-dot" style="background:#1677FF" data-name="Alipay"></div>
+    <div class="brand-dot" style="background:#5865F2" data-name="Discord"></div>
+    <div class="brand-dot" style="background:#9146FF" data-name="Twitch"></div>
+    <div class="brand-dot" style="background:#FF4500" data-name="Reddit"></div>
+    <div class="brand-dot" style="background:#E60023" data-name="Pinterest"></div>
+  </div>
+</section>
+
+<!-- ===== 风格墙 ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">🎨 56 风格</div>
+    <h2 class="bwi-anim bwi-fade-up">视觉风格系统</h2>
+  </div>
+  <div class="style-flow bwi-anim bwi-fade-up" style="animation-delay:0.2s">
+    <div class="style-chip" style="background:#18181B;color:#F43F5E;border-color:#F43F5E">minimal-white</div>
+    <div class="style-chip" style="background:#1E3A5F;color:#4A90D9;border-color:#4A90D9">clean-corporate</div>
+    <div class="style-chip" style="background:#0D0D0D;color:#C9A84C;border-color:#C9A84C">dark-luxury</div>
+    <div class="style-chip" style="background:#0F0A2E;color:#00FFAA;border-color:#00FFAA">night-owl</div>
+    <div class="style-chip" style="background:#FF6B35;color:#0047AB;border-color:#0047AB">neo-brutalism</div>
+    <div class="style-chip" style="background:linear-gradient(135deg,#0A0A0A,#FF00FF);color:#00FFFF;border-color:#FF00FF">cyberpunk</div>
+    <div class="style-chip" style="background:#A8D8EA;color:#F3A3B8;border-color:#F3A3B8">pastel-dream</div>
+    <div class="style-chip" style="background:#FF9BB3;color:#FEC8D8;border-color:#FEC8D8">kawaii-japan</div>
+    <div class="style-chip" style="background:#2D6A4F;color:#95B46A;border-color:#95B46A">nature-organic</div>
+    <div class="style-chip" style="background:#0A1628;color:#00D4AA;border-color:#00D4AA">deep-ocean</div>
+    <div class="style-chip" style="background:#121212;color:#1DB954;border-color:#1DB954">music-vibe</div>
+    <div class="style-chip" style="background:#000000;color:#FF0055;border-color:#FF0055">fashion-editorial</div>
+  </div>
+  <p style="text-align:center;color:rgba(232,232,240,0.3);font-size:0.85rem;margin-top:16px">滑动查看更多 · bwvi style list 查看全部 56 种风格</p>
+</section>
+
+<!-- ===== 12 种动画 ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">🎬 12 种动画</div>
+    <h2 class="bwi-anim bwi-fade-up">动画引擎演示</h2>
+    <p class="bwi-anim bwi-fade-up" style="animation-delay:0.2s">7 种 Easing · Stagger 序列 · Scroll-trigger</p>
+  </div>
+  <div class="anim-demo-grid">
+    <div class="anim-demo-box bwi-anim bwi-fade-in"><div style="font-size:2rem;margin-bottom:8px">👋</div>fade-in</div>
+    <div class="anim-demo-box bwi-anim bwi-fade-up"><div style="font-size:2rem;margin-bottom:8px">🚀</div>fade-up</div>
+    <div class="anim-demo-box bwi-anim bwi-scale-in"><div style="font-size:2rem;margin-bottom:8px">🔍</div>scale-in</div>
+    <div class="anim-demo-box bwi-anim bwi-slide-left"><div style="font-size:2rem;margin-bottom:8px">👈</div>slide-left</div>
+    <div class="anim-demo-box bwi-anim bwi-slide-right"><div style="font-size:2rem;margin-bottom:8px">👉</div>slide-right</div>
+    <div class="anim-demo-box bwi-anim bwi-bounce-in"><div style="font-size:2rem;margin-bottom:8px">🤸</div>bounce-in</div>
+    <div class="anim-demo-box bwi-anim bwi-rotate-in"><div style="font-size:2rem;margin-bottom:8px">🔄</div>rotate-in</div>
+    <div class="anim-demo-box bwi-anim bwi-flip-in"><div style="font-size:2rem;margin-bottom:8px">🃏</div>flip-in</div>
+    <div class="anim-demo-box bwi-anim bwi-shimmer"><div style="font-size:2rem;margin-bottom:8px">✨</div>shimmer</div>
+    <div class="anim-demo-box bwi-anim bwi-float"><div style="font-size:2rem;margin-bottom:8px">🎈</div>float</div>
+    <div class="anim-demo-box bwi-anim bwi-glow"><div style="font-size:2rem;margin-bottom:8px">💡</div>glow</div>
+    <div class="anim-demo-box"><div style="font-size:2rem;margin-bottom:8px;overflow:hidden"><span class="bwi-typewriter" style="display:inline-block;animation-duration:3s">typewriter</span></div>typewriter</div>
+  </div>
+</section>
+
+<!-- ===== 设备墙 ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">📱 5 设备</div>
+    <h2 class="bwi-anim bwi-fade-up">设备边框</h2>
+  </div>
+  <div class="device-wall bwi-anim bwi-fade-up" style="animation-delay:0.2s">
+    <div class="device-card">
+      <div class="device-icon bwi-anim bwi-float">📱</div>
+      <div class="device-name">iPhone 15 Pro</div>
+      <div class="device-orient">portrait / landscape</div>
+    </div>
+    <div class="device-card">
+      <div class="device-icon bwi-anim bwi-float" style="animation-delay:0.2s">📱</div>
+      <div class="device-name">Pixel 9</div>
+      <div class="device-orient">portrait / landscape</div>
+    </div>
+    <div class="device-card">
+      <div class="device-icon bwi-anim bwi-float" style="animation-delay:0.4s">📋</div>
+      <div class="device-name">iPad Pro</div>
+      <div class="device-orient">portrait / landscape</div>
+    </div>
+    <div class="device-card">
+      <div class="device-icon bwi-anim bwi-float" style="animation-delay:0.6s">💻</div>
+      <div class="device-name">MacBook Pro</div>
+      <div class="device-orient">landscape</div>
+    </div>
+    <div class="device-card">
+      <div class="device-icon bwi-anim bwi-float" style="animation-delay:0.8s">🌐</div>
+      <div class="device-name">浏览器窗口</div>
+      <div class="device-orient">responsive</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 交互 Demo ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">🎮 交互</div>
+    <h2 class="bwi-anim bwi-fade-up">交互原型系统</h2>
+    <p class="bwi-anim bwi-fade-up" style="animation-delay:0.2s">2KB 零依赖状态机 · Modal · Tab · Accordion · Carousel</p>
+  </div>
+
+  <div class="interactive-demo bwi-anim bwi-fade-up" style="animation-delay:0.3s">
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <div class="tab-item bwvi-active" data-bwvi-toggle="tab" data-bwvi-group="demo-tabs">📋 功能</div>
+      <div class="tab-item" data-bwvi-toggle="tab" data-bwvi-group="demo-tabs">⚡ 性能</div>
+      <div class="tab-item" data-bwvi-toggle="tab" data-bwvi-group="demo-tabs">🔌 集成</div>
+    </div>
+
+    <!-- Tab 1: 功能 -->
+    <div class="tab-panel bwvi-active" data-bwvi-panel="demo-tabs">
+      <h3 style="font-size:1.2rem;margin-bottom:12px">🧠 完整设计决策链</h3>
+      <p style="color:rgba(232,232,240,0.6);line-height:1.8;margin-bottom:20px">从方向选择到细节签名，每一步决策都有结构化的数据模型支撑。跨会话 Checkpoint 持久化，设计可追溯、可回滚。</p>
+      <button class="modal-trigger" data-bwvi-toggle="modal" data-bwvi-target="featuresModal">查看功能列表 →</button>
+    </div>
+
+    <!-- Tab 2: 性能 -->
+    <div class="tab-panel" data-bwvi-panel="demo-tabs">
+      <h3 style="font-size:1.2rem;margin-bottom:12px">⚡ 200ms 产出</h3>
+      <p style="color:rgba(232,232,240,0.6);line-height:1.8;margin-bottom:20px">零配置、零安装、零 daemon。`npx bwvi` 从冷启动到产出结果仅需 ~200ms。3 个 npm 依赖，873KB 单文件。</p>
+      <div style="display:flex;gap:12px">
+        <span style="padding:8px 16px;background:rgba(0,230,152,0.1);border-radius:8px;color:#00E698;font-size:0.85rem">🏆 13/13 Benchmark</span>
+        <span style="padding:8px 16px;background:rgba(94,106,210,0.1);border-radius:8px;color:#5E6AD2;font-size:0.85rem">✅ 80 测试</span>
+      </div>
+    </div>
+
+    <!-- Tab 3: 集成 -->
+    <div class="tab-panel" data-bwvi-panel="demo-tabs">
+      <h3 style="font-size:1.2rem;margin-bottom:12px">🔌 MCP Server</h3>
+      <p style="color:rgba(232,232,240,0.6);line-height:1.8;margin-bottom:20px">5 个原生 MCP 工具，兼容 Claude Code、OpenCode、Codex CLI。4 种渲染后端：内置 · Open-Design · Huashu-Design · Agent CLI。</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:0.8rem;border:1px solid rgba(255,255,255,0.1)">analyze_design</span>
+        <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:0.8rem;border:1px solid rgba(255,255,255,0.1)">generate_design</span>
+        <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:0.8rem;border:1px solid rgba(255,255,255,0.1)">critique_design</span>
+        <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:0.8rem;border:1px solid rgba(255,255,255,0.1)">learn_design</span>
+        <span style="padding:4px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:0.8rem;border:1px solid rgba(255,255,255,0.1)">list_directions</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accordion -->
+  <div style="max-width:800px;margin:32px auto 0">
+    <div class="section-header" style="margin-bottom:24px">
+      <div class="section-tag" style="display:inline-block">📖 了解更多</div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header" data-bwvi-toggle="accordion" data-bwvi-target="acc1">
+        <span>BWVI 是什么？</span>
+        <span style="transition:transform 0.3s">▼</span>
+      </div>
+      <div id="acc1" class="accordion-body"><div class="accordion-body-inner">BWVI 不是设计工具。它是 AI Agent 与设计执行之间的决策层。它不画像素——它确保每个像素都有理由。CLI + MCP Server，让 AI Agent 拥有结构化的设计决策能力。</div></div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header" data-bwvi-toggle="accordion" data-bwvi-target="acc2">
+        <span>与 Open-Design / Huashu-Design 的关系？</span>
+        <span style="transition:transform 0.3s">▼</span>
+      </div>
+      <div id="acc2" class="accordion-body"><div class="accordion-body-inner">BWVI 是"决策层"——决定画什么的架构师。Open-Design 是执行引擎——能画任何东西的工厂。Huashu-Design 是工匠工作室——把一件事做到极致的匠人。三者可以串联使用。</div></div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header" data-bwvi-toggle="accordion" data-bwvi-target="acc3">
+        <span>如何开始使用？</span>
+        <span style="transition:transform 0.3s">▼</span>
+      </div>
+      <div id="acc3" class="accordion-body"><div class="accordion-body-inner">只需一行命令：<code style="color:#00E698">npx bwvi init my-project && npx bwvi generate "你的项目" --direct</code>。零安装、零配置、零 daemon。</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Carousel ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">🖼️ 场景</div>
+    <h2 class="bwi-anim bwi-fade-up">适用场景</h2>
+  </div>
+  <div class="carousel-container bwi-anim bwi-fade-up" style="animation-delay:0.2s">
+    <div id="sceneCarousel">
+      <div class="bwvi-carousel-item bwvi-carousel-active">
+        <div class="carousel-slide">
+          <div class="emoji">🚀</div>
+          <h4>快速出 Landing Page</h4>
+          <p>50+ 行业蓝图自动匹配，200ms 产出真实 HTML 页面</p>
+        </div>
+      </div>
+      <div class="bwvi-carousel-item">
+        <div class="carousel-slide">
+          <div class="emoji">📱</div>
+          <h4>App 高保真原型</h4>
+          <p>5 种设备边框 + 交互状态机，一键生成可交互的原型</p>
+        </div>
+      </div>
+      <div class="bwvi-carousel-item">
+        <div class="carousel-slide">
+          <div class="emoji">🎨</div>
+          <h4>品牌合规设计</h4>
+          <p>115 品牌系统 + 10 维自动化评审，确保像素级品牌一致</p>
+        </div>
+      </div>
+      <div class="bwvi-carousel-item">
+        <div class="carousel-slide">
+          <div class="emoji">🎬</div>
+          <h4>产品 Demo 视频</h4>
+          <p>HTML → 动画注入 → Playwright 录屏 → MP4/GIF 一键导出</p>
+        </div>
+      </div>
+      <div class="bwvi-carousel-item">
+        <div class="carousel-slide">
+          <div class="emoji">🤖</div>
+          <h4>CI/CD 设计门禁</h4>
+          <p>自动化 10 维评审作为质量门禁，评分低于阈值自动 block PR</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-nav">
+      <button data-bwvi-carousel="sceneCarousel" data-bwvi-dir="prev">← 上一页</button>
+      <button data-bwvi-carousel="sceneCarousel" data-bwvi-dir="next">下一页 →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 时间线 ===== -->
+<section>
+  <div class="section-header">
+    <div class="section-tag bwi-anim bwi-scale-in">📅 路线图</div>
+    <h2 class="bwi-anim bwi-fade-up">发展历程</h2>
+  </div>
+  <div class="timeline bwi-anim bwi-fade-up">
+    <div class="timeline-item">
+      <div class="timeline-time">v0.1.0 · 2026-04</div>
+      <div class="timeline-title">决策链协议诞生</div>
+      <div class="timeline-desc">10 方向 · 5 维度评审 · 首批 30 品牌</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">v0.2.0 · 2026-05</div>
+      <div class="timeline-title">Page Builder + 完整系统</div>
+      <div class="timeline-desc">50+ 蓝图 · 115 品牌 · 56 风格 · 12 动画 · 5 设备 · MCP Server · 80 测试</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">v0.2.1 · 2026-05</div>
+      <div class="timeline-title">视频录制 + 交互录制</div>
+      <div class="timeline-desc">Playwright 录屏 · ffmpeg 合成 · GIF/MP4 导出 · BGM · 交互自动检测</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">Next →</div>
+      <div class="timeline-title">云端引擎 + 团队协作</div>
+      <div class="timeline-desc">--engine=cloud · CI/CD 设计门禁 · 团队决策共享 · 设计债看板</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <h2 class="bwi-anim bwi-fade-up">准备好提升你的设计决策了吗？</h2>
+  <p class="bwi-anim bwi-fade-up" style="animation-delay:0.2s">零安装 · 零配置 · 零 daemon · 200ms 产出</p>
+  <div class="install-cmd bwi-anim bwi-scale-in" style="animation-delay:0.4s">
+    <span>$</span> npx bwvi generate "你的品牌 landing" --direct
+  </div>
+  <div class="hero-actions" style="justify-content:center">
+    <button class="btn btn-accent bwi-anim bwi-fade-up" style="animation-delay:0.6s" onclick="document.getElementById('top').scrollIntoView({behavior:'smooth'})">↑ 回到顶部</button>
+    <button class="btn btn-primary bwi-anim bwi-fade-up" style="animation-delay:0.7s" data-bwvi-toggle="toast" data-bwvi-target="⭐ 感谢关注 BWVI！">支持项目</button>
+  </div>
+  <p style="margin-top:48px;color:rgba(232,232,240,0.2);font-size:0.8rem">Apache-2.0 Licensed · github.com/lh123aa/bwvi-design</p>
+</section>
+
+<!-- ===== Modal 2 ===== -->
+<div id="featuresModal" class="bwvi-modal">
+  <div style="background:#1A1A2E;border-radius:20px;padding:40px;max-width:500px;width:90%;margin:auto;position:relative;border:1px solid rgba(255,255,255,0.1)">
+    <button style="position:absolute;top:16px;right:16px;background:none;border:none;color:rgba(232,232,240,0.5);font-size:1.5rem;cursor:pointer" data-bwvi-toggle="modal" data-bwvi-target="featuresModal">✕</button>
+    <h3 style="font-size:1.5rem;margin-bottom:20px">✨ BWVI 全部功能</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🧠 决策链</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🏭 50+ 蓝图</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🏷️ 115 品牌</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🎨 56 风格</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🎬 12 动画</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">📱 5 设备</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🔍 10 维评审</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🔌 MCP Server</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🎮 交互原型</div>
+      <div style="padding:12px;background:rgba(255,255,255,0.03);border-radius:8px;font-size:0.85rem">🎥 视频录制</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Toast 容器 ===== -->
+<div class="bwvi-toast"></div>
+
+<!-- ===== 状态机 ===== -->
+<script>
+(function(){'use strict';
+var S={theme:localStorage.getItem('bwvi-theme')||'light',toast:null};
+function q(s){return document.querySelectorAll(s)}
+function r(id){return document.getElementById(id)}
+function t(el){return el.getAttribute('data-bwvi-toggle')}
+function g(el){return el.getAttribute('data-bwvi-group')}
+function tar(el){return el.getAttribute('data-bwvi-target')}
+
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-bwvi-toggle]');
+  if(!el) return;
+  var type=t(el),target=tar(el),group=g(el);
+
+  if(type==='modal'||type==='dialog'){
+    var m=target?r(target):el.nextElementSibling;
+    if(m&&m.classList.contains('bwvi-modal')){
+      m.style.display=m.style.display==='none'?'flex':'none';
+      m.classList.toggle('bwvi-open');
+    }
+    return;
+  }
+
+  if(type==='tab'&&group){
+    q('[data-bwvi-group="'+group+'"]').forEach(function(x){x.classList.remove('bwvi-active')});
+    el.classList.add('bwvi-active');
+    q('[data-bwvi-panel="'+group+'"]').forEach(function(p){p.style.display='none'});
+    var panel=target?r(target):null;
+    if(panel){panel.style.display='block';panel.classList.add('bwvi-active')}
+    return;
+  }
+
+  if(type==='accordion'){
+    var body=target?r(target):el.nextElementSibling;
+    if(body){
+      var isOpen=body.style.maxHeight&&body.style.maxHeight!=='0px';
+      body.style.maxHeight=isOpen?'0px':body.scrollHeight+'px';
+      el.classList.toggle('bwvi-open');
+    }
+    return;
+  }
+
+  if(type==='darkmode'){
+    S.theme=S.theme==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',S.theme);
+    localStorage.setItem('bwvi-theme',S.theme);
+    return;
+  }
+
+  if(type==='toast'){
+    var msg=target||'Done!';
+    var toast=document.querySelector('.bwvi-toast');
+    if(toast){
+      toast.textContent=msg;
+      toast.classList.add('bwvi-toast-show');
+      setTimeout(function(){toast.classList.remove('bwvi-toast-show')},2000);
+    }
+    return;
+  }
+});
+
+// Carousel
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-bwvi-carousel]');
+  if(!el) return;
+  var id=el.getAttribute('data-bwvi-carousel');
+  var dir=el.getAttribute('data-bwvi-dir')||'next';
+  var c=r(id);
+  if(!c) return;
+  var items=c.querySelectorAll('.bwvi-carousel-item');
+  if(!items.length) return;
+  var current=c.querySelector('.bwvi-carousel-active')||items[0];
+  var idx=Array.from(items).indexOf(current);
+  if(dir==='next') idx=(idx+1)%items.length;
+  else idx=(idx-1+items.length)%items.length;
+  items.forEach(function(it){it.classList.remove('bwvi-carousel-active')});
+  items[idx].classList.add('bwvi-carousel-active');
+});
+
+// Init
+if(S.theme==='dark') document.documentElement.setAttribute('data-theme','dark');
+})();
+</script>
+</body>
+</html>
