@@ -27,7 +27,7 @@ export async function generateCommand(args: string[]) {
   const brandName = brandFlag ? brandFlag.split("=")[1] : undefined;
   const brand = brandName ? getBrand(brandName) : undefined;
   const engineFlag = args.find(a => a.startsWith("--engine="));
-  const engine = (engineFlag ? engineFlag.split("=")[1] : "direct") as "direct" | "od" | "huashu" | "agent";
+  const engine = (engineFlag ? engineFlag.split("=")[1] : "direct") as "direct" | "od" | "huashu" | "agent" | "pencil";
   const styleFlag = args.find(a => a.startsWith("--style="));
   const styleId = styleFlag ? styleFlag.split("=")[1] : undefined;
   const aiImages = args.includes("--ai-images");
@@ -49,7 +49,7 @@ Options:
   --brand=<name>        Brand system: linear, stripe, apple...
   --dark                Enable dark mode
   --interactive         Embed interactive state machine
-  --engine=<backend>    Render backend: direct, od, huashu, agent
+  --engine=<backend>    Render backend: direct, od, huashu, agent, pencil
   --json                JSON output mode
 
 Examples:
@@ -68,7 +68,7 @@ Examples:
     const palette = brand ? { primary: brand.colors.primary, accent: brand.colors.accent, surface: brand.colors.surface, text: brand.colors.text } : DIRECTION_PALETTES[direction];
     const fontStack = brand ? brand.typography.display : DIRECTION_FONTS[direction];
 
-    if (engine === "od" || engine === "huashu") {
+    if (engine === "od" || engine === "huashu" || engine === "pencil") {
       const result = await render({
         backend: engine, device, orientation, dark, variant, brandName: brand?.name,
         brandColors: palette, fontStack, interactive,

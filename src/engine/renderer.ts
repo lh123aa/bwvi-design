@@ -4,8 +4,9 @@ import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getBaseStyles } from "../templates/components.js";
 import { renderViaOd, healthCheck as odHealth } from "./bridges/od-bridge.js";
 import { renderViaHuashu } from "./bridges/huashu-bridge.js";
+import { renderViaPencil } from "./bridges/pencil-bridge.js";
 
-export type RenderBackend = "direct" | "od" | "huashu" | "agent";
+export type RenderBackend = "direct" | "od" | "huashu" | "agent" | "pencil";
 export type FlowMode = "overview" | "flow";
 
 export interface RenderOptions {
@@ -142,6 +143,24 @@ export async function render(options: RenderOptions): Promise<RenderResult> {
       return renderViaHuashuBackend(options);
     case "agent":
       return renderViaAgent(options);
+    case "pencil": {
+      const result = await renderViaPencil({
+        task: options.brandName || "design",
+        direction: options.variant,
+        brandName: options.brandName,
+        device: options.device,
+        orientation: options.orientation,
+        dark: options.dark,
+        outputDir: options.outputDir,
+      });
+      return {
+        html: "",
+        backend: "pencil",
+        files: result.penFile ? [result.penFile] : [],
+        warnings: result.warnings,
+        backendInfo: result.batchScript ? `Pencil script: ${result.batchScript}` : "Pencil design generated",
+      };
+    }
     case "direct":
     default:
       return renderDirect(options);
