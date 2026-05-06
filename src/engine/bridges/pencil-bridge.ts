@@ -231,7 +231,7 @@ async function tryDirectPencil(
   try {
     // 尝试通过子进程调用 Pencil CLI
     const { execSync } = await import("node:child_process");
-    execSync("pencil --version", { stdio: "pipe", timeout: 3000 });
+    execSync("pencil --version", { stdio: "pipe", timeout: 1000 });
   } catch {
     return { success: false, warnings: ["Pencil CLI 未安装"] };
   }
