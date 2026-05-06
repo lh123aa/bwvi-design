@@ -8,3 +8,5 @@ dist/
 demo/*.html
 demo/*.webm
 my-plugin/
+
+pencil-batch-*.json
