@@ -203,21 +203,40 @@ function generateOperations(
     });
   }
 
-  // 设备边框
+  // 品牌色板变量
+  ops.push({
+    type: "U",
+    target: canvasId,
+    data: {
+      fill: palette.surface,
+    },
+    label: "应用品牌色板",
+  });
+
+  // 设备边框 — 通过画布尺寸模拟
   if (device && device !== "browser") {
+    const size = DEVICE_SIZES[device] || DEVICE_SIZES.browser;
     ops.push({
       type: "U",
       target: canvasId,
       data: {
-        deviceFrame: device,
+        width: size.width,
+        height: size.height,
         cornerRadius: device === "iphone" || device === "pixel" ? 48 : 16,
-        shadow: "0 20px 60px rgba(0,0,0,0.3)",
       },
-      label: `应用 ${device} 设备边框`,
+      label: `应用 ${device} 设备边框 (${size.width}×${size.height})`,
     });
   }
 
   return ops;
+}
+
+/** 返回设备尺寸信息 */
+export function getDeviceInfo(device?: string): { width: number; height: number; name: string } {
+  const key = (device || "browser") as keyof typeof DEVICE_SIZES;
+  const size = DEVICE_SIZES[key] || DEVICE_SIZES.browser;
+  const names: Record<string, string> = { iphone: "iPhone 15 Pro", pixel: "Pixel 9", ipad: "iPad Pro", macbook: "MacBook Pro", browser: "浏览器" };
+  return { ...size, name: names[key] || "浏览器" };
 }
 
 // ============================================================

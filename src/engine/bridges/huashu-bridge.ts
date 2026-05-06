@@ -1,6 +1,5 @@
 import { execSync } from "node:child_process";
 import { writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { join } from "node:path";
 
 export interface HuashuBridgeConfig {
   skillPath?: string;

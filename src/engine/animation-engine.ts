@@ -75,7 +75,7 @@ ${[1,2,3,4,5,6,7,8].map(i => `.bwi-del-${i}{animation-delay:${(i*0.12).toFixed(2
 export function animAttr(config: AnimConfig): string {
   const dur = config.duration || 0.5;
   const durClass = dur <= 0.3 ? "bwi-dur-1" : dur <= 0.5 ? "bwi-dur-2" : dur <= 0.8 ? "bwi-dur-3" : dur <= 1.2 ? "bwi-dur-4" : "bwi-dur-5";
-  const easing = EASING_CSS[config.easing || "ease-out"];
+  const easing = EASING_CSS[config.easing || "ease-out"]; void easing;
   const easingSuffix = config.easing && config.easing !== "ease-out" ? ` bwi-ease-${config.easing}` : "";
   const delay = config.delay ? ` bwi-del-${Math.round(config.delay / 0.12)}` : "";
   return ` class="bwi-anim bwi-${config.type} ${durClass}${easingSuffix}${delay}" style="--bwi-distance:${config.distance || 30}px;animation-duration:${dur}s${config.easing && config.easing !== 'ease-out' ? '' : ''}"`;

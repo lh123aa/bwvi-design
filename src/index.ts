@@ -29,8 +29,6 @@ import { serveCommand } from "./cli/serve.js";
 
 const BWVI_VERSION = "0.2.1";
 const COMMANDS = ["init","analyze","generate","critique","learn","showcase","checkpoint","feedback","knowledge","asset","brief","debt","history","brand","style","template","test","animate","export","preview","video","plugin","diff","benchmark","mcp"];
-const GENERATE_FLAGS = ["--direct","--run","--device=","--orientation=","--variant=","--style=","--brand=","--dark","--interactive","--engine=","--json"];
-const STYLE_IDS = ["minimal-white","clean-corporate","soft-minimal","warm-editorial","dark-luxury","neo-brutalism","glassmorphism","cyberpunk","playful-color","pastel-dream","kawaii-japan","nature-organic","corporate-trust","tech-utility","photography","music-vibe"];
 
 async function main() {
   if (process.argv.includes("--version") || process.argv.includes("-v")) {

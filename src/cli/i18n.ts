@@ -307,7 +307,3 @@ export function getLang(): string {
 }
 
 export { MESSAGES };
-
-export function getLang(): string {
-  return process.env.BWVI_LANG || "zh-CN";
-}

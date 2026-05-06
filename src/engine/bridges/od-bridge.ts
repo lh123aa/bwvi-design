@@ -1,8 +1,7 @@
 import { execSync } from "node:child_process";
-import { join, dirname } from "node:path";
+import { join } from "node:path";
 
 const OD_DAEMON_PORT = 7456;
-const OD_WEB_PORT = 5173;
 
 export interface OdBridgeConfig {
   daemonPort?: number;
