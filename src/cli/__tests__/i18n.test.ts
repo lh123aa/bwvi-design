@@ -10,7 +10,8 @@ describe("CLI i18n", () => {
     const old = process.env.BWVI_LANG;
     process.env.BWVI_LANG = "en";
     expect(t("task_required")).toBe("Please provide a task description");
-    process.env.BWVI_LANG = old;
+    if (old === undefined) delete process.env.BWVI_LANG;
+    else process.env.BWVI_LANG = old;
   });
 
   it("should return fallback for missing keys", () => {
@@ -25,7 +26,8 @@ describe("CLI i18n", () => {
     const old = process.env.BWVI_LANG;
     process.env.BWVI_LANG = "en";
     expect(tpl("style_count", { n: 56 })).toBe("56 built-in styles");
-    process.env.BWVI_LANG = old;
+    if (old === undefined) delete process.env.BWVI_LANG;
+    else process.env.BWVI_LANG = old;
   });
 
   it("should have all 82 messages", async () => {
