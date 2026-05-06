@@ -46,7 +46,7 @@ async function main() {
     case "critique": await critiqueCommand(args); break;
     case "learn": await learnCommand(args); break;
     case "benchmark": await runBenchmark(); break;
-    case "mcp": await startMcpServer(); break;
+    case "mcp": await startMcpServer(args); break;
     case "checkpoint": await checkpointCommand(args); break;
     case "showcase": await showcaseCommand(args); break;
     case "feedback": await feedbackCommand(args); break;

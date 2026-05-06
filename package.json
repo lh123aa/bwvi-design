@@ -13,7 +13,7 @@
     "test": "vitest run",
     "benchmark": "tsx src/index.ts benchmark run",
     "build": "node scripts/build.mjs",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm test && npm run benchmark"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -45,7 +45,7 @@
   "files": [
     "dist/",
     "README.md",
-    "README.zh-CN.md",
+
     "README.en.md",
     "LICENSE"
   ]
