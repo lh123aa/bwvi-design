@@ -201,51 +201,6 @@ bwvi --help
 
 ---
 
-## 🏛 架构
-
-```
-src/
-├── types/              纯接口定义，0 依赖
-│   ├── decision.ts     决策链类型
-│   ├── project.ts      项目 / Checkpoint 配置
-│   ├── critique.ts     评审报告类型
-│   └── fingerprint.ts  设计指纹类型
-│
-├── engine/             核心引擎
-│   ├── analyzer.ts     任务分析 → 10 种方向
-│   ├── composer.ts     Prompt 组装
-│   ├── agent.ts        Agent CLI 检测
-│   ├── learner.ts      外部设计学习
-│   ├── brand-loader.ts 115 个内置品牌系统
-│   ├── imager.ts       真实图片管道
-│   ├── slop-guard.ts   反 AI Slop 检测（8 项检查）
-│   ├── page-builder.ts 页面组装引擎
-│   ├── renderer.ts     多后端渲染调度器
-│   ├── animation-engine.ts 动画引擎
-│   ├── style-systems.ts 56 种视觉风格
-│   └── bridges/
-│       ├── od-bridge.ts      Open-Design 客户端
-│       └── huashu-bridge.ts  Huashu-Design 调用器
-│
-├── frames/             设备边框
-│   ├── index.ts        iPhone/Pixel/iPad/MacBook/Browser
-│   └── state-machine.ts 2KB 交互状态机
-│
-├── templates/          组件库
-│   ├── components.ts    Navbar/Hero/StatsGrid… 15+ 组件
-│   └── content-presets.ts 50+ 行业蓝图
-│
-├── mcp/                MCP Server（5 tools）
-├── critique/           评审引擎（10 维客观 + 5 维主观）
-├── checkpoint/         Checkpoint 持久化
-├── fingerprint/        设计指纹
-├── knowledge/          知识块加载器
-├── report/             报告生成器
-└── cli/                25 个 CLI 命令
-```
-
----
-
 ## 🎯 设计决策协议
 
 核心抽象是一条**渐进约束的决策链**：

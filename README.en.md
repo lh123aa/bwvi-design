@@ -71,23 +71,6 @@ npx bwvi --help          # Run instantly (no install)
 npm install -g bwvi      # Or install globally
 ```
 
-## 🏛 Architecture
-
-```
-src/
-├── types/              Pure interfaces, 0 dependencies
-├── engine/             Core engine (analyzer, page-builder, renderer, brand-loader, style-systems...)
-├── frames/             Device frames (iPhone/Pixel/iPad/MacBook/Browser)
-├── templates/          Component library (15+ components)
-├── mcp/                MCP Server (5 tools)
-├── critique/           Critique engine (10 objective + 5 subjective)
-├── checkpoint/         Decision persistence
-├── fingerprint/        Design fingerprint
-├── knowledge/          Knowledge block loader
-├── report/             Report generator
-└── cli/                25 CLI commands
-```
-
 ## 📟 Commands
 
 **Core**: `init` `analyze` `generate` `critique` `learn`  
