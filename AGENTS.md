@@ -1,4 +1,4 @@
-# BWVI 项目规则
+# BWVI 项目规则（v0.2.1）
 
 ## RTK 使用规则
 
@@ -24,8 +24,38 @@ npm run dev -- <args>    # 开发模式（TS 直接运行）
 npm run typecheck        # 类型检查（tsc --noEmit）
 npm run build            # 生产构建（esbuild CJS+ESM）
 npm start                # 运行 dist/bwvi.cjs
-npm run benchmark        # 5 用例基准测试
+npm test                 # 86 用例单元测试（vitest）
+npm run benchmark        # 13 用例基准测试 v
 npm run build && npm start  # 完整构建+运行
+```
+
+## 视频录制（v0.2.1 新增）
+
+```bash
+bwvi animate page.html --record                    # 1080p 25fps MP4
+bwvi animate page.html --record --fps=60           # 60fps
+bwvi animate page.html --record --format=gif       # GIF 导出
+bwvi animate page.html --record --bgm=tech         # BGM
+bwvi animate page.html --record --interactive      # 交互录制
+```
+
+依赖: `npm install -D playwright && npx playwright install chromium`
+
+## Pencil Bridge（v0.2.1 新增）
+
+```bash
+bwvi generate "咖啡品牌" --engine=pencil          # Pencil 设计稿
+```
+
+## 视频文件清单
+
+```
+src/engine/
+├── video-capture.ts        Playwright 录屏
+├── video-composer.ts       ffmpeg 合成 + BGM
+├── video-inject.ts         录制动画注入
+├── interaction-capture.ts  交互录制
+└── bridges/pencil-bridge.ts Pencil 设计稿
 ```
 
 ## 代码规范
