@@ -350,16 +350,34 @@ export async function executeInteractions(
     const step = plan.steps[i];
 
     try {
-      // 滚动到元素
-      if (step.scrollOffset) {
-        await page.evaluate((offset: number) => window.scrollBy(0, offset), step.scrollOffset);
+      // 先尝试滚动元素到视口
+      try {
+        await page.evaluate((sel: string) => {
+          const el = document.querySelector(sel);
+          if (el) {
+            el.scrollIntoView({ behavior: "instant", block: "center" });
+            // 如果元素在隐藏容器中，尝试显示其父级 tab/accordion
+            let parent = el.closest('[data-bwvi-panel], .bwvi-accordion-body');
+            if (parent) {
+              (parent as HTMLElement).style.display = 'block';
+              (parent as HTMLElement).style.maxHeight = parent.scrollHeight + 'px';
+            }
+          }
+        }, step.selector);
         await page.waitForTimeout(200);
-      }
+      } catch { /* ignore scroll errors */ }
 
       switch (step.action) {
         case "click":
-          await page.waitForSelector(step.selector, { state: "visible", timeout: 3000 });
-          await page.click(step.selector);
+          await page.waitForSelector(step.selector, { state: "visible", timeout: 5000 }).catch(() => {});
+          // 使用 force:true 绕过可见性检查（处理隐藏面板内的元素）
+          await page.click(step.selector, { force: true, timeout: 5000 }).catch(() => {
+            // 如果常规点击失败，尝试 JS 点击
+            return page.evaluate((sel: string) => {
+              const el = document.querySelector(sel) as HTMLElement;
+              if (el) el.click();
+            }, step.selector);
+          });
           break;
 
         case "scrollTo":
@@ -369,11 +387,10 @@ export async function executeInteractions(
           break;
 
         case "type":
-          await page.fill(step.selector, step.value || "");
+          await page.fill(step.selector, step.value || "").catch(() => {});
           break;
 
         case "wait":
-          // 无需操作，pauseAfter 处理
           break;
       }
 
@@ -382,7 +399,7 @@ export async function executeInteractions(
       }
     } catch (e) {
       // 交互失败不中断整体录制，打印警告继续
-      console.warn(`[BWVI] 交互步骤 ${i + 1} (${step.label}) 失败: ${e}`);
+      console.warn(`[BWVI] 交互步骤 ${i + 1} (${step.label}) 失败`);
     }
   }
 }

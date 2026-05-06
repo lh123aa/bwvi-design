@@ -12,13 +12,13 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { getAnimationCSS, getStageScript } from "../engine/animation-engine.js";
 import { info, success, warn, errExit, result } from "./ux.js";
-import { checkFfmpeg, composeVideo, type VideoFormat, type VideoQuality } from "../engine/video-composer.js";
+import { checkFfmpeg, getFfmpegInstallGuide, composeVideo, ensureBgm, type VideoFormat, type VideoQuality, BGM_PRESETS } from "../engine/video-composer.js";
 import { captureVideo, checkPlaywright, type ScrollBehavior, type CaptureOptions } from "../engine/video-capture.js";
 import { detectInteractions, executeInteractions } from "../engine/interaction-capture.js";
 import { getDemoDir } from "./demo.js";
 
-const BGM_LIST = ["tech", "corporate", "warm", "energetic", "ambient"] as const;
-type BgmName = (typeof BGM_LIST)[number];
+const BGM_LIST = Object.keys(BGM_PRESETS);
+type BgmName = keyof typeof BGM_PRESETS;
 
 export async function animateCommand(args: string[]) {
   // ---- help ----
@@ -111,11 +111,9 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
 
   const ffmpeg = checkFfmpeg();
   if (!ffmpeg.installed) {
+    const guide = getFfmpegInstallGuide();
     errExit(
-      "ffmpeg 未安装。请安装 ffmpeg 后重试:\n" +
-      "  winget install ffmpeg   (Windows)\n" +
-      "  brew install ffmpeg     (macOS)\n" +
-      "  sudo apt install ffmpeg (Linux)",
+      `ffmpeg 未安装。请安装 ffmpeg 后重试:\n  ${guide.command}\n  ${guide.detail}`,
       "FFMPEG_NOT_FOUND"
     );
   }
@@ -136,19 +134,13 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
   // 2. 解析 BGM 路径
   let bgmPath: string | undefined;
   if (opts.bgm) {
-    // 尝试本地缓存目录
-    const cacheDir = getCacheDir();
-    const localBgm = join(cacheDir, `${opts.bgm}.mp3`);
-    const bundledBgm = join(dirname(process.cwd()), "assets", "bgm", `${opts.bgm}.mp3`);
-
-    if (existsSync(localBgm)) {
-      bgmPath = localBgm;
-    } else if (existsSync(bundledBgm)) {
-      bgmPath = bundledBgm;
+    info(`生成 BGM: ${opts.bgm} (${(BGM_PRESETS as any)[opts.bgm]?.desc || ""})`);
+    bgmPath = ensureBgm(opts.bgm, opts.duration || 30) ?? undefined;
+    if (!bgmPath) {
+      warn(`BGM "${opts.bgm}" 生成失败，将不添加背景音乐`);
+      warn(`  可用 BGM: ${Object.keys(BGM_PRESETS).join(", ")}`);
     } else {
-      warn(`BGM "${opts.bgm}" 未找到本地文件，将不添加背景音乐`);
-      warn(`  可用 BGM: ${BGM_LIST.join(", ")}`);
-      warn(`  放置 MP3 到: ${cacheDir}`);
+      success(`BGM 已就绪`);
     }
   }
 
@@ -271,16 +263,6 @@ Examples:
   bwvi animate page.html --record --scroll=section  # Per-section scroll
   bwvi animate page.html --record --interactive     # Record with interaction demo
 `);
-}
-
-function getCacheDir(): string {
-  const home = process.env.USERPROFILE || process.env.HOME || ".";
-  const cache = join(home, ".bwvi", "cache", "bgm");
-  if (!existsSync(cache)) {
-    const { mkdirSync } = require("node:fs") as typeof import("node:fs");
-    mkdirSync(cache, { recursive: true });
-  }
-  return cache;
 }
 
 async function getFileSize(filePath: string): Promise<string> {

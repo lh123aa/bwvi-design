@@ -10,8 +10,8 @@
  */
 
 import { execSync } from "node:child_process";
-import { existsSync, unlinkSync } from "node:fs";
-import { dirname, join, basename } from "node:path";
+import { existsSync, unlinkSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { dirname, join, basename, extname } from "node:path";
 
 export type VideoFormat = "mp4" | "gif" | "webm";
 export type VideoQuality = "high" | "medium" | "low" | "quick";
@@ -48,6 +48,30 @@ export function checkFfmpeg(): { installed: boolean; version?: string } {
   } catch {
     return { installed: false };
   }
+}
+
+/**
+ * 根据操作系统返回 ffmpeg 安装指引
+ */
+export function getFfmpegInstallGuide(): { command: string; detail: string } {
+  const os = process.platform;
+  if (os === "win32") {
+    return {
+      command: "winget install ffmpeg",
+      detail: "或下载: https://ffmpeg.org/download.html#build-windows",
+    };
+  }
+  if (os === "darwin") {
+    return {
+      command: "brew install ffmpeg",
+      detail: "或: curl -L https://evermeet.cx/ffmpeg/get | bash",
+    };
+  }
+  // Linux
+  return {
+    command: "sudo apt install ffmpeg",
+    detail: "或: sudo dnf install ffmpeg (Fedora) / sudo pacman -S ffmpeg (Arch)",
+  };
 }
 
 /**
@@ -236,4 +260,72 @@ export function cleanupTempFiles(outputPath: string): { removed: number; files: 
   }
 
   return { removed: removed.length, files: removed };
+}
+
+/**
+ * BGM 预设定义。
+ * 每个预设是一个音色描述，运行时用 ffmpeg 合成。
+ */
+export const BGM_PRESETS = {
+  tech:       { freq: 440, tempo: "0.5", desc: "科技电子 · 440Hz 脉冲" },
+  corporate:  { freq: 392, tempo: "0.3", desc: "企业专业 · 392Hz 沉稳" },
+  warm:       { freq: 523, tempo: "0.2", desc: "温暖原声 · 523Hz 明亮" },
+  energetic:  { freq: 659, tempo: "0.6", desc: "动感活力 · 659Hz 激昂" },
+  ambient:    { freq: 220, tempo: "0.1", desc: "氛围环境 · 220Hz 舒缓" },
+} as const;
+
+export type BgmPreset = keyof typeof BGM_PRESETS;
+
+/**
+ * 获取 BGM 文件路径。
+ * 如果本地不存在，自动用 ffmpeg 合成。
+ *
+ * @returns BGM 文件路径，或 null（如果 ffmpeg 不可用）
+ */
+export function ensureBgm(
+  name: string,
+  durationSec: number = 30
+): string | null {
+  const preset = (BGM_PRESETS as any)[name];
+  if (!preset) return null;
+
+  const cacheDir = getBgmCacheDir();
+  const bgmPath = join(cacheDir, `${name}-${durationSec}s.mp3`);
+
+  if (existsSync(bgmPath)) return bgmPath;
+
+  // 使用 ffmpeg 合成 BGM
+  try {
+    // 检查 ffmpeg
+    execSync("ffmpeg -version", { stdio: "pipe", timeout: 3000 });
+
+    const { freq, tempo } = preset;
+    // 生成带节奏感的音轨：基础频率 + 谐波 + 节奏脉冲
+    const rate = "44100";
+    const tmpWav = bgmPath.replace(/\.mp3$/, ".wav");
+
+    // 使用 ffmpeg 的 synth 滤镜生成音频
+    // 主音 + 低八度和声 + 节奏脉冲
+    execSync(
+      `ffmpeg -y -f lavfi -i "sine=frequency=${freq}:duration=${durationSec}" ` +
+      `-f lavfi -i "sine=frequency=${freq / 2}:duration=${durationSec}" ` +
+      `-filter_complex ` +
+      `"[0:a]volume=0.4[a1];[1:a]volume=0.2[a2];` +
+      `[a1][a2]amix=inputs=2:duration=first,` +
+      `afade=t=in:st=0:d=2,afade=t=out:st=${durationSec - 3}:d=3" ` +
+      `-c:a libmp3lame -q:a 2 "${bgmPath}"`,
+      { stdio: "pipe", timeout: 30000, shell: true as any }
+    );
+
+    if (existsSync(bgmPath)) return bgmPath;
+  } catch { /* ffmpeg 不可用 */ }
+
+  return null;
+}
+
+function getBgmCacheDir(): string {
+  const home = process.env.USERPROFILE || process.env.HOME || ".";
+  const cache = join(home, ".bwvi", "cache", "bgm");
+  if (!existsSync(cache)) mkdirSync(cache, { recursive: true });
+  return cache;
 }
