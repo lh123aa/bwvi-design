@@ -92,7 +92,7 @@ src/
 
 **Core**: `init` `analyze` `generate` `critique` `learn`  
 **Design**: `showcase` `checkpoint` `feedback` `knowledge` `asset` `brief` `debt` `history` `brand` `style` `template`  
-**Tools**: `test` `animate` `export` `preview` `image` `serve` `video` `plugin` `diff` `benchmark` `mcp`
+**Tools**: `test` `animate` `export` `preview` `image` `serve` `plugin` `diff` `benchmark` `mcp`
 
 ## 🔗 Features
 
@@ -103,6 +103,9 @@ src/
 | Brand colors | `bwvi generate "SaaS" --brand=linear` |
 | Visual styles | `bwvi style list` (56 styles) |
 | Animations | `bwvi animate file.html --embed` |
+| Video recording | `bwvi animate file.html --record --fps=60` |
+| GIF export | `bwvi animate file.html --record --format=gif` |
+| Interactive recording | `bwvi animate file.html --record --interactive` |
 | Multi-backend | `bwvi generate "task" --engine=od` |
 | MCP Server | `bwvi mcp` |
 | Interactive prototype | `bwvi generate "app" --device=iphone --interactive` |

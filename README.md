@@ -286,8 +286,8 @@ direction → palette → typography → [information_density] → layout → de
 | | `style` | 视觉风格（list/show/search，56 内置） |
 | | `template` | 模板管理 |
 | **工具** | `test` | HTML 验证（a11y/响应式/语义） |
-| | `animate` | 嵌入动画 / 导出 MP4 |
-| | `video` | HTML → MP4/GIF（需 ffmpeg） |
+| | `animate` | 注入动画 / `--record` 录制 MP4/GIF / `--interactive` 交互录制 |
+| | `video` | ⚠️ 已废弃，使用 `animate --record` |
 | | `export` | 导出为 PDF/PNG/PPTX/DOCX |
 | | `preview` | 预览组件 |
 | | `image` | AI 生图（需 API Key） |
@@ -332,12 +332,36 @@ bwvi style show pastel-dream       # 查看风格详情
 
 ---
 
-## 🎬 动画引擎
+## 🎬 动画引擎 + 视频录制
 
 ```bash
-bwvi animate output.html --embed              # 嵌入动画 CSS + scroll-trigger
-bwvi animate output.html --fps=60 --format=mp4  # 导出 MP4（需 ffmpeg）
-bwvi animate output.html --bgm=tech             # 添加 BGM
+# 注入 CSS 动画（原行为）
+bwvi animate output.html --embed
+
+# 视频录制（需 Playwright + ffmpeg）
+bwvi animate output.html --record                    # 默认 1080p 25fps MP4
+bwvi animate output.html --record --fps=60           # 60fps 高清
+bwvi animate output.html --record --format=gif       # GIF 导出
+bwvi animate output.html --record --bgm=tech         # 加背景音乐
+bwvi animate output.html --record --duration=10      # 固定时长
+bwvi animate output.html --record --interactive      # 自动录制交互操作
+bwvi animate output.html --record --quick            # 快速模式（720p 15fps）
+bwvi animate output.html --record --watermark=logo.png  # 加水印
+```
+
+### 录制流水线
+
+```
+HTML 页面
+  │  injectAnimations() 注入 12 种 CSS 动画
+  ▼
+带动画的 HTML
+  │  Playwright 打开页面 → 原生录屏 → 自动滚动/交互
+  ▼
+原始 WebM
+  │  ffmpeg 合成 → H.264 编码 → BGM → 水印
+  ▼
+成品 MP4 / GIF
 ```
 
 12 种动画类型：fade-in、fade-up、scale-in、slide-left/right、bounce-in、rotate-in、flip-in、shimmer、float、glow、typewriter  
