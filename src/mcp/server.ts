@@ -47,7 +47,7 @@ export async function startMcpServer(args: string[] = []) {
   const port = portFlag ? parseInt(portFlag.split("=")[1]) : 3456;
 
   const server = new Server(
-    { name: "bwvi-mcp", version: "0.2.0" },
+    { name: "bwvi-mcp", version: "0.2.1" },
     { capabilities: { tools: {} } }
   );
 

@@ -20,5 +20,5 @@ CMD ["--help"]
 
 LABEL org.opencontainers.image.title="BWVI"
 LABEL org.opencontainers.image.description="Better Way of Visual Intelligence — Agent-native design decision protocol"
-LABEL org.opencontainers.image.version="0.2.0"
+LABEL org.opencontainers.image.version="0.2.1"
 LABEL org.opencontainers.image.licenses="Apache-2.0"

@@ -1,6 +1,6 @@
 {
   "name": "bwvi",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Better Way of Visual Intelligence — Agent-native design decision protocol",
   "bin": {
