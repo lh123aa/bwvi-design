@@ -34,15 +34,43 @@
     <tr>
       <td align="center"><b>📱 5 种设备边框</b><br>iPhone · Pixel · iPad · MacBook · 浏览器</td>
       <td align="center"><b>🔍 10 维评审</b><br>自动化客观指标</td>
-      <td align="center"><b>🔌 4 种渲染后端</b><br>内置 · OD · Huashu · Agent</td>
+      <td align="center"><b>🔌 4 种渲染后端</b><br>内置 · OD · Huashu · 本地 Agent</td>
     </tr>
     <tr>
       <td align="center"><b>🏭 Page Builder</b><br>50+ 行业蓝图 → 真实页面</td>
-      <td align="center"><b>🎨 56 种风格</b><br>粗野主义 · 玻璃拟态 · 赛博朋克 …</td>
+      <td align="center"><b>🎨 56 种视觉风格</b><br>粗野主义 · 玻璃拟态 · 赛博朋克 …</td>
       <td align="center"><b>🎬 动画引擎</b><br>12 动画 × 7 easing + MP4 导出</td>
     </tr>
   </table>
 </div>
+
+---
+
+## 📋 目录
+
+- [核心特性](#-核心特性)
+- [全面对比评估](#-全面对比评估)
+- [快速开始](#-快速开始)
+- [安装](#-安装)
+- [架构](#-架构)
+- [设计决策协议](#-设计决策协议)
+- [命令](#-命令)
+- [设备边框](#-设备边框)
+- [交互原型模式](#-交互原型模式)
+- [组件变体](#-组件变体)
+- [Page Builder 蓝图引擎](#-page-builder-蓝图引擎)
+- [56 种视觉风格](#-56-种视觉风格)
+- [动画引擎](#-动画引擎)
+- [品牌系统](#-品牌系统)
+- [多后端渲染引擎](#-多后端渲染引擎)
+- [评审体系](#-评审体系)
+- [知识块系统](#-知识块系统)
+- [MCP Server](#-mcp-server)
+- [跨会话工作流](#-跨会话工作流)
+- [API 参考](#-api-参考)
+- [开发](#-开发)
+- [基准测试](#-基准测试)
+- [许可证](#-许可证)
 
 ---
 
@@ -84,6 +112,57 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 | **Agent 集成** | ★★★★★ | ★★★★★ | ★★★★☆ | 原生 MCP Server，5 tools |
 | **上手速度** | ★★★★★ | ★★★☆☆ | ★★★☆☆ | 200ms 产出，零配置 |
 | **可扩展性** | ★★★★★ | ★★★★★ | ★★★☆☆ | 插件 + 知识 MD + npm CI |
+
+### ⏱ BWVI 命令实测延迟
+
+| 命令 | 延迟 | 说明 |
+|---------|---------|-------|
+| `--help` | **~296 ms** | 冷启动 |
+| `analyze` | **~198 ms** | 本地，无网络 |
+| `generate --direct` | **~201 ms** | 本地 HTML 生成 |
+| `critique` | **~150 ms** | 本地分析 |
+| `showcase --pick` | **~200 ms** | 生成真实 HTML |
+| `brand list` | **~180 ms** | 嵌入式数据 |
+| `benchmark` (全部 13 项) | **~235 ms** | 完整套件 |
+| **平均** | **~209 ms** | |
+
+### 🎯 场景推荐
+
+| 场景 | 推荐 | 理由 |
+|----------|------|------|
+| 快速出 Landing Page（带品牌风格） | **Open-Design** | 129 品牌 + 64 技能 + 沙箱预览 |
+| iOS App 高保真原型 | **Huashu-Design** | iPhone 边框 + 状态管理器 + 点击测试 |
+| 多轮迭代的品牌设计项目 | **BWVI → OD** | BWVI 定方向，OD 执行产出 |
+| 设计评审 / 质量门禁 | **BWVI** | 唯一自动化 10 维客观评审 |
+| 产品动画 / Motion Demo | **Huashu-Design** | 内置动画引擎 + 音轨流水线 |
+| Agent 原生设计工具链 | **BWVI + OD** | BWVI 做决策，OD 做执行 |
+| 离线设计工作流 | **BWVI** | 完全离线可用 |
+| 低延迟迭代循环 | **BWVI** | 每次命令 ~200ms |
+| CI/CD 设计门禁 | **BWVI** | 纯 CLI，200ms，零依赖 |
+
+### 🔄 决策枢纽架构
+
+```
+┌──────────────────────────────────────────┐
+│                  BWVI                    │
+│     分析 → 决策链 → Checkpoint           │
+│     方向 + 色板 + 字体                    │
+└─────────────┬────────────────────────────┘
+              │ 决策 JSON (~200ms)
+     ┌────────┴────────┐
+     ▼                  ▼
+┌────────────┐   ┌──────────────┐
+│Open-Design │   │Huashu-Design │
+│129 品牌    │   │iPhone 边框   │
+│64 个技能   │   │动画引擎      │
+│沙箱预览     │   │视频导出      │
+│(~10-30s)   │   │(~30-120s)    │
+└────────────┘   └──────────────┘
+     │                  │
+     └──────────────────┘
+            ▼
+     ★★★★★ 质量
+```
 
 ### 🖼 产出展示
 
@@ -162,7 +241,7 @@ src/
 ├── fingerprint/        设计指纹
 ├── knowledge/          知识块加载器
 ├── report/             报告生成器
-└── cli/                24 个 CLI 命令
+└── cli/                25 个 CLI 命令
 ```
 
 ---
@@ -209,9 +288,13 @@ direction → palette → typography → [information_density] → layout → de
 | **工具** | `test` | HTML 验证（a11y/响应式/语义） |
 | | `animate` | 嵌入动画 / 导出 MP4 |
 | | `video` | HTML → MP4/GIF（需 ffmpeg） |
+| | `export` | 导出为 PDF/PNG/PPTX/DOCX |
+| | `preview` | 预览组件 |
+| | `image` | AI 生图（需 API Key） |
+| | `serve` | 启动预览服务器 |
 | | `plugin` | 插件脚手架 |
 | | `diff` | HTML 版本对比 |
-| | `benchmark` | 5 用例测试套件 |
+| | `benchmark` | 13 用例测试套件 |
 | | `mcp` | MCP Server |
 
 ---
@@ -243,7 +326,9 @@ bwvi style search brutalism        # 搜索风格
 bwvi style show pastel-dream       # 查看风格详情
 ```
 
-分类：极简/干净、大胆/戏剧、科技/现代、趣味/创意、自然/有机、专业/企业、创意/作品集。
+**分类**：极简/干净、大胆/戏剧、科技/现代、趣味/创意、自然/有机、专业/企业、创意/作品集。
+
+代表风格：`minimal-white` `neo-brutalism` `glassmorphism` `cyberpunk` `pastel-dream` `kawaii-japan` `nature-organic` `corporate-trust` `photography` `music-vibe` 等。
 
 ---
 
@@ -251,11 +336,11 @@ bwvi style show pastel-dream       # 查看风格详情
 
 ```bash
 bwvi animate output.html --embed              # 嵌入动画 CSS + scroll-trigger
-bwvi animate output.html --fps=60 --format=mp4  # 导出 MP4
+bwvi animate output.html --fps=60 --format=mp4  # 导出 MP4（需 ffmpeg）
 bwvi animate output.html --bgm=tech             # 添加 BGM
 ```
 
-12 种动画类型：fade-in、fade-up、scale-in、slide-left/right、bounce-in、rotate-in、flip-in、shimmer、float、glow、typewriter
+12 种动画类型：fade-in、fade-up、scale-in、slide-left/right、bounce-in、rotate-in、flip-in、shimmer、float、glow、typewriter  
 7 种 easing：linear、ease-out、ease-in、ease-in-out、bounce、elastic、spring
 
 ---
@@ -285,6 +370,18 @@ bwvi generate "Dashboard" --device=browser --interactive --dark
 
 ---
 
+## 🧩 组件变体
+
+| 组件 | 可选 variant |
+|-----------|----------|
+| Hero | `fullscreen` / `centered` / `split` / `editorial` |
+| Navbar | `default` / `transparent` / `centered` |
+| FeatureGrid | `grid` / `list` / `compact` |
+| StatsGrid | `grid` / `list` / `compact` |
+| Footer | `default` / `minimal` |
+
+---
+
 ## 🏷️ 品牌系统
 
 115 个内置品牌，`--brand` 自动加载色板+字体：
@@ -297,9 +394,11 @@ bwvi generate "SaaS" --brand=linear
 
 覆盖 12 分类：Tech、Fintech、Enterprise、Consumer、Retail、Automotive、Gaming、Food、Media、Creative、Education、Health。
 
+部分内置品牌：Linear, Stripe, Vercel, Apple, Notion, Airbnb, Figma, Supabase, Cursor, Shopify, Spotify, Coinbase, Tesla, Nike, IBM, NVIDIA, Miro, Framer, Claude, Xiaohongshu, WeChat 等。
+
 ---
 
-## 🔌 多后端渲染
+## 🔌 多后端渲染引擎
 
 | 后端 | 值 | 前置条件 |
 |---------|------|-------------|
@@ -327,6 +426,19 @@ philosophy、hierarchy、detail、function、innovation
 
 ---
 
+## 📚 知识块系统
+
+15 个知识块，双层加载（`knowledge/` 目录 MD 文件优先，源码 fallback）：
+
+```
+00-方向顾问.md  01-色板规则.md  02-字体规则.md  03-布局模式.md
+04-动效原则.md  05-内容规则.md  06-品牌协议.md  07-组件规格.md
+08-间距系统.md  09-响应式.md    10-图标规范.md  11-图片规范.md
+12-表单规范.md  13-导航模式.md  14-数据可视化.md
+```
+
+---
+
 ## 🤖 MCP Server
 
 ```json
@@ -340,25 +452,115 @@ philosophy、hierarchy、detail、function、innovation
 }
 ```
 
-5 个原生工具：analyze_design、generate_design、critique_design、learn_design、list_directions
+5 个原生工具：`analyze_design` `generate_design` `critique_design` `learn_design` `list_directions`
 
 ---
 
-## ✅ Benchmark
+## 🔄 跨会话工作流
+
+```bash
+# 会话 1: 用户选方向
+bwvi showcase --pick landing-editorial
+# → 写入 .bwvi/checkpoints/
+
+# 会话 2（新终端）: 读取决策
+bwvi checkpoint list
+# → 方向已定，直接 generate
+```
+
+---
+
+## 📋 API 参考
+
+```bash
+bwvi analyze "SaaS landing page"
+bwvi generate "SaaS landing" --direction=tech-utility
+bwvi critique output.html --brand-colors #1E1E2E,#00E698
+bwvi learn https://linear.app
+bwvi showcase --pick dashboard-clean
+bwvi checkpoint list
+bwvi checkpoint restore dec_direction_123
+bwvi feedback 8 "排版不错"
+bwvi knowledge list
+bwvi asset color stripe
+bwvi brief "咖啡品牌, 受众:投资人, 语气:专业"
+bwvi debt add "Logo 需要替换为官方 SVG"
+bwvi history
+bwvi brand fetch linear
+bwvi plugin my-plugin
+bwvi test index.html --a11y --interactive
+bwvi diff v1.html v2.html
+bwvi video index.html --fps=60 --format=mp4
+bwvi benchmark
+```
+
+---
+
+## 🛠 开发
+
+```bash
+npm install              # 安装依赖
+npm run dev -- <args>    # 开发模式（TS 直接运行）
+npm run typecheck        # 类型检查（tsc --noEmit）
+npm run build            # 生产构建（esbuild CJS+ESM）
+npm start                # 运行 dist/bwvi.cjs
+npm run benchmark        # 13 用例基准测试
+npm run build && npm start  # 完整构建+运行
+```
+
+### 技术栈
+
+- **语言**: TypeScript 5.7+ (strict mode)
+- **运行时**: Node.js 20+ (ES2022)
+- **打包**: esbuild（CJS + ESM 双格式）
+- **MCP**: `@modelcontextprotocol/sdk` v1.29+ (stdio transport)
+- **测试**: vitest
+- **配置**: YAML
+
+### 项目结构
+
+```
+bwvi/
+├── src/                TypeScript 源码（50+ 文件）
+├── dist/               构建产物 (CJS 873KB + ESM 867KB)
+├── scripts/            构建脚本
+├── knowledge/          15 个知识块 (MD)
+├── demo/               展示预览（生成文件 + 截图）
+├── docs/               设计文档
+├── node_modules/       依赖（3 个包）
+├── package.json
+├── tsconfig.json
+├── vitest.config.ts
+└── README.md
+```
+
+---
+
+## ✅ 基准测试
 
 ```bash
 bwvi benchmark
-# → 5/5 通过 (0.3s)
+# → 13/13 通过 (0.2s)
 ```
 
-TC01: 品牌 landing → 方向 + HTML + 评审 ≥ 5.0
-TC02: 冷启动 → 无品牌无参考也能产出
-TC03: 迭代优化 → v2 评分 > v1
-TC04: 中断恢复 → checkpoint 恢复
-TC05: 外部学习 → learnFromUrl 成功
+| 用例 | 描述 |
+|------|-------------|
+| TC01 | 品牌 landing → 方向 + HTML + 评审 ≥ 5.0 |
+| TC02 | 冷启动 → 无品牌无参考也能产出 |
+| TC03 | 迭代优化 → v2 评分 > v1 |
+| TC04 | 中断恢复 → checkpoint 恢复 |
+| TC05 | 外部学习 → learnFromUrl 成功 |
+| TC06 | 风格列表 → 56 风格完整 |
+| TC07 | 品牌搜索 → 115 品牌 |
+| TC08 | 风格渲染 → 风格应用成功 |
+| TC09 | MCP 数据源 → 56 风格 + 115 品牌 |
+| TC10 | 设备边框 → iPhone 渲染正确 |
+| TC11 | 动画引擎 → CSS 正常 |
+| TC12 | Slop 检测 → 正确识别 |
+| TC13 | AI 生图配置 → 7 家提供商 |
 
 ---
 
-## 📝 许可证
+## 📄 许可证
 
 Apache-2.0

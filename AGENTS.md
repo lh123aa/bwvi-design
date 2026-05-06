@@ -99,3 +99,18 @@ direction → palette → typography → [information_density] → layout → de
   - 禁止在任何其他路径生成文件（尤其是 `E:\程序\bwvi设计\`）
 - **截图**: `demo/screenshots/` 只保留与 `demo/` 中 HTML 文件对应的截图
 - **write 工具**: 始终使用 `E:\程序\bwvi design\bwvi\` 作为基准路径，不要使用 `E:\程序\bwvi设计\`
+
+## 路径映射表（强制参考）
+
+当用户用中文名指代路径时，必须按此表映射，不得自动创建中文文件夹：
+
+| 用户提到的名称 | 应映射到 |
+|---------------|---------|
+| bwvi设计、bwvi项目、bwvi | `E:\程序\bwvi design\bwvi\` |
+| 花叔设计、huashu设计 | `E:\程序\bwvi design\huashu-design\` |
+| open-design、Open Design | `E:\程序\bwvi design\open-design\` |
+
+## 异常检测
+
+- 如果发现 `E:\程序\bwvi设计\` 或类似的中文名文件夹存在，立即检查其内容是否为主项目的子集
+- 确认后立即删除中文名副本，所有文件统一到 `E:\程序\bwvi design\bwvi\`
