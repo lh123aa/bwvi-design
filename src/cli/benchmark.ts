@@ -1,4 +1,4 @@
-import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
@@ -25,7 +25,7 @@ export async function runBenchmark(): Promise<void> {
   const tmpDir = join(process.cwd(), ".bwvi-benchmark");
 
   if (existsSync(tmpDir)) {
-    execSync(`rmdir /s /q "${tmpDir}"`, { stdio: "ignore" });
+    await rm(tmpDir, { recursive: true, force: true });
   }
   await mkdir(tmpDir, { recursive: true });
 
@@ -47,7 +47,7 @@ export async function runBenchmark(): Promise<void> {
   results.push(await tc13ImageGenProviderList());
 
   // Cleanup
-  execSync(`rmdir /s /q "${tmpDir}"`, { stdio: "ignore" });
+  await rm(tmpDir, { recursive: true, force: true });
 
   // Summary
   const passed = results.filter((r) => r.passed).length;
