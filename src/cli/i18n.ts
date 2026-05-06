@@ -300,6 +300,8 @@ export function setLang(lang: string): void {
   (process as any).env.BWVI_LANG = lang;
 }
 
+export { MESSAGES };
+
 export function getLang(): string {
   return process.env.BWVI_LANG || "zh-CN";
 }
