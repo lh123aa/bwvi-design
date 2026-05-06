@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Preview: hero-centered</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif}
+@keyframes bwvi-fade-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bwvi-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes bwvi-scale-in{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+@keyframes bwvi-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.bwvi-fade-up{animation:bwvi-fade-up .6s ease-out both}
+.bwvi-fade-in{animation:bwvi-fade-in .5s ease-out both}
+.bwvi-scale-in{animation:bwvi-scale-in .4s ease-out both}
+.bwvi-d1{animation-delay:0.1s}
+.bwvi-d2{animation-delay:0.2s}
+.bwvi-d3{animation-delay:0.30000000000000004s}
+.bwvi-d4{animation-delay:0.4s}
+.bwvi-d5{animation-delay:0.5s}
+.bwvi-d6{animation-delay:0.6000000000000001s}
+.bwvi-stagger>*{animation:bwvi-fade-up .5s ease-out both}
+.bwvi-stagger>*:nth-child(1){animation-delay:0.08s}
+.bwvi-stagger>*:nth-child(2){animation-delay:0.16s}
+.bwvi-stagger>*:nth-child(3){animation-delay:0.24s}
+.bwvi-stagger>*:nth-child(4){animation-delay:0.32s}
+.bwvi-stagger>*:nth-child(5){animation-delay:0.4s}
+.bwvi-stagger>*:nth-child(6){animation-delay:0.48s}
+</style></head><body><section style="min-height:80vh;display:flex;align-items:center;padding:80px 0">
+<div style="max-width:1200px;margin:0 auto;padding:0 24px;width:100%">
+<div style="max-width:640px">
+<h1 style="font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.15;color:#09090B;margin-bottom:20px;letter-spacing:-0.03em;font-family:'Inter',sans-serif" class="bwvi-fade-up">Your Hero Title</h1>
+<p style="font-size:1.125rem;color:#A1A1AA;line-height:1.8;margin-bottom:32px" class="bwvi-fade-up bwvi-d1">A compelling subtitle describing your value.</p>
+<button style="padding:14px 32px;background:#F43F5E;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;transition:transform 0.2s;font-weight:500">Get Started</button>
+</div></div></section></body></html>

@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "playwright": "^1.59.1",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0"
   },
@@ -30,7 +31,22 @@
     "url": "git+https://github.com/lh123aa/bwvi-design.git"
   },
   "homepage": "https://github.com/lh123aa/bwvi-design",
-  "keywords": ["design", "ai-agent", "mcp", "cli", "prototyping", "design-system"],
-  "engines": { "node": ">=18" },
-  "files": ["dist/", "README.md", "README.zh-CN.md", "README.en.md", "LICENSE"]
+  "keywords": [
+    "design",
+    "ai-agent",
+    "mcp",
+    "cli",
+    "prototyping",
+    "design-system"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "README.zh-CN.md",
+    "README.en.md",
+    "LICENSE"
+  ]
 }

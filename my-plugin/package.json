@@ -1,0 +1,10 @@
+{
+  "name": "my-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BWVI plugin",
+  "main": "src/index.ts",
+  "bwvi": {
+    "manifest": "manifest.yaml"
+  }
+}

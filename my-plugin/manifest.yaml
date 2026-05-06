@@ -1,0 +1,8 @@
+name: my-bwvi-plugin
+version: "0.1.0"
+description: "Describe your plugin here"
+hooks:
+  - "post_analyze"
+  - "pre_generate"
+provides:
+  - "tool:custom_command"
