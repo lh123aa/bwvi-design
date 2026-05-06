@@ -3,9 +3,9 @@
   <p><strong>B</strong>etter <strong>W</strong>ay of <strong>V</strong>isual <strong>I</strong>ntelligence</p>
   <p><em>Agent-native design decision protocol — CLI · MCP Server · Multi-backend</em></p>
   <p>
-    <img src="https://img.shields.io/badge/version-0.2.0-5E6AD2" alt="version">
+    <img src="https://img.shields.io/badge/version-0.2.1-5E6AD2" alt="version">
     <img src="https://img.shields.io/badge/license-Apache%202.0-00D4AA" alt="license">
-    <img src="https://img.shields.io/badge/tests-80%20passed-00E698" alt="tests">
+    <img src="https://img.shields.io/badge/tests-81%20passed-00E698" alt="tests">
     <img src="https://img.shields.io/badge/benchmark-13%2F13-00D4AA" alt="benchmark">
     <img src="https://img.shields.io/badge/scores-10%E2%9C%85-FF6B9D" alt="all 5-star">
   </p>
