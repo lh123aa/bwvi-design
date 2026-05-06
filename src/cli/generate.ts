@@ -7,33 +7,7 @@ import { composeGeneratePrompt } from "../engine/composer.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getBrand, type BrandSystem } from "../engine/brand-loader.js";
 import { render } from "../engine/renderer.js";
-import { buildPage } from "../engine/page-builder.js";
-
-const DIRECTION_PALETTES: Record<string, { primary: string; accent: string; surface: string; text: string }> = {
-  "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
-  "warm-minimal":      { primary: "#D97757", accent: "#8C6E5D", surface: "#FDF8F5", text: "#3D3D3D" },
-  "tech-utility":      { primary: "#1E1E2E", accent: "#00E698", surface: "#FAFBFC", text: "#24292E" },
-  "dark-luxury":       { primary: "#0D0D0D", accent: "#C9A84C", surface: "#1A1A1A", text: "#E8E8E8" },
-  "playful-color":     { primary: "#FF6B6B", accent: "#4ECDC4", surface: "#FFF8F0", text: "#2C3E50" },
-  "corporate-trust":   { primary: "#2563EB", accent: "#059669", surface: "#F8FAFC", text: "#1E293B" },
-  "luxury-premium":    { primary: "#1C1917", accent: "#D6A354", surface: "#FAF9F7", text: "#292524" },
-  "nature-organic":    { primary: "#2D6A4F", accent: "#95B46A", surface: "#F6F7F4", text: "#1B2F22" },
-  "tech-gradient":     { primary: "#6C3BD6", accent: "#00D4AA", surface: "#FAFBFF", text: "#1A1A2E" },
-  "minimal-white":     { primary: "#18181B", accent: "#F43F5E", surface: "#FAFAFA", text: "#09090B" },
-};
-
-const DIRECTION_FONTS: Record<string, string> = {
-  "editorial-monocle": "'Georgia', 'Times New Roman', serif",
-  "warm-minimal":      "'Georgia', 'Times New Roman', serif",
-  "tech-utility":      "'Inter', system-ui, -apple-system, sans-serif",
-  "dark-luxury":       "'Inter', 'Helvetica Neue', sans-serif",
-  "playful-color":     "'DM Sans', system-ui, sans-serif",
-  "corporate-trust":   "'Inter', 'SF Pro', system-ui, sans-serif",
-  "luxury-premium":    "'Playfair Display', 'Georgia', serif",
-  "nature-organic":    "'DM Sans', system-ui, sans-serif",
-  "tech-gradient":     "'Space Grotesk', system-ui, sans-serif",
-  "minimal-white":     "'Inter', -apple-system, sans-serif",
-};
+import { buildPage, DIRECTION_PALETTES, DIRECTION_FONTS } from "../engine/page-builder.js";
 
 const VALID_DIRECTIONS = Object.keys(DIRECTION_PALETTES);
 
@@ -121,6 +95,7 @@ Examples:
     info("方向: " + pageResult.direction + (pageResult.brandUsed ? " · 品牌: " + pageResult.brandUsed : ""));
     result({ status: "ok", file: filePath, direction: pageResult.direction, device: device || "none", brand: pageResult.brandUsed, blueprint: pageResult.blueprintId, match_confidence: Math.round(pageResult.matchConfidence * 100) / 100, engine: "direct" });
     success("已生成: " + filePath);
+    return;
   }
 
   if (runMode) {
@@ -150,7 +125,7 @@ Examples:
 
   const projectDir = findProjectDir();
   if (!projectDir) {
-    console.error(JSON.stringify({ error: "未找到 .bwvi 项目目录，请先运行 bwvi init", code: "NO_PROJECT" }));
+    console.error(JSON.stringify({ error: "未找到 .bwvi 项目目录，请先运行 bwvi init <项目名> 创建项目", code: "NO_PROJECT", hint: "bwvi init my-project" }));
     process.exit(1);
   }
 

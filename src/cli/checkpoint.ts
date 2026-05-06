@@ -7,7 +7,7 @@ export async function checkpointCommand(args: string[]) {
   const projectDir = findProjectDir();
 
   if (!projectDir) {
-    console.error(JSON.stringify({ error: "未找到 .bwvi 项目目录", code: "NO_PROJECT" }));
+    console.error(JSON.stringify({ error: "未找到 .bwvi 项目目录，请先运行 bwvi init <项目名> 创建项目", code: "NO_PROJECT", hint: "bwvi init my-project" }));
     process.exit(1);
   }
 

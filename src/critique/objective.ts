@@ -22,7 +22,7 @@ function calcColorCompliance(html: string, brandColors?: string[]): number {
   const colors = html.match(HEX_REGEX);
   if (!colors || colors.length === 0) return 1;
   if (!brandColors || brandColors.length === 0) return 0.8;
-  const matched = colors.filter((c) => brandColors.includes(c.toLowerCase())).length;
+  const matched = colors.filter((c) => brandColors.some((bc) => bc.toLowerCase() === c.toLowerCase())).length;
   return matched / colors.length;
 }
 

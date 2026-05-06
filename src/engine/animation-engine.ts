@@ -60,7 +60,7 @@ export function getAnimationCSS(): string {
 .bwi-dur-4{animation-duration:1.2s}
 .bwi-dur-5{animation-duration:2s}
 
-${[1,2,3,4,5,6,7,8].map(i => `.bwi-del-${i}{animation-delay:${i*0.12}s}`).join('\n')}
+${[1,2,3,4,5,6,7,8].map(i => `.bwi-del-${i}{animation-delay:${(i*0.12).toFixed(2)}s}`).join('\n')}
 .bwi-stagger>.bwi-anim:nth-child(1){animation-delay:0.05s}
 .bwi-stagger>.bwi-anim:nth-child(2){animation-delay:0.1s}
 .bwi-stagger>.bwi-anim:nth-child(3){animation-delay:0.15s}

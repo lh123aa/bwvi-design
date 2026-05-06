@@ -138,23 +138,47 @@ function renderSection(section: BlueprintSection, base: any): string {
 }
 
 function extractBrand(task: string): string {
+  // 1. Try to find an existing brand name in the task
   const clean = task.replace(/--?\w+(=\w+)?/g, "").trim();
-  const words = clean.split(/\s+/).filter(w => w.length > 1);
-  if (words.length <= 3) return words[0] || "Brand";
+  const lowerTask = clean.toLowerCase();
+  const brandNames = ["linear","stripe","vercel","github","apple","google","notion","figma","shopify","spotify",
+    "airbnb","tesla","nike","ibm","nvidia","claude","cursor","supabase","docker","slack","coinbase","starbucks",
+    "coca-cola","amazon","netflix","twitter","linkedin","adobe","canva","duolingo","peloton","headspace"];
+  for (const name of brandNames) {
+    if (lowerTask.includes(name)) return name;
+  }
+
+  // 2. Extract first meaningful word as brand name
+  const words = clean.split(/\s+/).filter(w => w.length > 1 && !/^(landing|page|app|website|site|homepage)$/i.test(w));
+  if (words.length <= 2) return words[0] || "Brand";
   const startIdx = Math.max(0, Math.floor(words.length / 2) - 1);
   return words.slice(startIdx, startIdx + 2).join(" ") || "Brand";
 }
 
 function extractTagline(task: string, blueprint: any): string {
-  if (blueprint.id === "landing-saas") return "Build Faster";
-  if (blueprint.id === "landing-cafe") return "Perfect Brew";
-  if (blueprint.id === "landing-cosmetics") return "feels as good as it looks";
-  if (blueprint.id === "landing-fitness") return "Body";
-  if (blueprint.id === "landing-education") return "Anything";
-  if (blueprint.id === "landing-fashion") return "Define Your Style";
-  if (blueprint.id === "landing-fintech") return "Money";
-  if (blueprint.id === "landing-ecommerce") return "Your Style";
-  return "Go Beyond";
+  // Try to extract a meaningful phrase from the task description
+  const words = task.split(/\s+/).filter(w => w.length > 2 && !w.startsWith("--"));
+  if (words.length >= 3) {
+    const candidate = words.slice(1, 3).join(" ");
+    if (candidate.length < 40) return candidate.charAt(0).toUpperCase() + candidate.slice(1);
+  }
+
+  // Fallback: blueprint-specific defaults
+  const taglines: Record<string, string> = {
+    "landing-saas": "Build Faster",
+    "landing-cafe": "Perfect Brew",
+    "landing-cosmetics": "Feels as Good as It Looks",
+    "landing-fitness": "Transform Your Body",
+    "landing-education": "Learn Anything",
+    "landing-fashion": "Define Your Style",
+    "landing-fintech": "Grow Your Wealth",
+    "landing-ecommerce": "Your Style, Delivered",
+    "landing-restaurant": "Taste the Difference",
+    "landing-realestate": "Find Your Home",
+    "landing-photography": "Capture the Moment",
+    "landing-music": "Feel the Beat",
+  };
+  return taglines[blueprint.id] || "Go Beyond";
 }
 
 function extractDescription(task: string): string {

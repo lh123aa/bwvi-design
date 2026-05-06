@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Benchmark
+        run: npm run benchmark
+
+      - name: Verify bundle size
+        run: |
+          node -e "
+            const fs = require('fs');
+            const size = fs.statSync('dist/bwvi.cjs').size;
+            console.log('CJS bundle: ' + (size / 1024).toFixed(0) + ' KB');
+            if (size > 1024 * 1024) {
+              console.error('Bundle exceeds 1MB!');
+              process.exit(1);
+            }
+          "

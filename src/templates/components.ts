@@ -40,9 +40,9 @@ export function getBaseStyles(base: BaseConfig): string {
 .bwvi-fade-up{animation:bwvi-fade-up .6s ease-out both}
 .bwvi-fade-in{animation:bwvi-fade-in .5s ease-out both}
 .bwvi-scale-in{animation:bwvi-scale-in .4s ease-out both}
-${[1,2,3,4,5,6].map(i => `.bwvi-d${i}{animation-delay:${i*0.1}s}`).join('\n')}
+${[1,2,3,4,5,6].map(i => `.bwvi-d${i}{animation-delay:${(i*0.1).toFixed(1)}s}`).join('\n')}
 .bwvi-stagger>*{animation:bwvi-fade-up .5s ease-out both}
-${[1,2,3,4,5,6].map(i => `.bwvi-stagger>*:nth-child(${i}){animation-delay:${i*0.08}s}`).join('\n')}
+${[1,2,3,4,5,6].map(i => `.bwvi-stagger>*:nth-child(${i}){animation-delay:${(i*0.08).toFixed(2)}s}`).join('\n')}
 ` : '';
   const d = base.dark ? `[data-theme="dark"]{color-scheme:dark}
 [data-theme="dark"] body{background:#111;color:#e0e0e0}

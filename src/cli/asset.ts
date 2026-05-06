@@ -1,6 +1,7 @@
 import { learnFromUrl, saveReference } from "../engine/learner.js";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { getBrand, searchBrands } from "../engine/brand-loader.js";
 
 export async function assetCommand(args: string[]) {
   const sub = args[0]; // "logo" or "color"
@@ -11,7 +12,26 @@ export async function assetCommand(args: string[]) {
     process.exit(1);
   }
 
-  // Try common URL patterns for brand
+  // Check local brand system first
+  const localBrand = getBrand(brand.toLowerCase().replace(/\s+/g, ""));
+  if (localBrand) {
+    if (sub === "color") {
+      console.log(JSON.stringify({
+        status: "ok", brand: localBrand.name, source: "local",
+        colors: [localBrand.colors.primary, localBrand.colors.accent, localBrand.colors.surface, localBrand.colors.text],
+        typography: localBrand.typography,
+      }, null, 2));
+    } else {
+      console.log(JSON.stringify({
+        status: "ok", brand: localBrand.name, source: "local",
+        colors: localBrand.colors, typography: localBrand.typography,
+        confidence: 1, tags: localBrand.tags,
+      }, null, 2));
+    }
+    return;
+  }
+
+  // Try common URL patterns for brand (with timeout)
   const urls = [
     `https://${brand.toLowerCase().replace(/\s+/g, "")}.com`,
     `https://www.${brand.toLowerCase().replace(/\s+/g, "")}.com`,
@@ -23,18 +43,28 @@ export async function assetCommand(args: string[]) {
   for (const url of urls) {
     try {
       process.stderr.write(`搜索 ${url}...\n`);
-      result = await learnFromUrl(url);
+      result = await Promise.race([
+        learnFromUrl(url),
+        new Promise<null>((_, reject) => setTimeout(() => reject(new Error("timeout")), 5000)),
+      ]);
       usedUrl = url;
-      if (Object.keys(result.tokens.colors).length > 0) break;
+      if (result && Object.keys(result.tokens.colors).length > 0) break;
     } catch {}
   }
 
   if (!result) {
-    console.log(JSON.stringify({
+    // Suggest similar brands from local system
+    const similar = searchBrands(brand).slice(0, 3);
+    const output: any = {
       status: "not_found",
       brand,
-      message: `无法获取 ${brand} 的品牌信息，请确认网址或手动提供色值`,
-    }, null, 2));
+      message: `无法从网络获取 ${brand} 的品牌信息`,
+      suggestion: "请确认品牌名正确，或使用 --brand=<name> 直接引用本地品牌",
+    };
+    if (similar.length > 0) {
+      output.nearby_brands = similar.map(b => ({ name: b.name, category: b.category }));
+    }
+    console.log(JSON.stringify(output, null, 2));
     return;
   }
 

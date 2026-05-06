@@ -30,6 +30,23 @@ export async function imageCommand(args: string[]) {
     return;
   }
 
+  const mock = args.includes("--mock");
+  if (mock) {
+    const { writeFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const fileName = `mock-${Date.now()}.svg`;
+    const filePath = join(getDemoDir(), fileName);
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768">
+  <rect width="1024" height="768" fill="#f0f0f0"/>
+  <text x="512" y="360" text-anchor="middle" font-family="system-ui,sans-serif" font-size="24" fill="#888">${escapeSvg(prompt)}</text>
+  <text x="512" y="400" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="#aaa">BWVI Mock · 1024 × 768</text>
+</svg>`;
+    writeFileSync(filePath, svg, "utf-8");
+    success(`占位图片已生成: ${filePath}`);
+    result({ status: "ok", file: filePath, mock: true, prompt });
+    return;
+  }
+
   const providerFlag = args.find(a => a.startsWith("--provider="));
   const provider = providerFlag?.split("=")[1] || "openai";
   const modelFlag = args.find(a => a.startsWith("--model="));
@@ -44,4 +61,8 @@ export async function imageCommand(args: string[]) {
   } catch (e: any) {
     errExit(e.message);
   }
+}
+
+function escapeSvg(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

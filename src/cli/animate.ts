@@ -4,6 +4,24 @@ import { execSync } from "node:child_process";
 import { getAnimationCSS, getStageScript } from "../engine/animation-engine.js";
 
 export async function animateCommand(args: string[]) {
+  if (args.includes("--help") || args.includes("-h")) {
+    console.log(`bwvi animate <file.html> [options]
+
+Embed animations or export MP4 video from HTML.
+
+Options:
+  --embed               Embed animation CSS + scroll-trigger JS (default action)
+  --fps=<n>             Frame rate for video export (default: 25, max: 60)
+  --type=<anim>         Animation type: fade-in|fade-up|scale-in|slide-left|slide-right|bounce-in|rotate-in|flip-in|shimmer|float|glow|typewriter
+  --bgm=<name>          Background music: tech|ad|educational|tutorial
+  --output=<file>       Output file path
+
+Examples:
+  bwvi animate page.html --embed
+  bwvi animate page.html --fps=60 --output=video.mp4
+  bwvi animate page.html --bgm=tech`);
+    return;
+  }
   const filePath = args.find(a => !a.startsWith("--"));
   if (!filePath || !existsSync(filePath)) {
     console.error(JSON.stringify({ error: "请提供 HTML 文件路径", code: "FILE_NOT_FOUND" }));
@@ -71,8 +89,10 @@ export async function animateCommand(args: string[]) {
 }
 
 const BGM_FILES: Record<string, string> = {
-  tech: "assets/bgm-tech.mp3",
-  ad: "assets/bgm-ad.mp3",
-  educational: "assets/bgm-educational.mp3",
-  tutorial: "assets/bgm-tutorial.mp3",
+  tech: "",
+  ad: "",
+  educational: "",
+  tutorial: "",
 };
+// BGM files are not bundled. To use --bgm, place MP3 files in demo/ or provide full path.
+// Future: optional download from a CDN on first use.

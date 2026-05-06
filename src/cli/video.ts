@@ -9,13 +9,30 @@ interface VideoOptions {
 }
 
 const BGM_MAP: Record<string, string> = {
-  tech: "https://example.com/bgm-tech.mp3",
-  ad: "https://example.com/bgm-ad.mp3",
-  educational: "https://example.com/bgm-educational.mp3",
-  tutorial: "https://example.com/bgm-tutorial.mp3",
+  tech: "",
+  ad: "",
+  educational: "",
+  tutorial: "",
 };
+// BGM files are placeholders. To use --bgm, provide a local MP3 file path via --bgm-path=.
 
 export async function videoCommand(args: string[]) {
+  if (args.includes("--help") || args.includes("-h")) {
+    console.log(`bwvi video <file.html> [options]
+
+Export HTML to MP4/GIF video (requires ffmpeg).
+
+Options:
+  --fps=<n>             Frame rate (default: 25, max: 60)
+  --format=<fmt>        Output format: mp4|gif (default: mp4)
+  --bgm=<name>          Background music: tech|ad|educational|tutorial
+  --output=<file>       Output file path
+
+Examples:
+  bwvi video page.html --fps=30 --format=mp4
+  bwvi video page.html --fps=15 --format=gif`);
+    return;
+  }
   const filePath = args.find(a => !a.startsWith("--"));
   if (!filePath || !existsSync(filePath)) {
     console.error(JSON.stringify({ error: "请提供有效的 HTML 文件路径", code: "FILE_NOT_FOUND" }));

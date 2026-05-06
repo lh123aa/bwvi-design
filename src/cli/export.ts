@@ -1,9 +1,24 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { exportOffice } from "../engine/office-export.js";
 import { info, success, errExit, result } from "./ux.js";
 
 export async function exportCommand(args: string[]) {
+  if (args.includes("--help") || args.includes("-h")) {
+    console.log(`bwvi export <file.html> [options]
+
+Export HTML to PDF/PNG/PPTX/DOCX.
+
+Options:
+  --format=<fmt>        Output format: pdf|png|pptx|docx (default: pdf)
+  --output=<file>       Output file path
+
+Examples:
+  bwvi export page.html --format=pdf
+  bwvi export page.html --format=pptx
+  bwvi export page.html --format=png --output=preview.png`);
+    return;
+  }
   const filePath = args.find(a => !a.startsWith("--"));
   if (!filePath || !existsSync(filePath)) {
     errExit("请提供 HTML 文件路径", "FILE_NOT_FOUND");
@@ -31,7 +46,7 @@ export async function exportCommand(args: string[]) {
   const inlineHtml = html.includes("<style") ? html : `<!DOCTYPE html><html><head><meta charset="utf-8"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,sans-serif;padding:40px;max-width:1200px;margin:0 auto}</style></head><body><pre style="white-space:pre-wrap;word-break:break-word">${escapeHtml(html)}</pre></body></html>`;
 
   const tmpHtml = filePath.replace(/\.html$/i, ".export.html");
-  require("fs").writeFileSync(tmpHtml, inlineHtml, "utf-8");
+  writeFileSync(tmpHtml, inlineHtml, "utf-8");
 
   try {
     execSync("npx playwright --version", { stdio: "pipe", timeout: 5000 });
@@ -48,11 +63,11 @@ export async function exportCommand(args: string[]) {
     : generatePngScript(tmpHtml, output);
 
   const scriptPath = filePath.replace(/\.html$/i, ".export.mjs");
-  require("fs").writeFileSync(scriptPath, script, "utf-8");
+  writeFileSync(scriptPath, script, "utf-8");
 
   try {
     execSync(`node "${scriptPath}"`, { timeout: 30000, stdio: "pipe" });
-    console.log(JSON.stringify({ status: "ok", file: output, format, size_bytes: existsSync(output) ? require("fs").statSync(output).size : 0 }, null, 2));
+    console.log(JSON.stringify({ status: "ok", file: output, format, size_bytes: existsSync(output) ? statSync(output).size : 0 }, null, 2));
   } catch (e: any) {
     console.error(JSON.stringify({ error: `Export failed: ${e.message}` }));
   }

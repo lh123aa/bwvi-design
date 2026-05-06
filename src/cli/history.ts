@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 export async function historyCommand(args: string[]) {
   const projectDir = findProjectDir();
-  if (!projectDir) { console.error(JSON.stringify({ error: "未找到 .bwvi 项目" })); process.exit(1); }
+  if (!projectDir) { console.error(JSON.stringify({ error: "未找到 .bwvi 项目，请先运行 bwvi init <项目名> 创建项目", hint: "bwvi init my-project" })); process.exit(1); }
   const bwviDir = join(projectDir, ".bwvi");
 
   // Read feedback history

@@ -4,6 +4,7 @@ import { generateCommand } from "./cli/generate.js";
 import { critiqueCommand } from "./cli/critique.js";
 import { learnCommand } from "./cli/learn.js";
 import { runBenchmark } from "./cli/benchmark.js";
+import { readFileSync } from "node:fs";
 import { startMcpServer } from "./mcp/server.js";
 import { checkpointCommand } from "./cli/checkpoint.js";
 import { showcaseCommand } from "./cli/showcase.js";
@@ -82,7 +83,7 @@ async function main() {
       const f2 = args.find(a => !a.startsWith("-"));
       if (!f1 || !f2) { console.error("Usage: bwvi diff <file1> <file2>"); process.exit(1); }
       try {
-        const html1 = require("fs").readFileSync(f1, "utf-8");
+        const html1 = readFileSync(f1, "utf-8");
         const result = await critiqueDiff(html1, f2);
         console.log(JSON.stringify(result, null, 2));
       } catch(e) { console.error("Error:", (e as any).message); process.exit(1); }
