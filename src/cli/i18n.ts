@@ -10,8 +10,6 @@
  *   process.env.BWVI_LANG = "en";
  */
 
-const LANG = process.env.BWVI_LANG || "zh-CN";
-
 const MESSAGES: Record<string, Record<string, string>> = {
   "zh-CN": {
     // 通用
@@ -50,7 +48,7 @@ const MESSAGES: Record<string, Record<string, string>> = {
     device_list: "支持的设备边框",
 
     // 蓝图
-    blueprint_matched: "蓝图匹配",
+    blueprint_matched: "蓝图匹配: {id} ({conf}%)",
     blueprint_confidence: "匹配置信度: {n}%",
 
     // 方向
@@ -185,7 +183,7 @@ const MESSAGES: Record<string, Record<string, string>> = {
     device_list: "Supported device frames",
 
     // Blueprint
-    blueprint_matched: "Blueprint matched",
+    blueprint_matched: "Blueprint matched: {id} ({conf}%)",
     blueprint_confidence: "Match confidence: {n}%",
 
     // Direction
@@ -284,12 +282,16 @@ const MESSAGES: Record<string, Record<string, string>> = {
   },
 };
 
+function currentLang(): string {
+  return process.env.BWVI_LANG || "zh-CN";
+}
+
 export function t(key: string, fallback?: string): string {
-  return MESSAGES[LANG]?.[key] || MESSAGES["en"]?.[key] || fallback || key;
+  return MESSAGES[currentLang()]?.[key] || MESSAGES["en"]?.[key] || fallback || key;
 }
 
 export function tpl(key: string, vars: Record<string, string | number>, fallback?: string): string {
-  let msg = MESSAGES[LANG]?.[key] || MESSAGES["en"]?.[key] || fallback || key;
+  let msg = MESSAGES[currentLang()]?.[key] || MESSAGES["en"]?.[key] || fallback || key;
   for (const [k, v] of Object.entries(vars)) {
     msg = msg.replace(`{${k}}`, String(v));
   }
@@ -297,7 +299,11 @@ export function tpl(key: string, vars: Record<string, string | number>, fallback
 }
 
 export function setLang(lang: string): void {
-  (process as any).env.BWVI_LANG = lang;
+  process.env.BWVI_LANG = lang;
+}
+
+export function getLang(): string {
+  return currentLang();
 }
 
 export { MESSAGES };

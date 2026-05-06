@@ -1,6 +1,7 @@
 import { writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { info, success, warn, errExit, result } from "./ux.js";
+import { info, success, warn, errExit, result, infoT, successT } from "./ux.js";
+import { t } from "./i18n.js";
 import { getDemoDir } from "./demo.js";
 import { CheckpointManager } from "../checkpoint/manager.js";
 import { composeGeneratePrompt } from "../engine/composer.js";
@@ -58,7 +59,7 @@ Examples:
   bwvi generate "SaaS landing" --brand=linear --style=glassmorphism`);
     return;
   }
-  if (!task) errExit("请提供任务描述（如: 咖啡品牌 landing page）", "MISSING_TASK");
+  if (!task) errExit(t("task_required") + "（如: 咖啡品牌 landing page）", "MISSING_TASK");
 
   const directionFlag = args.find((a) => a.startsWith("--direction="));
   const direction = directionFlag ? directionFlag.split("=")[1] as string : "tech-utility";
@@ -91,8 +92,8 @@ Examples:
     const fileName = device ? `preview-${device}.html` : "index.html";
     const filePath = join(demoDir(), fileName);
     writeFileSync(filePath, pageResult.html, "utf-8");
-    info("蓝图匹配: " + pageResult.blueprintId + " (" + (pageResult.matchConfidence * 100).toFixed(0) + "%)");
-    info("方向: " + pageResult.direction + (pageResult.brandUsed ? " · 品牌: " + pageResult.brandUsed : ""));
+    infoT("blueprint_matched", { id: pageResult.blueprintId, conf: (pageResult.matchConfidence * 100).toFixed(0) });
+    info(t("direction") + ": " + pageResult.direction + (pageResult.brandUsed ? " · " + t("brand") + ": " + pageResult.brandUsed : ""));
     result({ status: "ok", file: filePath, direction: pageResult.direction, device: device || "none", brand: pageResult.brandUsed, blueprint: pageResult.blueprintId, match_confidence: Math.round(pageResult.matchConfidence * 100) / 100, engine: "direct" });
     success("已生成: " + filePath);
     return;

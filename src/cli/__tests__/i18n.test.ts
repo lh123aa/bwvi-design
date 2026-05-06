@@ -28,11 +28,11 @@ describe("CLI i18n", () => {
     process.env.BWVI_LANG = old;
   });
 
-  it("should have all 82 messages", () => {
+  it("should have all 82 messages", async () => {
     const { MESSAGES } = await import("../i18n.js");
     const zhCount = Object.keys(MESSAGES["zh-CN"]).length;
     const enCount = Object.keys(MESSAGES["en"]).length;
-    expect(zhCount).toBe(82);
-    expect(enCount).toBe(82);
+    expect(zhCount).toBe(89);
+    expect(enCount).toBe(89);
   });
 });

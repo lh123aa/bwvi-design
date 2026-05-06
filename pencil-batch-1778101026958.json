@@ -1,0 +1,184 @@
+[
+  {
+    "type": "I",
+    "target": "document",
+    "data": {
+      "type": "frame",
+      "name": "linear — SaaS landing page",
+      "width": 1200,
+      "height": 800,
+      "fill": "#FFFFFF",
+      "layout": "vertical",
+      "padding": 24
+    },
+    "label": "创建设计画布"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "Navbar",
+      "width": "fill_container",
+      "variant": "default"
+    },
+    "label": "添加 navbar 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/Navbar",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 navbar"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "HeroSection",
+      "width": "fill_container",
+      "variant": "fullscreen"
+    },
+    "label": "添加 hero 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/HeroSection",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 hero"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "StatsGrid",
+      "width": "fill_container",
+      "variant": "grid"
+    },
+    "label": "添加 stats 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/StatsGrid",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 stats"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "FeaturesGrid",
+      "width": "fill_container",
+      "variant": "grid"
+    },
+    "label": "添加 features 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/FeaturesGrid",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 features"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "PricingSection",
+      "width": "fill_container",
+      "variant": "default"
+    },
+    "label": "添加 pricing 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/PricingSection",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 pricing"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "Testimonials",
+      "width": "fill_container",
+      "variant": "grid"
+    },
+    "label": "添加 testimonials 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/Testimonials",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 testimonials"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "CTASection",
+      "width": "fill_container",
+      "variant": "default"
+    },
+    "label": "添加 cta 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/CTASection",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 cta"
+  },
+  {
+    "type": "I",
+    "target": "canvas-1778101025845",
+    "data": {
+      "type": "ref",
+      "ref": "Footer",
+      "width": "fill_container",
+      "variant": "default"
+    },
+    "label": "添加 footer 组件"
+  },
+  {
+    "type": "U",
+    "target": "canvas-1778101025845/Footer",
+    "data": {
+      "fill": "#FFFFFF",
+      "textColor": "#1A202C",
+      "accentColor": "#E2E8F0"
+    },
+    "label": "应用色板到 footer"
+  }
+]
