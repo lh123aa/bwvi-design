@@ -11,7 +11,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { getAnimationCSS, getStageScript } from "../engine/animation-engine.js";
-import { info, success, warn, errExit, result } from "./ux.js";
+import { info, success, warn, errExit, result, infoT, successT } from "./ux.js";
+import { t, tpl } from "./i18n.js";
 import { checkFfmpeg, getFfmpegInstallGuide, composeVideo, ensureBgm, type VideoFormat, type VideoQuality, BGM_PRESETS } from "../engine/video-composer.js";
 import { captureVideo, checkPlaywright, type ScrollBehavior, type CaptureOptions } from "../engine/video-capture.js";
 import { detectInteractions, executeInteractions } from "../engine/interaction-capture.js";
@@ -113,7 +114,7 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
   if (!ffmpeg.installed) {
     const guide = getFfmpegInstallGuide();
     errExit(
-      `ffmpeg 未安装。请安装 ffmpeg 后重试:\n  ${guide.command}\n  ${guide.detail}`,
+      t("ffmpeg_required") + ":\n  " + guide.command + "\n  " + guide.detail,
       "FFMPEG_NOT_FOUND"
     );
   }
