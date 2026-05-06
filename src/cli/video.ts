@@ -1,100 +1,34 @@
-import { existsSync, readFileSync } from "node:fs";
-import { execSync } from "node:child_process";
+/**
+ * video.ts — 已废弃，请使用 `bwvi animate --record`
+ *
+ * 保留此文件仅用于向后兼容。
+ * 所有功能已迁移到 animate.ts。
+ */
 
-interface VideoOptions {
-  fps: number;
-  format: "mp4" | "gif";
-  bgm?: string;
-  output?: string;
-}
-
-const BGM_MAP: Record<string, string> = {
-  tech: "",
-  ad: "",
-  educational: "",
-  tutorial: "",
-};
-// BGM files are placeholders. To use --bgm, provide a local MP3 file path via --bgm-path=.
+import { existsSync } from "node:fs";
+import { warn, result } from "./ux.js";
+import { animateCommand } from "./animate.js";
 
 export async function videoCommand(args: string[]) {
   if (args.includes("--help") || args.includes("-h")) {
     console.log(`bwvi video <file.html> [options]
 
-Export HTML to MP4/GIF video (requires ffmpeg).
+⚠️  此命令已废弃，请使用 bwvi animate --record
 
-Options:
-  --fps=<n>             Frame rate (default: 25, max: 60)
-  --format=<fmt>        Output format: mp4|gif (default: mp4)
-  --bgm=<name>          Background music: tech|ad|educational|tutorial
-  --output=<file>       Output file path
+迁移:
+  bwvi video page.html --fps=30
+  → bwvi animate page.html --record --fps=30
 
-Examples:
-  bwvi video page.html --fps=30 --format=mp4
-  bwvi video page.html --fps=15 --format=gif`);
-    return;
-  }
-  const filePath = args.find(a => !a.startsWith("--"));
-  if (!filePath || !existsSync(filePath)) {
-    console.error(JSON.stringify({ error: "请提供有效的 HTML 文件路径", code: "FILE_NOT_FOUND" }));
-    process.exit(1);
-  }
-
-  const fpsFlag = args.find(a => a.startsWith("--fps="));
-  const fps = fpsFlag ? parseInt(fpsFlag.split("=")[1]) : 25;
-
-  const formatFlag = args.find(a => a.startsWith("--format="));
-  const format = (formatFlag ? formatFlag.split("=")[1] : "mp4") as "mp4" | "gif";
-
-  const bgmFlag = args.find(a => a.startsWith("--bgm="));
-  const bgm = bgmFlag ? bgmFlag.split("=")[1] : undefined;
-
-  const outputFlag = args.find(a => a.startsWith("--output="));
-  const output = outputFlag ? outputFlag.split("=")[1] : filePath.replace(/\.html$/i, `.${format}`);
-
-  try {
-    execSync("ffmpeg -version", { stdio: "pipe", timeout: 5000 });
-  } catch {
-    console.log(JSON.stringify({
-      status: "error",
-      error: "ffmpeg not found. Install ffmpeg to use video export.",
-      note: "Install via: winget install ffmpeg 或前往 https://ffmpeg.org/download.html",
-    }, null, 2));
+  bwvi video page.html --fps=15 --format=gif
+  → bwvi animate page.html --record --fps=15 --format=gif
+`);
     return;
   }
 
-  const html = readFileSync(filePath, "utf-8");
+  warn("'bwvi video' 已废弃，请使用 'bwvi animate --record'");
+  warn("自动跳转到 bwvi animate --record ...\n");
 
-  // Create a simple video export script
-  const renderScript = createRenderScript(filePath, fps, format);
-
-  console.log(JSON.stringify({
-    status: "prepared",
-    input: filePath,
-    fps,
-    format,
-    bgm: bgm || null,
-    output,
-    size_bytes: html.length,
-    instructions: `Video export requires Playwright + ffmpeg.
-
-To render:
-1. Create a screenshot sequence: npx playwright pdf ${filePath}
-2. Convert to video: ffmpeg -framerate ${fps} -i frames/frame-%04d.png -c:v libx264 -pix_fmt yuv420p ${output}
-
-${bgm ? `3. Add BGM: ffmpeg -i ${output} -i "${BGM_MAP[bgm] || 'bgm.mp3'}" -c:v copy -c:a aac -shortest output-with-bgm.mp4` : ''}
-    `.trim(),
-  }, null, 2));
-}
-
-function createRenderScript(htmlPath: string, fps: number, format: string): string {
-  return `const {chromium} = require('playwright');
-(async () => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage({viewport:{width:1920,height:1080}});
-  await page.goto('file://${htmlPath.replace(/\\/g, '/')}', {waitUntil:'networkidle'});
-  // Record at ${fps}fps
-  // See https://github.com/nicedoc/video-record-playwright for full pipeline
-  await browser.close();
-})();
-`;
+  // 将 --record 插入参数列表并转发
+  const forwarded = [...args, "--record"];
+  await animateCommand(forwarded);
 }
