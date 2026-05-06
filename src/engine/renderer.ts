@@ -1,4 +1,3 @@
-import { writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { getStateMachineScript } from "../frames/state-machine.js";
 import { wrapWithDevice, type DeviceType } from "../frames/index.js";

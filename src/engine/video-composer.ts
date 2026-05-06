@@ -10,8 +10,8 @@
  */
 
 import { execSync } from "node:child_process";
-import { existsSync, unlinkSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
-import { dirname, join, basename, extname } from "node:path";
+import { existsSync, unlinkSync, mkdirSync } from "node:fs";
+import { dirname, join, basename } from "node:path";
 
 export type VideoFormat = "mp4" | "gif" | "webm";
 export type VideoQuality = "high" | "medium" | "low" | "quick";
