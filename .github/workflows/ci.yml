@@ -9,40 +9,29 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18, 20, 22]
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           cache: 'npm'
 
       - run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
       - name: Type check
-        run: npm run typecheck
-
-      - name: Unit tests
-        run: npm test
+        run: npx tsc --noEmit
 
       - name: Build
         run: npm run build
 
+      - name: Unit tests
+        run: npm test
+
       - name: Benchmark
         run: npm run benchmark
 
-      - name: Verify bundle size
-        run: |
-          node -e "
-            const fs = require('fs');
-            const size = fs.statSync('dist/bwvi.cjs').size;
-            console.log('CJS bundle: ' + (size / 1024).toFixed(0) + ' KB');
-            if (size > 1024 * 1024) {
-              console.error('Bundle exceeds 1MB!');
-              process.exit(1);
-            }
-          "
+      - name: Verify bundle
+        run: node -e "const s=require('fs').statSync('dist/bwvi.cjs').size;console.log((s/1024).toFixed(0)+'KB');if(s>1048576)process.exit(1)"

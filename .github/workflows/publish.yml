@@ -15,9 +15,12 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
       - run: npm ci
-      - run: npm run typecheck
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      - run: npx tsc --noEmit
       - run: npm run build
-      - run: npm test || echo "no tests configured"
+      - run: npm test
       - run: npm publish
+        if: secrets.NPM_TOKEN != ''
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
