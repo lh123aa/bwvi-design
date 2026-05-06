@@ -9,8 +9,13 @@ describe("findBlueprint", () => {
   });
 
   it("should match SaaS for tech keywords", () => {
-    const result = findBlueprint("SaaS analytics dashboard enterprise");
+    const result = findBlueprint("SaaS enterprise B2B cloud platform");
     expect(result.blueprint.id).toBe("landing-saas");
+  });
+
+  it("should match dashboard for analytics keywords", () => {
+    const result = findBlueprint("analytics dashboard metrics");
+    expect(result.blueprint.id).toBe("dashboard-analytics");
   });
 
   it("should fallback to SaaS for unknown", () => {

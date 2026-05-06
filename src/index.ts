@@ -110,7 +110,7 @@ function printHelp() {
     "brand         <cache|fetch> Brand system",
     "plugin        Create plugin scaffold",
     "template      List/use/delete templates",
-    "style         List/show/search visual styles (57 built-in)",
+    "style         List/show/search visual styles (56 built-in)",
     "image         Generate image via AI (DALL·E / SD / Tongyi / Seedream) requires API key",
     "animate       Embed animations / export MP4 (needs ffmpeg)",
     "export        Export HTML to PDF/PNG/PPTX/DOCX",

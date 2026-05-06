@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf-8"));
-const external = [];
+const external = ["playwright", "playwright-core"];
 
 async function main() {
   const start = Date.now();

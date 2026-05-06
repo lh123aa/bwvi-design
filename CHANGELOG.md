@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.2.1] - 2026-05-06
+
+### Added
+- **Video Recording Engine** — `bwvi animate --record` with Playwright capture + ffmpeg compose
+- **Interaction Capture** — `--interactive` auto-detects modal/tab/accordion/carousel/toast and simulates clicks
+- **GIF/WebM Export** — `--format=gif|webm` palette-optimized GIF export
+- **BGM Support** — `--bgm=tech|corporate|warm|energetic|ambient` for video background music
+- **Watermark Support** — `--watermark=logo.png` image overlay on video
+- **Scroll Modes** — `--scroll=auto|section|none` for different page recording strategies
+- **Quick Mode** — `--quick` for fast preview at 720p 15fps
+- **Blueprints Expanded** — 24 → 50 industry blueprints (photography, music, bar, bakery, pet, consulting, medical, legal, nonprofit, event, wedding, travel, coach, dentist, auto repair, interior, salon, cannabis, and more)
+- **Project Stats** — Unit tests: 80 (from 17), Benchmark: 13/13
+
+### Fixed
+- `generate --direct` dual output bug (added missing return)
+- `asset` command timeout (local brand fallback + 5s timeout)
+- Floating point precision in CSS animation delays
+- `require()` → ESM imports across codebase
+- `--help` support for animate/export/video commands
+- Friendly project init hints in error messages
+
+### Changed
+- DIRECTION_PALETTES/FONTS deduplicated (generate.ts imports from page-builder.ts)
+- `style` list shows correct count (56, was 57)
+- `bwvi video` deprecated, forwarding to `animate --record`
+- README: tests badge 23→80, Chinese as main README
+
 ## [0.2.0] - 2026-05-05
 
 ### Added
