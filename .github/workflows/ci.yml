@@ -22,7 +22,7 @@ jobs:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
       - name: Type check
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Build
         run: npm run build
