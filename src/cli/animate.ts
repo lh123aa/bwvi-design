@@ -13,7 +13,8 @@ import { join, dirname } from "node:path";
 import { getAnimationCSS, getStageScript } from "../engine/animation-engine.js";
 import { info, success, warn, errExit, result } from "./ux.js";
 import { checkFfmpeg, composeVideo, type VideoFormat, type VideoQuality } from "../engine/video-composer.js";
-import { captureVideo, checkPlaywright, type ScrollBehavior } from "../engine/video-capture.js";
+import { captureVideo, checkPlaywright, type ScrollBehavior, type CaptureOptions } from "../engine/video-capture.js";
+import { detectInteractions, executeInteractions } from "../engine/interaction-capture.js";
 import { getDemoDir } from "./demo.js";
 
 const BGM_LIST = ["tech", "corporate", "warm", "energetic", "ambient"] as const;
@@ -50,6 +51,7 @@ export async function animateCommand(args: string[]) {
   const quality: VideoQuality = quick ? "quick" : "high";
   const watermarkFlag = args.find(a => a.startsWith("--watermark="));
   const watermark = watermarkFlag ? watermarkFlag.split("=")[1] : undefined;
+  const interactive = args.includes("--interactive");
 
   // 默认行为: --embed（无 --record 时）
   if (!record) {
@@ -59,7 +61,7 @@ export async function animateCommand(args: string[]) {
 
   // ---- --record: 视频录制 ----
   await doRecord(filePath, output, {
-    fps, bgm, format, duration, scroll, quality, watermark, quick,
+    fps, bgm, format, duration, scroll, quality, watermark, quick, interactive,
   });
 }
 
@@ -97,6 +99,7 @@ interface RecordOptions {
   quality: VideoQuality;
   watermark?: string;
   quick: boolean;
+  interactive?: boolean;
 }
 
 /**
@@ -149,7 +152,22 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
     }
   }
 
-  // 3. 录制
+  // 3. 检测交互（可选）
+  let interactionSteps;
+  if (opts.interactive) {
+    info("检测交互元素...");
+    const html = readFileSync(htmlPath, "utf-8");
+    const plan = detectInteractions(html);
+    if (plan.steps.length > 0) {
+      success(`检测到 ${plan.steps.length} 个交互步骤`);
+      plan.steps.forEach((s, i) => info(`  ${i + 1}. ${s.label} (${s.selector})`));
+      interactionSteps = plan.steps;
+    } else {
+      info("未检测到交互元素，跳过交互录制");
+    }
+  }
+
+  // 4. 录制
   info("启动浏览器录制...");
   const outputDir = dirname(outputPath);
 
@@ -161,6 +179,7 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
     duration: opts.duration,
     animate: true,
     loop: 1,
+    interactionSteps,
   });
 
   if (!captureResult.success) {
@@ -188,6 +207,21 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
     warn("ffmpeg 合成失败，原始 WebM 文件保留在: " + captureResult.outputPath);
     errExit("视频合成失败", "COMPOSE_FAILED");
   }
+
+  // 清理临时文件
+  const { cleanupTempFiles } = await import("../engine/video-composer.js");
+  const cleaned = cleanupTempFiles(outputPath);
+  if (cleaned.removed > 0) {
+    info(`清理 ${cleaned.removed} 个临时文件`);
+  }
+
+  // 清理录制的 WebM（合成成功后不再需要）
+  try {
+    const { unlinkSync } = await import("node:fs");
+    if (existsSync(captureResult.outputPath) && captureResult.outputPath !== outputPath) {
+      unlinkSync(captureResult.outputPath);
+    }
+  } catch { /* ignore */ }
 
   success(`视频已生成: ${outputPath}`);
   info(`  格式: ${opts.format.toUpperCase()}`);
@@ -223,6 +257,7 @@ Video recording (requires Playwright + ffmpeg):
   --bgm=<name>          Background music: ${BGM_LIST.join("|")}
   --watermark=<file>    Watermark image overlay
   --quick               Quick mode: 720p 15fps lower quality
+  --interactive         Auto-detect and record interactive elements (modal/tab/carousel)
   --output=<file>       Output file path
 
 Examples:
@@ -232,8 +267,9 @@ Examples:
   bwvi animate page.html --record --format=gif    # GIF export
   bwvi animate page.html --record --bgm=tech      # With BGM
   bwvi animate page.html --record --quick         # Quick preview
-  bwvi animate page.html --record --duration=10   # 10s fixed duration
+  bwvi animate page.html --record --duration=10     # 10s fixed duration
   bwvi animate page.html --record --scroll=section  # Per-section scroll
+  bwvi animate page.html --record --interactive     # Record with interaction demo
 `);
 }
 

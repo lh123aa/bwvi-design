@@ -12,6 +12,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { injectForVideo } from "./video-inject.js";
+import type { InteractionStep } from "./interaction-capture.js";
 
 export type ScrollBehavior = "auto" | "section" | "none";
 
@@ -30,6 +31,8 @@ export interface CaptureOptions {
   animate?: boolean;
   /** 动画循环次数 */
   loop?: number;
+  /** 交互步骤（录制过程中自动执行） */
+  interactionSteps?: InteractionStep[];
 }
 
 export interface CaptureResult {
@@ -148,6 +151,21 @@ export async function captureVideo(
       );
     } catch {
       // 如果无动画标记，继续执行
+    }
+
+    // 6.5. 执行交互步骤（如果有）
+    if (opts.interactionSteps && opts.interactionSteps.length > 0) {
+      try {
+        const { executeInteractions } = await import("./interaction-capture.js");
+        await executeInteractions(page, {
+          steps: opts.interactionSteps,
+          detectedCount: opts.interactionSteps.length,
+          typeCount: {},
+        });
+      } catch (e) {
+        // 交互失败不阻塞录制
+        console.warn("[BWVI] 交互执行失败:", e);
+      }
     }
 
     // 7. 计算录制时长

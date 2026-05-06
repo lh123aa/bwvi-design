@@ -10,8 +10,8 @@
  */
 
 import { execSync } from "node:child_process";
-import { existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { existsSync, unlinkSync } from "node:fs";
+import { dirname, join, basename } from "node:path";
 
 export type VideoFormat = "mp4" | "gif" | "webm";
 export type VideoQuality = "high" | "medium" | "low" | "quick";
@@ -206,4 +206,34 @@ function getWatermarkPosition(pos: string): { x: number; y: number } {
     case "top-left": return { x: 20, y: 20 };
     default: return { x: -20, y: -20 };
   }
+}
+
+/**
+ * 清理合成过程中产生的临时文件。
+ * 包括 palette.png、中间 mp4、animated.html 等。
+ */
+export function cleanupTempFiles(outputPath: string): { removed: number; files: string[] } {
+  const base = outputPath.replace(/\.\w+$/, "");
+  const dir = dirname(outputPath);
+  const patterns = [
+    `${base}-noaudio.mp4`,
+    `${base}-withbgm.mp4`,
+    `${base}-watermarked.mp4`,
+    `${base}-palette.png`,
+    `${base}.palette.png`,
+    join(dir, `${basename(base)}-palette.png`),
+    `${dir}\\${basename(base)}-noaudio.mp4`,
+  ];
+
+  const removed: string[] = [];
+  for (const p of patterns) {
+    try {
+      if (existsSync(p)) {
+        unlinkSync(p);
+        removed.push(p);
+      }
+    } catch { /* ignore */ }
+  }
+
+  return { removed: removed.length, files: removed };
 }
