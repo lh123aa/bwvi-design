@@ -17,7 +17,7 @@ interface TestResult {
   duration_ms: number;
 }
 
-import { generateDirectHtml } from "./generate.js";
+import { buildPage } from "../engine/page-builder.js";
 
 export async function runBenchmark(): Promise<void> {
   const startTime = Date.now();
@@ -89,9 +89,7 @@ async function tc01BrandLanding(tmpDir: string): Promise<TestResult> {
     if (directions.length < 2) throw new Error("方向推荐数不足");
 
     // Generate direct HTML
-    const html = generateDirectHtml(task, "warm-minimal",
-      { primary: "#D97757", accent: "#8C6E5D", surface: "#FDF8F5", text: "#3D3D3D" },
-      "'Georgia', serif");
+    const html = buildPage({ task, direction: "warm-minimal" }).html;
 
     const htmlPath = join(tmpDir, "tc01-output.html");
     await writeFile(htmlPath, html, "utf-8");
@@ -135,9 +133,7 @@ async function tc02ColdStart(tmpDir: string): Promise<TestResult> {
 
     // Generate with first direction
     const htmlPath = join(tmpDir, "tc02-output.html");
-    const html = generateDirectHtml(task, directions[0].name,
-      { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
-      "'Georgia', serif");
+    const html = buildPage({ task, direction: directions[0].name }).html;
 
     await writeFile(htmlPath, html, "utf-8");
     details.push(`HTML 生成: ${html.length} bytes`);

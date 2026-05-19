@@ -1,6 +1,7 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { recordImprovement } from "../engine/capability-graph.js";
 
 export async function feedbackCommand(args: string[]) {
   const score = parseInt(args[0], 10);
@@ -52,6 +53,21 @@ export async function feedbackCommand(args: string[]) {
     avg_score: null, // will be reported from fingerprint
     file: filePath,
   }, null, 2));
+
+  if (score < 6) {
+    try {
+      await recordImprovement("feedback-learning", {
+        id: `feedback-auto-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        previousLevel: score <= 4 ? 1 : 2,
+        newLevel: score <= 4 ? 2 : 3,
+        method: "feedback-accumulation",
+        description: `收到评分 ${score}/10 的反馈, 自动积累学习数据`,
+        source: "feedback",
+        verified: false,
+      });
+    } catch {}
+  }
 }
 
 function findProjectDir(): string | null {

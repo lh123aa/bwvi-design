@@ -1,0 +1,53 @@
+# 融资路演 Deck
+id: deck-pitch
+name: 融资路演 Deck
+emoji: 📈
+category: deck
+industry: [pitch, 融资, investor, fundraising, startup, vc, 路演, 投资]
+keywords: [pitch, deck, 融资, investor, fundraising, startup, vc, 路演, 投资人]
+direction: dark-luxury
+transition: slide
+aspectRatio: "16:9"
+dark: true
+palettes:
+  - name: "Dark Gold"
+    accent: "#D4AF37"
+    paper: "#0a0a0a"
+    ink: "#ffffff"
+  - name: "Deep Blue"
+    accent: "#1a56db"
+    paper: "#0f172a"
+    ink: "#f8fafc"
+sections:
+  - type: hero
+    variant: editoriale
+    data:
+      title: "{brand}"
+      subtitle: "{tagline} — {description}"
+      cta: "Invest"
+  - type: stats
+    variant: list
+    data:
+      items:
+        - {num: "$2M", label: "Revenue"}
+        - {num: "150%", label: "Growth"}
+        - {num: "50K", label: "Users"}
+        - {num: "4.9★", label: "NPS"}
+  - type: features
+    variant: grid
+    data:
+      items:
+        - icon: "📈"
+          title: "Traction"
+          desc: "Strong metrics across all channels."
+        - icon: "👥"
+          title: "Team"
+          desc: "Expert founders with deep domain experience."
+        - icon: "🌎"
+          title: "Market"
+          desc: "$10B TAM with room to grow."
+  - type: cta
+    data:
+      title: "Join Us"
+      subtitle: "Series A raising — $5M target."
+      cta: "Invest Now"

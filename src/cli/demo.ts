@@ -1,12 +1,13 @@
 import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { homedir } from "node:os";
 
 let _cachedDir: string | null = null;
 
 export function getDemoDir(): string {
   if (_cachedDir) return _cachedDir;
-  const base = findProjectDir() || process.cwd();
-  const d = join(base, "demo");
+  const projectDir = findProjectDir();
+  const d = projectDir ? join(projectDir, "demo") : join(homedir(), ".bwvi", "demo");
   if (!existsSync(d)) mkdirSync(d, { recursive: true });
   _cachedDir = d;
   return d;

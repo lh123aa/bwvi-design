@@ -18,28 +18,15 @@ import { FingerprintTracker } from "../fingerprint/tracker.js";
 import { learnFromUrl, saveReference, injectToFingerprint } from "../engine/learner.js";
 import { listStyles } from "../engine/style-systems.js";
 import { listBrands, searchBrands, getBrand } from "../engine/brand-loader.js";
-import { generateDirectHtml } from "../cli/generate.js";
 import { getAnimationCSS, getStageScript } from "../engine/animation-engine.js";
 import { injectForVideo } from "../engine/video-inject.js";
 import { findBlueprint } from "../templates/content-presets.js";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-
-const PALETTES: Record<string, Record<string, string>> = {
-  "editorial-monocle": { primary: "#1A1A2E", accent: "#C44536", surface: "#FAF8F5", text: "#2D2D2D" },
-  "warm-minimal":      { primary: "#D97757", accent: "#8C6E5D", surface: "#FDF8F5", text: "#3D3D3D" },
-  "tech-utility":      { primary: "#1E1E2E", accent: "#00E698", surface: "#FAFBFC", text: "#24292E" },
-  "dark-luxury":       { primary: "#0D0D0D", accent: "#C9A84C", surface: "#1A1A1A", text: "#E8E8E8" },
-  "playful-color":     { primary: "#FF6B6B", accent: "#4ECDC4", surface: "#FFF8F0", text: "#2C3E50" },
-};
-const FONTS: Record<string, string> = {
-  "editorial-monocle": "Georgia, serif",
-  "warm-minimal": "Georgia, serif",
-  "tech-utility": "Inter, sans-serif",
-  "dark-luxury": "Inter, sans-serif",
-  "playful-color": "DM Sans, sans-serif",
-};
-const DIRECTION_NAMES = Object.keys(PALETTES);
+import { DIRECTION_NAMES } from "../engine/palettes.js";
+import { buildPage } from "../engine/page-builder.js";
+import { generateLearningReport, measureCapabilities, diagnoseWeakest, recordImprovement } from "../engine/capability-graph.js";
+import { ingestFromUrl, ingestFromFeedback, ingestFromCritiquePatterns, getKnowledgeStats, listKnowledgeChunks } from "../engine/knowledge-pipeline.js";
 
 export async function startMcpServer(args: string[] = []) {
   const sse = args.includes("--sse");
@@ -55,7 +42,31 @@ export async function startMcpServer(args: string[] = []) {
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [
       { name: "analyze_design", description: "Analyze design task → direction recommendations", inputSchema: { type: "object", properties: { task: { type: "string" }, project_dir: { type: "string" } }, required: ["task"] } },
-      { name: "generate_design", description: "Generate HTML design from task + direction", inputSchema: { type: "object", properties: { task: { type: "string" }, direction: { type: "string", enum: DIRECTION_NAMES } }, required: ["task", "direction"] } },
+      { name: "generate_design", description: "Generate HTML design from task + confirmed decisions", inputSchema: { type: "object", properties: {
+        task: { type: "string", description: "Design task description" },
+        direction: { type: "string", enum: DIRECTION_NAMES, description: "已废弃 — 仅使用 confirmed_decisions.direction" },
+        confirmed_decisions: {
+          type: "object",
+          description: "Decision chain: direction + palette + typography required, layout/information_density optional",
+          properties: {
+            direction: { type: "string", enum: DIRECTION_NAMES },
+            palette: { type: "string", description: "Palette decision ID or description" },
+            typography: { type: "string", description: "Typography decision ID or description" },
+            layout: { type: "string", description: "Layout decision (optional)" },
+            information_density: { type: "string", description: "Information density decision (optional)" },
+          },
+          required: ["direction", "palette", "typography"],
+        },
+        assets: {
+          type: "object",
+          description: "Asset paths for logo/imagery (optional)",
+          properties: {
+            logo: { type: "string", description: "Logo file path" },
+            imagery: { type: "array", items: { type: "string" }, description: "Image file paths" },
+          },
+        },
+        mode: { type: "string", enum: ["sync", "async"], description: "Generation mode (default: sync)" },
+      }, required: ["task", "confirmed_decisions"] } },
       { name: "critique_design", description: "Critique HTML → 10-dimension quality score", inputSchema: { type: "object", properties: { html: { type: "string" }, brand_colors: { type: "array", items: { type: "string" } } }, required: ["html"] } },
       { name: "critique_diff", description: "Compare two HTML files → metric diff report", inputSchema: { type: "object", properties: { html1: { type: "string" }, html2_path: { type: "string" } }, required: ["html1", "html2_path"] } },
       { name: "learn_design", description: "Extract design tokens from URL", inputSchema: { type: "object", properties: { url: { type: "string" }, inject: { type: "boolean" } }, required: ["url"] } },
@@ -65,6 +76,10 @@ export async function startMcpServer(args: string[] = []) {
       { name: "list_brands", description: "Search/list 115 built-in brand systems", inputSchema: { type: "object", properties: { query: { type: "string" } }, required: [] } },
       { name: "brand_get", description: "Get full brand details (colors + typography)", inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] } },
       { name: "list_blueprints", description: "Find matching blueprint for a task", inputSchema: { type: "object", properties: { task: { type: "string" } }, required: ["task"] } },
+      { name: "learn_system_status", description: "Get learning system capability status report", inputSchema: { type: "object", properties: {}, required: [] } },
+      { name: "learn_system_diagnose", description: "Diagnose weakest capability bottleneck", inputSchema: { type: "object", properties: {}, required: [] } },
+      { name: "learn_system_ingest", description: "Ingest knowledge from URL into learning system", inputSchema: { type: "object", properties: { url: { type: "string" }, type: { type: "string", enum: ["url", "feedback", "critique"] } }, required: ["url"] } },
+      { name: "learn_system_knowledge", description: "List all learned knowledge chunks", inputSchema: { type: "object", properties: {}, required: [] } },
     ],
   }));
 
@@ -86,10 +101,34 @@ export async function startMcpServer(args: string[] = []) {
       }
 
       if (n === "generate_design") {
-        const d = String(a.direction || "tech-utility");
-        const pp = (PALETTES as any)[d] || (PALETTES as any)["tech-utility"];
-        const f = FONTS[d] || FONTS["tech-utility"];
-        return { content: [{ type: "text", text: generateDirectHtml(String(a.task || ""), d, pp, f) }] };
+        const task = String(a.task || "");
+        if (!task) return { content: [{ type: "text", text: "Error: missing task" }], isError: true };
+
+        // 决策链验证（E105/E106 契约）
+        const NEXT_STEP = "请先调用 analyze_design 完成方向分析，获取推荐方向后再调用 generate_design";
+        const decisions = a.confirmed_decisions as Record<string, string> | undefined;
+        if (!decisions) {
+          return { content: [{ type: "text", text: JSON.stringify({ error: "E105:MISSING_DECISIONS", message: "缺少决策链：必须提供 direction + palette + typography 三个已确认决策", required: ["direction", "palette", "typography"], next_step: NEXT_STEP }) }], isError: true };
+        }
+        const missing: string[] = [];
+        const requiredDecisions = ["direction", "palette", "typography"];
+        for (const key of requiredDecisions) {
+          if (!decisions[key]) missing.push(key);
+        }
+        if (missing.length > 0) {
+          return { content: [{ type: "text", text: JSON.stringify({ error: "E105:MISSING_DECISIONS", message: `缺少决策: ${missing.join(", ")}`, missing, required: requiredDecisions, next_step: NEXT_STEP }) }], isError: true };
+        }
+
+        const dir = String(decisions.direction || "tech-utility");
+        const html = buildPage({ task, direction: dir }).html;
+
+        // 如果传入了 assets.logo，尝试注入（简单替换 placeholder）
+        const assets = a.assets as { logo?: string; imagery?: string[] } | undefined;
+        const finalHtml = assets?.logo
+          ? html.replace(/<img[^>]*logo[^>]*>/i, `<img src="${assets.logo}" alt="Logo" style="height:32px">`)
+          : html;
+
+        return { content: [{ type: "text", text: finalHtml }] };
       }
 
       if (n === "critique_design") {
@@ -156,6 +195,70 @@ export async function startMcpServer(args: string[] = []) {
         if (!task) return { content: [{ type: "text", text: JSON.stringify({ count: 50, note: "50+ built-in blueprints. Provide a task to find a match." }) }] };
         const result = findBlueprint(task);
         return { content: [{ type: "text", text: JSON.stringify({ blueprint: result.blueprint.id, confidence: result.confidence, direction: result.blueprint.direction, sections: result.blueprint.sections.length }) }] };
+      }
+
+      if (n === "learn_system_status") {
+        const report = generateLearningReport();
+        return { content: [{ type: "text", text: JSON.stringify({
+          overall_level: report.overallLevel,
+          capabilities: report.capabilities.map(c => ({ id: c.id, name: c.name, level: c.currentLevel, maxLevel: c.maxLevel, diagnosis: c.diagnosis, bottleneck: c.bottleneck })),
+          weakest: report.weakest,
+          strongest: report.strongest,
+          total_improvements: report.totalImprovements,
+          knowledge_chunks: report.knowledgeChunks,
+        }) }] };
+      }
+
+      if (n === "learn_system_diagnose") {
+        const report = generateLearningReport();
+        const weakest = report.capabilities.reduce((w, c) => c.currentLevel < w.currentLevel ? c : w);
+        return { content: [{ type: "text", text: JSON.stringify({
+          priority: { id: weakest.id, name: weakest.name, level: weakest.currentLevel, bottleneck: weakest.bottleneck, diagnosis: weakest.diagnosis },
+          all_capabilities: report.capabilities.map(c => ({ id: c.id, level: c.currentLevel, bottleneck: c.bottleneck })).sort((a, b) => a.level - b.level),
+        }) }] };
+      }
+
+      if (n === "learn_system_ingest") {
+        const url = String(a.url || "");
+        const type = String(a.type || "url");
+        if (!url) return { content: [{ type: "text", text: "Error: url required" }], isError: true };
+
+        try {
+          if (type === "feedback") {
+            let pd = process.cwd();
+            for (let i = 0; i < 5; i++) {
+              if (existsSync(join(pd, ".bwvi"))) break;
+              const p2 = join(pd, "..");
+              if (p2 === pd) { pd = ""; break; }
+              pd = p2;
+            }
+            if (!pd) return { content: [{ type: "text", text: "Error: no .bwvi project found" }], isError: true };
+            const result = await ingestFromFeedback(join(pd, ".bwvi", "feedback"));
+            return { content: [{ type: "text", text: JSON.stringify(result) }] };
+          }
+          if (type === "critique") {
+            let pd = process.cwd();
+            for (let i = 0; i < 5; i++) {
+              if (existsSync(join(pd, ".bwvi"))) break;
+              const p2 = join(pd, "..");
+              if (p2 === pd) { pd = ""; break; }
+              pd = p2;
+            }
+            if (!pd) return { content: [{ type: "text", text: "Error: no .bwvi project found" }], isError: true };
+            const result = await ingestFromCritiquePatterns(join(pd, ".bwvi", "reports"));
+            return { content: [{ type: "text", text: JSON.stringify(result) }] };
+          }
+          const result = await ingestFromUrl(url);
+          return { content: [{ type: "text", text: JSON.stringify(result) }] };
+        } catch (e) {
+          return { content: [{ type: "text", text: "Ingest error: " + String(e) }], isError: true };
+        }
+      }
+
+      if (n === "learn_system_knowledge") {
+        const stats = await getKnowledgeStats();
+        const chunks = await listKnowledgeChunks();
+        return { content: [{ type: "text", text: JSON.stringify({ stats, chunks }) }] };
       }
 
       return { content: [{ type: "text", text: "Unknown tool: " + n }], isError: true };

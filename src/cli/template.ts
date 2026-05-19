@@ -31,8 +31,8 @@ export async function templateCommand(args: string[]) {
     // Generate from built-in direction
     const palette = getPalette(name);
     if (!palette) { console.error(JSON.stringify({ error: "Unknown template: " + name })); process.exit(1); }
-    const { generateDirectHtml } = await import("./generate.js");
-    const html = generateDirectHtml("Template: " + name, name, palette, "'Inter', sans-serif");
+    const { buildPage } = await import("../engine/page-builder.js");
+    const html = buildPage({ task: "Template: " + name, direction: name }).html;
     const outPath = join(process.cwd(), name + ".html");
     writeFileSync(outPath, html, "utf-8");
     console.log(JSON.stringify({ status: "ok", template: name, file: outPath }, null, 2));

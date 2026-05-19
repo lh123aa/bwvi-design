@@ -1,0 +1,60 @@
+# 瑞士国际主义 Deck
+id: deck-swiss
+name: 瑞士国际主义 Deck
+emoji: 🟦
+category: deck
+industry: [presentation, deck, slide, keynote, pitch, 演示, 幻灯片, 路演]
+keywords: [swiss, deck, slide, presentation, 瑞士, 国际, 路演, keynote, 演示]
+direction: editorial-monocle
+transition: slide
+aspectRatio: "16:9"
+palettes:
+  - name: "Klein Blue"
+    accent: "#002FA7"
+    paper: "#fafaf8"
+    ink: "#0a0a0a"
+  - name: "Lemon Yellow"
+    accent: "#FFD500"
+    paper: "#f7f5ee"
+    ink: "#0a0a0a"
+  - name: "Safety Orange"
+    accent: "#FF6B35"
+    paper: "#f7f5ee"
+    ink: "#0a0a0a"
+constraints:
+  borderRadius: 0
+  grid: 16-column
+  fonts: ["Inter Tight", "Noto Sans SC", "JetBrains Mono"]
+sections:
+  - type: hero
+    variant: editoriale
+    data:
+      title: "{brand}"
+      subtitle: "{tagline} — {description}"
+      cta: ""
+  - type: stats
+    variant: list
+    data:
+      items:
+        - {num: "01", label: "Vision"}
+        - {num: "02", label: "Strategy"}
+        - {num: "03", label: "Execution"}
+        - {num: "04", label: "Impact"}
+  - type: features
+    variant: grid
+    data:
+      items:
+        - icon: "📊"
+          title: "Data-Driven"
+          desc: "Every decision backed by metrics."
+        - icon: "🎯"
+          title: "Focused"
+          desc: "Clear narrative, zero clutter."
+        - icon: "📐"
+          title: "Precision"
+          desc: "16-column grid, strict geometry."
+  - type: cta
+    data:
+      title: "Let's Build"
+      subtitle: "{brand} — Where precision meets purpose."
+      cta: "Get Started"

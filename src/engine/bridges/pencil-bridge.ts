@@ -83,7 +83,7 @@ export async function renderViaPencil(
   options: PencilBridgeOptions
 ): Promise<PencilBridgeResult> {
   const warnings: string[] = [];
-  const outputDir = options.outputDir || process.cwd();
+  const outputDir = options.outputDir || join(process.cwd(), "_temp");
 
   // 1. 分析任务 → 匹配蓝图
   const lower = options.task.toLowerCase();

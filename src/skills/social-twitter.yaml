@@ -1,0 +1,20 @@
+# Twitter/X 分享卡片
+id: social-twitter
+name: Twitter/X 卡片
+emoji: 🐦
+category: social
+industry: [social, twitter, x, social media, 社交, 推特]
+keywords: [twitter, x, card, social, share, tweet, 卡片, 分享]
+direction: tech-utility
+sections:
+  - type: hero
+    variant: centered
+    data:
+      title: "{brand}"
+      subtitle: "{tagline}"
+      cta: ""
+  - type: cta
+    data:
+      title: "Share This"
+      subtitle: "{description}"
+      cta: "Share on X"

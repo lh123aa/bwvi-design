@@ -5,6 +5,7 @@ import { analyzeHtml } from "../critique/objective.js";
 import { buildReport } from "../critique/self-review.js";
 import { FingerprintTracker } from "../fingerprint/tracker.js";
 import { generateReport } from "../report/generator.js";
+import { ingestFromCritiquePatterns } from "../engine/knowledge-pipeline.js";
 
 export async function critiqueCommand(args: string[]) {
   const filePath = args[0];
@@ -55,6 +56,7 @@ export async function critiqueCommand(args: string[]) {
       await tracker.recordProject(decisions, report);
       const name = projectDir.split(/[\\/]/).pop() || "unknown";
       await generateReport(projectDir, name, decisions, report, startTime);
+      await ingestFromCritiquePatterns(join(projectDir, ".bwvi", "reports")).catch(() => {});
     } catch {}
   }
 

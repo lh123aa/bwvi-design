@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { info, success, warn, errExit, result, infoT, successT } from "./ux.js";
 import { t } from "./i18n.js";
@@ -9,29 +9,40 @@ import { wrapWithDevice, type DeviceType } from "../frames/index.js";
 import { getBrand, type BrandSystem } from "../engine/brand-loader.js";
 import { render } from "../engine/renderer.js";
 import { buildPage, DIRECTION_PALETTES, DIRECTION_FONTS } from "../engine/page-builder.js";
+import { findProjectDir, loadProjectConfig, getFlagWithDefault } from "../engine/config-loader.js";
 
 const VALID_DIRECTIONS = Object.keys(DIRECTION_PALETTES);
 
 export async function generateCommand(args: string[]) {
+  // 加载项目配置（用于默认值）
+  const config = loadProjectConfig();
+
   const direct = args.includes("--direct");
   const runMode = args.includes("--run");
-  const deviceFlag = args.find(a => a.startsWith("--device="));
-  const device = deviceFlag ? deviceFlag.split("=")[1] as DeviceType : undefined;
+  const deviceRaw = getFlagWithDefault(args, "--device=", config.default_device, "none");
+  const device = deviceRaw !== "none" ? deviceRaw as DeviceType : undefined;
   const variantFlag = args.find(a => a.startsWith("--variant="));
   const variant = variantFlag ? variantFlag.split("=")[1] : undefined;
-  const dark = args.includes("--dark");
+  const dark = args.includes("--dark") || config.dark_mode;
   const orientationFlag = args.find(a => a.startsWith("--orientation="));
   const orientation = orientationFlag ? orientationFlag.split("=")[1] as "portrait" | "landscape" : "portrait";
   const interactive = args.includes("--interactive");
   const realImages = args.includes("--real-images");
-  const brandFlag = args.find(a => a.startsWith("--brand="));
-  const brandName = brandFlag ? brandFlag.split("=")[1] : undefined;
-  const brand = brandName ? getBrand(brandName) : undefined;
+  const brandName = getFlagWithDefault(args, "--brand=", config.default_brand, "__none__");
+  const brand = brandName !== "__none__" && brandName !== "none" ? getBrand(brandName) : undefined;
   const engineFlag = args.find(a => a.startsWith("--engine="));
   const engine = (engineFlag ? engineFlag.split("=")[1] : "direct") as "direct" | "od" | "huashu" | "agent" | "pencil";
-  const styleFlag = args.find(a => a.startsWith("--style="));
-  const styleId = styleFlag ? styleFlag.split("=")[1] : undefined;
+  const styleId = getFlagWithDefault(args, "--style=", config.default_style, "__none__");
+  const styleFinal = styleId !== "__none__" && styleId !== "none" ? styleId : undefined;
   const aiImages = args.includes("--ai-images");
+  const poster = args.includes("--poster");
+  const posterSizeFlag = args.find(a => a.startsWith("--poster-size="));
+  const posterSize = (posterSizeFlag ? posterSizeFlag.split("=")[1] : "a3") as "a3" | "a2" | "a1";
+  // v0.5.0: 品类快捷标志
+  const deck = args.includes("--deck");
+  const social = args.includes("--social");
+  const office = args.includes("--office");
+  const category = deck ? "deck" : social ? "social" : office ? "office" : undefined;
 
   const nonFlagArgs = args.filter((a) => !a.startsWith("--"));
   const task = nonFlagArgs.join(" ");
@@ -43,6 +54,9 @@ Generate design output from a task description.
 Options:
   --direct              Generate HTML directly (default mode)
   --run                 Run via agent CLI (Claude/OpenCode)
+  --deck                Generate slide deck (presentation)
+  --social              Generate social media card
+  --office              Generate office document (OKR/report/invoice)
   --device=<type>       Device frame: iphone, pixel, ipad, macbook, browser
   --orientation=<dir>   Device orientation: portrait, landscape
   --variant=<v>         Component variant: fullscreen, centered, split, editorial
@@ -51,12 +65,17 @@ Options:
   --dark                Enable dark mode
   --interactive         Embed interactive state machine
   --engine=<backend>    Render backend: direct, od, huashu, agent, pencil
+  --poster              Generate print-quality poster (PNG 300dpi via export --scale=4)
+  --poster-size=<s>     Poster size: a3 (default), a2, a1
   --json                JSON output mode
 
 Examples:
   bwvi generate "咖啡品牌 landing page" --direct
-  bwvi generate "App prototype" --device=iphone --interactive
-  bwvi generate "SaaS landing" --brand=linear --style=glassmorphism`);
+  bwvi generate "产品路线图" --deck                      # Deck 幻灯片
+  bwvi generate "新品发布" --social --brand=linear        # 社交媒体卡片
+  bwvi generate "Sprint 回顾" --office                    # 办公文档
+  bwvi generate "SaaS landing" --brand=linear --style=glassmorphism
+  bwvi generate "科技产品发布会" --poster --brand=linear`);
     return;
   }
   if (!task) errExit(t("task_required") + "（如: 咖啡品牌 landing page）", "MISSING_TASK");
@@ -88,13 +107,13 @@ Examples:
       return;
     }
 
-    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive, styleId, aiImages });
+    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive, styleId: styleFinal, aiImages, poster, posterSize, category });
     const fileName = device ? `preview-${device}.html` : "index.html";
     const filePath = join(demoDir(), fileName);
     writeFileSync(filePath, pageResult.html, "utf-8");
     infoT("blueprint_matched", { id: pageResult.blueprintId, conf: (pageResult.matchConfidence * 100).toFixed(0) });
     info(t("direction") + ": " + pageResult.direction + (pageResult.brandUsed ? " · " + t("brand") + ": " + pageResult.brandUsed : ""));
-    result({ status: "ok", file: filePath, direction: pageResult.direction, device: device || "none", brand: pageResult.brandUsed, blueprint: pageResult.blueprintId, match_confidence: Math.round(pageResult.matchConfidence * 100) / 100, engine: "direct" });
+    result({ status: "ok", file: filePath, direction: pageResult.direction, device: device || "none", brand: pageResult.brandUsed, blueprint: pageResult.blueprintId, match_confidence: Math.round(pageResult.matchConfidence * 100) / 100, engine: "direct", category: category || "landing" });
     success("已生成: " + filePath);
     return;
   }
@@ -144,41 +163,10 @@ Examples:
   }, null, 2));
 }
 
-interface DirectOptions {
-  device?: DeviceType;
-  variant?: string;
-  dark?: boolean;
-  orientation?: "portrait" | "landscape";
-  interactive?: boolean;
-  realImages?: boolean;
-  brand?: string;
-}
-
-/** @deprecated Use buildPage() instead. Kept for backward compat (MCP, benchmark). */
-export function generateDirectHtml(
-  task: string,
-  direction: string,
-  palette: typeof DIRECTION_PALETTES[string],
-  fontStack: string,
-  opts?: DirectOptions
-): string {
-  const result = buildPage({ task, direction, brand: opts?.brand, device: opts?.device, orientation: opts?.orientation, dark: opts?.dark, interactive: opts?.interactive, styleId: undefined });
-  return result.html;
-}
+// generateDirectHtml 已删除，请直接使用 buildPage() (src/engine/page-builder.ts)
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 function demoDir(): string { return getDemoDir(); }
-
-function findProjectDir(): string | null {
-  let dir = process.cwd();
-  for (let i = 0; i < 5; i++) {
-    if (existsSync(join(dir, ".bwvi"))) return dir;
-    const parent = join(dir, "..");
-    if (parent === dir) break;
-    dir = parent;
-  }
-  return null;
-}

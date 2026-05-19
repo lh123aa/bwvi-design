@@ -1,0 +1,60 @@
+# 编辑式克制 Deck
+id: deck-editorial
+name: 编辑式克制 Deck
+emoji: 📰
+category: deck
+industry: [editorial, magazine, deck, slide, keynote, 编辑, 杂志, 演示]
+keywords: [editorial, magazine, deck, 编辑, 印刷, 杂志, ink, 克制]
+direction: editorial-monocle
+transition: fade
+aspectRatio: "16:9"
+palettes:
+  - name: "Ink Black"
+    accent: "#1a1a1a"
+    paper: "#f5f4ed"
+    ink: "#1a1a1a"
+  - name: "Indigo Porcelain"
+    accent: "#2a3b5c"
+    paper: "#f5f4ed"
+    ink: "#2a3b5c"
+  - name: "Forest Ink"
+    accent: "#2d4a3e"
+    paper: "#f5f4ed"
+    ink: "#2d4a3e"
+  - name: "Dune"
+    accent: "#c4a882"
+    paper: "#f5f4ed"
+    ink: "#4a3f35"
+constraints:
+  fonts: ["Playfair Display", "Noto Serif SC", "Inter"]
+  grid: 12-column
+sections:
+  - type: hero
+    variant: editoriale
+    data:
+      title: "{brand}"
+      subtitle: "{tagline} — {description}"
+      cta: ""
+  - type: features
+    variant: list
+    data:
+      items:
+        - icon: "✍️"
+          title: "Narrative First"
+          desc: "Content drives the structure, not the other way around."
+        - icon: "📰"
+          title: "Print Heritage"
+          desc: "Editorial grids, generous margins, readable type."
+        - icon: "🎨"
+          title: "Restrained Palette"
+          desc: "Two colors maximum. Every accent has a job."
+  - type: testimonials
+    variant: compact
+    data:
+      items:
+        - {quote: "Less noise, more signal. That's the editorial way.", author: "Design Director"}
+  - type: cta
+    data:
+      title: "Tell Your Story"
+      subtitle: "{brand} — Words first, design second."
+      cta: "Start Writing"

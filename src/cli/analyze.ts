@@ -1,13 +1,12 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { FingerprintTracker } from "../fingerprint/tracker.js";
 import { recommendDirections, inferTaskType } from "../engine/analyzer.js";
+import { findProjectDir } from "../engine/config-loader.js";
+import { errExit, result } from "./ux.js";
 
 export async function analyzeCommand(args: string[]) {
   const task = args.join(" ");
   if (!task) {
-    console.error(JSON.stringify({ error: "请提供任务描述", code: "MISSING_TASK" }));
-    process.exit(1);
+    errExit("请提供任务描述", "MISSING_TASK");
   }
 
   const projectDir = findProjectDir();
@@ -24,7 +23,7 @@ export async function analyzeCommand(args: string[]) {
   const taskType = inferTaskType(task);
   const directions = recommendDirections(task, 3);
 
-  const result = {
+  const output = {
     task_type: taskType,
     knowledge_path: ["direction-advisor"],
     recommended_directions: directions.map((d) => ({
@@ -38,16 +37,5 @@ export async function analyzeCommand(args: string[]) {
     estimated_tokens: 800,
   };
 
-  console.log(JSON.stringify(result, null, 2));
-}
-
-function findProjectDir(): string | null {
-  let dir = process.cwd();
-  for (let i = 0; i < 5; i++) {
-    if (existsSync(join(dir, ".bwvi"))) return dir;
-    const parent = join(dir, "..");
-    if (parent === dir) break;
-    dir = parent;
-  }
-  return null;
+  result(output);
 }

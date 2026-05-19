@@ -565,6 +565,22 @@ const BLUEPRINTS: Blueprint[] = [
     {type:"stats",variant:"compact",data:{items:[{num:"200+",label:"Products"},{num:"4.8★",label:"Rating"},{num:"10K+",label:"Customers"},{num:"4.9★",label:"Service"}]}},
     {type:"cta",variant:"",data:{title:"Shop Now",subtitle:"Free shipping over $50.",cta:"Browse"}},{type:"footer",variant:"minimal",data:{description:"{brand}"}},
   ]},
+
+  // ════════════════════════════════════════════════════════════════
+  // 印刷海报蓝图（pageType: poster）
+  // 海报通过 generate --poster 触发，使用独立的大字排版渲染
+  // ════════════════════════════════════════════════════════════════
+
+  {id:"poster-tech",name:"科技产品海报",pageType:"poster",industry:["科技","tech","SaaS","startup","产品","software"],keywords:["poster","海报","发布会","launch","科技","产品发布","keynote"],direction:"tech-utility",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-event",name:"活动/会议海报",pageType:"poster",industry:["活动","event","会议","conference","summit","meetup"],keywords:["poster","海报","event","活动","会议","summit","conference","talk"],direction:"corporate-trust",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-fashion",name:"时尚品牌海报",pageType:"poster",industry:["时尚","fashion","服饰","服装","luxury","retail","品牌"],keywords:["poster","海报","fashion","时尚","lookbook","collection","style"],direction:"editorial-monocle",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-music",name:"音乐/演出海报",pageType:"poster",industry:["音乐","music","演出","concert","festival","live","band","dj"],keywords:["poster","海报","音乐","concert","演出","festival","tour","live"],direction:"playful-color",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-cafe",name:"咖啡/餐饮海报",pageType:"poster",industry:["咖啡","cafe","餐饮","restaurant","food","bakery","coffee"],keywords:["poster","海报","咖啡","cafe","menu","special","food"],direction:"warm-minimal",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-fitness",name:"健身/运动海报",pageType:"poster",industry:["健身","fitness","运动","sports","gym","training","wellness"],keywords:["poster","海报","健身","fitness","gym","运动","sports","challenge"],direction:"dark-luxury",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-film",name:"电影/媒体海报",pageType:"poster",industry:["电影","film","cinema","media","影视","entertainment","movie"],keywords:["poster","海报","film","电影","cinema","movie","premiere","screening"],direction:"dark-luxury",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-education",name:"教育/课程海报",pageType:"poster",industry:["教育","education","课程","workshop","training","course","school"],keywords:["poster","海报","教育","course","课程","workshop","learn","training"],direction:"corporate-trust",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-wedding",name:"婚礼/活动海报",pageType:"poster",industry:["婚礼","wedding","event","celebration","love","party","婚纱"],keywords:["poster","海报","wedding","婚礼","save-the-date","invitation","celebration"],direction:"warm-minimal",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
+  {id:"poster-art",name:"艺术/展览海报",pageType:"poster",industry:["艺术","art","展览","exhibition","gallery","museum","creative"],keywords:["poster","海报","art","艺术","exhibition","展览","gallery","creative"],direction:"editorial-monocle",sections:[{type:"hero",variant:"centered",data:{title:"{brand}",subtitle:"{tagline}",cta:"{description}"}}]},
 ];
 
 function tokenize(s: string): string[] {
@@ -630,6 +646,7 @@ export function findBlueprint(task: string): { blueprint: Blueprint; confidence:
     if (bp.pageType === "landing" && /\b(landing|homepage|首页|落地|page|site)\b/.test(lower)) score += 1.5;
     if (bp.pageType === "dashboard" && /\b(dashboard|admin|后台)\b/.test(lower)) score += 3;
     if (bp.pageType === "app" && /\b(app|mobile|ios|android|手机|小程序)\b/.test(lower)) score += 3;
+    if (bp.pageType === "poster" && /\b(poster|海报|print|印刷|打印|大幅|大图|展出|展示架|展架)\b/.test(lower)) score += 4;
 
     if (score > bestScore) { bestScore = score; best = bp; }
   }

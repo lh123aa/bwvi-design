@@ -1,0 +1,27 @@
+# 小红书卡片
+id: social-xhs
+name: 小红书卡片
+emoji: 📕
+category: social
+industry: [xiaohongshu, 小红书, social, lifestyle, 社交, 生活]
+keywords: [xhs, 小红书, card, 卡片, 分享, 笔记, social]
+direction: playful-color
+sections:
+  - type: hero
+    variant: centered
+    data:
+      title: "{brand}"
+      subtitle: "{tagline} — {description}"
+      cta: ""
+  - type: stats
+    variant: compact
+    data:
+      items:
+        - {num: "❤️", label: "Likes"}
+        - {num: "💬", label: "Comments"}
+        - {num: "⭐", label: "Saves"}
+  - type: cta
+    data:
+      title: "Follow for More"
+      subtitle: "{brand} on 小红书"
+      cta: "关注"

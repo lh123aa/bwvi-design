@@ -112,7 +112,6 @@ export async function captureVideo(
 
   try {
     // 4. 动态导入 Playwright（可选依赖，运行时检测是否安装）
-    // @ts-ignore — playwright 可能未安装，由 checkPlaywright() 在调用前检测
     const { chromium } = await import("playwright");
 
     const browser = await chromium.launch({

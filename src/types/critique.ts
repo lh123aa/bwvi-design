@@ -27,10 +27,19 @@ export interface SelfReview {
   innovation: number;
 }
 
+export interface CrossReviewResult {
+  model_a_score: number;
+  model_b_score: number;
+  deviation: number;          // 0-1, 越小越一致
+  bias_analysis: string[];    // 分析差异点
+  confidence_adjustment: number; // -0.5 ~ +0.5
+}
+
 export interface CritiqueReport {
-  mode_used: "self-plus";
+  mode_used: "self-plus" | "cross";
   objective: ObjectiveMetrics;
   self?: SelfReview;
+  cross?: CrossReviewResult;
   weighted_score: number;
   score: number;
   passed: boolean;

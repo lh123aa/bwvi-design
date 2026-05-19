@@ -1,0 +1,91 @@
+# SaaS/科技 Landing Page
+id: landing-saas
+name: SaaS/科技 Landing
+emoji: 🚀
+category: landing
+industry: [saas, software, tech, 科技, SaaS, B2B, developer, startup, AI]
+keywords: [saas, 软件, 科技, 技术, 云, app, platform, enterprise]
+direction: tech-utility
+sections:
+  - type: navbar
+    variant: default
+    data:
+      logo: "{brand}"
+      links:
+        - {label: "Features", href: "#"}
+        - {label: "Pricing", href: "#"}
+        - {label: "Docs", href: "#"}
+        - {label: "About", href: "#"}
+      cta: Get Started
+  - type: hero
+    variant: fullscreen
+    data:
+      title: "{brand}"
+      subtitle: "{tagline} — {description}"
+      cta: "Start Free Trial"
+  - type: stats
+    variant: grid
+    data:
+      items:
+        - {num: "99.9%", label: "Uptime"}
+        - {num: "10M+", label: "Data Points"}
+        - {num: "150+", label: "Enterprise Clients"}
+        - {num: "4.9★", label: "Rating"}
+  - type: features
+    variant: grid
+    data:
+      items:
+        - icon: "⚡"
+          title: "Lightning Fast"
+          desc: "Sub-second response times on global edge infrastructure."
+        - icon: "🔒"
+          title: "Enterprise Security"
+          desc: "SOC 2 Type II certified with end-to-end encryption."
+        - icon: "🎨"
+          title: "Beautiful UI"
+          desc: "Accessibility-first design that your team will love."
+        - icon: "🔌"
+          title: "API First"
+          desc: "RESTful and GraphQL APIs with SDKs for every language."
+  - type: pricing
+    data:
+      name: "Pro"
+      price: "$49/mo"
+      features: ["Unlimited projects", "All integrations", "Priority support", "99.99% SLA"]
+      cta: "Start Free Trial"
+      featured: true
+  - type: testimonials
+    variant: grid
+    data:
+      items:
+        - {quote: "Transformed our workflow. The API is a dream to work with.", author: "Sarah C.", role: "Engineering Lead"}
+        - {quote: "Best platform we've used. The team is incredibly responsive.", author: "Marcus K.", role: "CTO"}
+        - {quote: "Finally, a tool that respects both engineers and designers.", author: "Aiko T.", role: "Product Director"}
+  - type: cta
+    data:
+      title: "Ready to Get Started?"
+      subtitle: "Join 150+ enterprise teams building with {brand}."
+      cta: "Start Free Trial"
+  - type: footer
+    variant: default
+    data:
+      description: "{brand} — Built for modern teams."
+      columns:
+        - title: "Product"
+          links:
+            - {label: "Features", href: "#"}
+            - {label: "Pricing", href: "#"}
+            - {label: "Integrations", href: "#"}
+            - {label: "Changelog", href: "#"}
+        - title: "Company"
+          links:
+            - {label: "About", href: "#"}
+            - {label: "Blog", href: "#"}
+            - {label: "Careers", href: "#"}
+            - {label: "Contact", href: "#"}
+        - title: "Legal"
+          links:
+            - {label: "Privacy", href: "#"}
+            - {label: "Terms", href: "#"}
+            - {label: "Security", href: "#"}
+            - {label: "GDPR", href: "#"}

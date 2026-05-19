@@ -1,0 +1,81 @@
+# 化妆品/美妆 Landing Page
+id: landing-cosmetics
+name: 化妆品/美妆 Landing
+emoji: 💄
+category: landing
+industry: [化妆品, 美妆, cosmetics, beauty, skincare, 护肤, makeup]
+keywords: [化妆品, 美妆, 美, 可爱, cute, beauty, glow, 优雅]
+direction: warm-minimal
+sections:
+  - type: navbar
+    variant: default
+    data:
+      logo: "{brand}"
+      links:
+        - {label: "Shop", href: "#"}
+        - {label: "Ingredients", href: "#"}
+        - {label: "About", href: "#"}
+        - {label: "Reviews", href: "#"}
+      cta: Get Started
+  - type: hero
+    variant: split
+    data:
+      title: "Beauty that {tagline}"
+      subtitle: "{description}"
+      cta: "Shop the Collection"
+  - type: features
+    variant: grid
+    data:
+      items:
+        - icon: "🌿"
+          title: "Clean Ingredients"
+          desc: "No parabens, sulfates, or synthetic fragrances. Ever."
+        - icon: "🧪"
+          title: "Dermatologist Tested"
+          desc: "All formulas pass rigorous clinical testing for safety."
+        - icon: "♻️"
+          title: "Sustainable"
+          desc: "100% recycled glass bottles and compostable shipping."
+  - type: stats
+    variant: grid
+    data:
+      items:
+        - {num: "15K+", label: "Happy Users"}
+        - {num: "50+", label: "Products"}
+        - {num: "4.9★", label: "Rating"}
+        - {num: "30+", label: "Countries"}
+  - type: testimonials
+    variant: grid
+    data:
+      items:
+        - {quote: "My skin has never looked better. The serum is absolutely magic!", author: "Sarah K.", role: "Verified Buyer"}
+        - {quote: "Finally, a clean beauty brand that actually works.", author: "Mia C.", role: "Verified Buyer"}
+        - {quote: "The packaging is gorgeous and the products are even better.", author: "Lisa P.", role: "Verified Buyer"}
+  - type: cta
+    data:
+      title: "Ready to Glow?"
+      subtitle: "Join 15,000+ happy customers discovering clean beauty."
+      cta: "Get 15% Off"
+  - type: footer
+    variant: default
+    data:
+      description: "{brand} — Clean beauty crafted with love."
+      columns:
+        - title: "Shop"
+          links:
+            - {label: "All Products", href: "#"}
+            - {label: "Best Sellers", href: "#"}
+            - {label: "New Arrivals", href: "#"}
+            - {label: "Gift Sets", href: "#"}
+        - title: "Company"
+          links:
+            - {label: "Our Story", href: "#"}
+            - {label: "Ingredients", href: "#"}
+            - {label: "Sustainability", href: "#"}
+            - {label: "Press", href: "#"}
+        - title: "Support"
+          links:
+            - {label: "FAQ", href: "#"}
+            - {label: "Shipping", href: "#"}
+            - {label: "Returns", href: "#"}
+            - {label: "Contact", href: "#"}

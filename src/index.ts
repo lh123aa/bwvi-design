@@ -26,9 +26,11 @@ import { imageCommand } from "./cli/image.js";
 import { exportCommand } from "./cli/export.js";
 import { previewCommand } from "./cli/preview.js";
 import { serveCommand } from "./cli/serve.js";
+import { learnSystemCommand } from "./cli/learn-system.js";
+import { skillCommand } from "./cli/skill.js";
 
-const BWVI_VERSION = "0.2.1";
-const COMMANDS = ["init","analyze","generate","critique","learn","showcase","checkpoint","feedback","knowledge","asset","brief","debt","history","brand","style","template","test","animate","export","preview","video","plugin","diff","benchmark","mcp"];
+const BWVI_VERSION = "0.5.0";
+const COMMANDS = ["init","analyze","generate","critique","learn","learn-system","showcase","checkpoint","feedback","knowledge","asset","brief","debt","history","brand","style","skill","template","test","animate","export","preview","video","plugin","diff","benchmark","mcp"];
 
 async function main() {
   if (process.argv.includes("--version") || process.argv.includes("-v")) {
@@ -56,6 +58,7 @@ async function main() {
     case "brand": await brandCommand(args); break;
     case "video": await videoCommand(args); break;
     case "style": await styleCommand(args); break;
+    case "skill": skillCommand(args); break;
     case "animate": await animateCommand(args); break;
     case "image": await imageCommand(args); break;
     case "export": await exportCommand(args); break;
@@ -73,6 +76,7 @@ async function main() {
         }
       }
       return;
+    case "learn-system": await learnSystemCommand(args); break;
     case "plugin": await pluginInitCommand(args); break;
     case "template": await templateCommand(args); break;
     case "test": await testCommand(args); break;
@@ -109,6 +113,7 @@ function printHelp() {
     "plugin        Create plugin scaffold",
     "template      List/use/delete templates",
     "style         List/show/search visual styles (56 built-in)",
+    "skill         List/search/show design skills (YAML file system)",
     "image         Generate image via AI (DALL·E / SD / Tongyi / Seedream) requires API key",
     "animate       Embed animations / export MP4 (needs ffmpeg)",
     "export        Export HTML to PDF/PNG/PPTX/DOCX",
@@ -116,6 +121,7 @@ function printHelp() {
     "test          Validate HTML (a11y, responsive, interactive)",
     "video         Export HTML to MP4/GIF (requires ffmpeg)",
     "diff          Compare two HTML files",
+    "learn-system Continuous learning & capability upgrade",
     "benchmark     Run benchmark suite",
     "mcp           Start MCP server",
     "--help        Show this help",

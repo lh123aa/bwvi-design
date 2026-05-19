@@ -1,0 +1,78 @@
+# 咖啡/餐饮 Landing Page
+id: landing-cafe
+name: 咖啡/餐饮 Landing
+emoji: ☕
+category: landing
+industry: [咖啡, 餐饮, cafe, coffee, food, café, restaurant]
+keywords: [咖啡, 温暖, 自然, 有机, warm, coffee]
+direction: warm-minimal
+sections:
+  - type: navbar
+    variant: default
+    data:
+      logo: "{brand}"
+      links:
+        - {label: Menu, href: "#"}
+        - {label: Story, href: "#"}
+        - {label: Locations, href: "#"}
+        - {label: Contact, href: "#"}
+      cta: Order Now
+  - type: hero
+    variant: split
+    data:
+      title: "{brand} — {tagline}"
+      subtitle: "{description}"
+      cta: Explore Our Menu
+  - type: features
+    variant: grid
+    data:
+      items:
+        - icon: "☕"
+          title: "Single Origin"
+          desc: "Sourced directly from small farms in Ethiopia, Colombia, and Guatemala."
+        - icon: "🌱"
+          title: "Sustainable"
+          desc: "100% compostable packaging and direct trade partnerships."
+        - icon: "🏆"
+          title: "Award Winning"
+          desc: "Gold medal at the 2025 International Coffee Awards."
+  - type: stats
+    variant: grid
+    data:
+      items:
+        - {num: "50+", label: "Origins"}
+        - {num: "10K+", label: "Happy Customers"}
+        - {num: "4.9★", label: "Rating"}
+        - {num: "8", label: "Locations"}
+  - type: testimonials
+    variant: grid
+    data:
+      items:
+        - {quote: "Best flat white in town. The single origin Ethiopian is incredible.", author: "Sarah L.", role: "Regular"}
+        - {quote: "Their sustainable approach sets them apart. And the pastries are divine!", author: "James K.", role: "Food Blogger"}
+        - {quote: "Finally a coffee shop that cares about both taste and the planet.", author: "Mia W.", role: "Barista"}
+  - type: cta
+    data:
+      title: "Visit Us Today"
+      subtitle: "Find your nearest store and enjoy the perfect brew."
+      cta: "Find a Store"
+  - type: footer
+    variant: default
+    data:
+      description: "{brand} — Crafting exceptional coffee experiences since 2020."
+      columns:
+        - title: "Menu"
+          links:
+            - {label: "Drinks", href: "#"}
+            - {label: "Food", href: "#"}
+            - {label: "Seasonal", href: "#"}
+        - title: "Company"
+          links:
+            - {label: "Our Story", href: "#"}
+            - {label: "Sustainability", href: "#"}
+            - {label: "Careers", href: "#"}
+        - title: "Support"
+          links:
+            - {label: "FAQ", href: "#"}
+            - {label: "Contact", href: "#"}
+            - {label: "Feedback", href: "#"}
