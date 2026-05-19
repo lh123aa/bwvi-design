@@ -19,37 +19,9 @@
 
 **BWVI** is not a design tool. It's the **decision layer** between AI agents and design execution. It doesn't draw pixels — it ensures every pixel drawn has a reason.
 
-> CLI + MCP Server that gives AI agents a structured design decision framework.  
-> Output → Open-Design, Huashu-Design, or built-in renderer.
+> CLI + MCP Server that gives AI agents a structured design decision framework.
 
 ---
-
-## 📊 Performance Benchmarks
-
-| Metric | BWVI | Open-Design | Huashu-Design |
-|--------|:----:|:-----------:|:-------------:|
-| Bundle Size | **873 KB** (CJS) | **~500 MB** | **~3.8 MB** |
-| Cold Start | **0ms** (npx) | **~30-60s** | **0ms** |
-| First Output | **~200ms** | **~10-30s** | **~30-120s** |
-| Memory | **~5 MB** | **~150-300 MB** | **0** |
-| Dependencies | **3 packages** | **1,200+** | **0** |
-| Source Files | **~50 TS files** | **740+ app files** | **154 files** |
-| Offline | ✅ **Full** | ⚠️ Limited | ⚠️ Limited |
-
-## 🎯 10-Dimension Score (All ★★★★★)
-
-| Dimension | BWVI | OD | Huashu |
-|-----------|:----:|:--:|:------:|
-| Output Quality | ★★★★★ | ★★★★★ | ★★★★☆ |
-| Decision Framework | ★★★★★ | ★★★☆☆ | ★★★★☆ |
-| Brand Systems | ★★★★★ | ★★★★★ | ★★★☆☆ |
-| App Prototyping | ★★★★★ | ★★★★★ | ★★★★★ |
-| Critique System | ★★★★★ | ★★★☆☆ | ★★★★☆ |
-| Video/Animation | ★★★★★ | ★★★★☆ | ★★★★★ |
-| Design Systems | ★★★★★ | ★★★★★ | ★★★☆☆ |
-| Agent Integration | ★★★★★ | ★★★★★ | ★★★★☆ |
-| Onboarding Speed | ★★★★★ | ★★★☆☆ | ★★★☆☆ |
-| Extensibility | ★★★★★ | ★★★★★ | ★★★☆☆ |
 
 ---
 
@@ -72,8 +44,6 @@ A systematic assessment of BWVI's own capabilities by category, based on source 
 | Engine | Mode | Rating |
 |:-------|:-----|:-------|
 | `direct` (default) | Built-in, zero external deps | ⭐⭐⭐⭐⭐ Fastest, ~200ms output |
-| `od` | Open-Design backend | ⭐⭐⭐ Requires network, richer design library |
-| `huashu` | Huashu-Design HTML rendering | ⭐⭐⭐⭐ High-fidelity prototypes + animation |
 | `pencil` | Pencil design-to-code | ⭐⭐⭐ Auto-generates hand-drawn style UI |
 | `agent` | Claude/OpenCode agent generation | ⭐⭐⭐ Highest quality but token budget needed |
 

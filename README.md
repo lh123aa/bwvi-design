@@ -1,7 +1,7 @@
 <div align="center">
   <h1>BWVI</h1>
   <p><strong>B</strong>etter <strong>W</strong>ay of <strong>V</strong>isual <strong>I</strong>ntelligence</p>
-  <p><em>Agent 原生设计决策协议 — CLI · MCP Server · 多后端渲染</em></p>
+  <p><em>Agent 原生设计决策协议 — CLI · MCP Server · 多引擎渲染</em></p>
   <p>
     <img src="https://img.shields.io/badge/version-0.5.0-5E6AD2" alt="版本">
     <img src="https://img.shields.io/badge/license-Apache%202.0-00D4AA" alt="许可证">
@@ -20,8 +20,7 @@
 
 **BWVI 不是设计工具。** 它是 AI Agent 与设计执行之间的**决策层**。它不画像素——它确保每个像素都有理由。
 
-> CLI + MCP Server，让 AI Agent 拥有结构化的设计决策能力。  
-> 输出 → Open-Design、Huashu-Design 或内置渲染器。
+> CLI + MCP Server，让 AI Agent 拥有结构化的设计决策能力。
 
 ---
 
@@ -35,7 +34,7 @@
     <tr>
       <td align="center"><b>📱 5 种设备边框</b><br>iPhone · Pixel · iPad · MacBook · 浏览器</td>
       <td align="center"><b>🔍 10 维评审</b><br>自动化客观指标</td>
-      <td align="center"><b>🔌 4 种渲染后端</b><br>内置 · OD · Huashu · 本地 Agent</td>
+      <td align="center"><b>🔌 渲染后端</b><br>direct · huashu · agent · pencil</td>
     </tr>
     <tr>
       <td align="center"><b>🏭 Page Builder</b><br>50+ 行业蓝图 → 真实页面</td>
@@ -49,7 +48,7 @@
     </tr>
     <tr>
       <td align="center"><b>🧠 持续学习</b><br>12 能力节点 · 自动诊断 · 知识注入</td>
-      <td align="center"><b>🔌 4 种渲染后端</b><br>内置 · OD · Huashu · 本地 Agent</td>
+      <td align="center"><b>🔌 渲染后端</b><br>direct · huashu · agent · pencil</td>
       <td align="center"><b>🔄 自我进化</b><br>测量→诊断→改进→验证循环</td>
     </tr>
     <tr>
@@ -65,7 +64,6 @@
 ## 📋 目录
 
 - [核心特性](#-核心特性)
-- [全面对比评估](#-全面对比评估)
 - [快速开始](#-快速开始)
 - [安装](#-安装)
 - [架构](#-架构)
@@ -78,7 +76,6 @@
 - [56 种视觉风格](#-56-种视觉风格)
 - [动画引擎](#-动画引擎)
 - [品牌系统](#-品牌系统)
-- [多后端渲染引擎](#-多后端渲染引擎)
 - [评审体系](#-评审体系)
 - [知识块系统](#-知识块系统)
 - [持续学习系统](#-持续学习系统)
@@ -89,114 +86,6 @@
 - [开发](#-开发)
 - [基准测试](#-基准测试)
 - [许可证](#-许可证)
-
----
-
-## 🆚 全面对比评估
-
-BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [Huashu-Design](https://github.com/huashu-design) 在 AI 原生设计流水线中扮演不同角色。以下评估基于**实际测量数据**和**源码分析**。
-
-### 一句话定位
-
-| 系统 | 定位 |
-|--------|----------|
-| **BWVI** | 设计**决策协议** — 决定"画什么"的架构师 |
-| **Open-Design** | 设计**执行引擎** — 能"画任何东西"的工厂 |
-| **Huashu-Design** | 设计**工匠工作室** — 把"一件事"做到极致的匠人 |
-
-### 📊 性能基准测试（实测数据）
-
-| 指标 | BWVI | Open-Design | Huashu-Design |
-|--------|:----:|:-----------:|:-------------:|
-| **包体积** | **~1 MB** (CJS 单文件) | **~500 MB** (pnpm + 37K node_modules) | **~3.8 MB** (154 个文件) |
-| **冷启动** | **0ms** (npx，无需安装) | **~30-60s** (pnpm install + build) | **0ms** (skill 加载) |
-| **首次产出** | **~200ms** (generate --direct) | **~10-30s** (daemon → Agent → 流式) | **~30-120s** (Agent) |
-| **内存占用** | **~5 MB** (heap) | **~150-300 MB** (Express + SQLite) | **0** (无进程) |
-| **依赖数量** | **3 个包** | **1200+ 包** | **0** |
-| **源文件数** | **~112 个 TS** | **~740 应用文件** + 37K node_modules | **154 个** |
-| **技能模板** | ✅ **53 技能 (8 YAML + 45 兼容)** | ✅ **75 SKILL.md** | ❌ 无 |
-| **离线能力** | ✅ **完全离线** | ⚠️ 有限 | ⚠️ 有限 |
-
-### 🎯 效果评分（10 维度 ★★★★★ 全满贯）
-
-| 维度 | BWVI | Open-Design | Huashu-Design | 说明 |
-|-----------|:----:|:-----------:|:-------------:|------|
-| **产出视觉质量** | ★★★★★ | ★★★★★ | ★★★★☆ | BWVI 50+ 蓝图 + 组件库 + 设备边框 + 56 风格 + 动画引擎 |
-| **决策框架** | ★★★★★ | ★★★☆☆ | ★★★★☆ | 结构化决策链 + Checkpoint + 指纹系统，业界唯一 |
-| **品牌系统** | ★★★★★ | ★★★★★ | ★★★☆☆ | BWVI 115 品牌 + 搜索 + URL 检测 |
-| **App 原型** | ★★★★★ | ★★★★★ | ★★★★★ | iPhone 边框 + 5 App 蓝图 + 交互状态机 |
-| **评审体系** | ★★★★★ | ★★★☆☆ | ★★★★☆ | 唯一自动化的 10 维客观指标 |
-| **视频/动画** | ★★★★★ | ★★★★☆ | ★★★★★ | Stage+Sprite 引擎 + scroll-trigger + MP4 + BGM |
-| **设计系统库** | ★★★★★ | ★★★★★ | ★★★☆☆ | 115 品牌 + 56 风格 + 50+ 蓝图 |
-| **Agent 集成** | ★★★★★ | ★★★★★ | ★★★★☆ | 原生 MCP Server，5 tools |
-| **上手速度** | ★★★★★ | ★★★☆☆ | ★★★☆☆ | 200ms 产出，零配置 |
-| **可扩展性** | ★★★★★ | ★★★★★ | ★★★☆☆ | 插件 + 知识 MD + npm CI |
-| **Skill 文件系统** | ★★★★★ | ★★★★★ | ★☆☆☆☆ | YAML 文件 (v0.5.0), 社区可贡献 |
-| **Deck 幻灯片** | ★★★★☆ | ★★★★★ | ★★★☆☆ | 3 套模板 + 键盘导航 + 过渡动画 (v0.5.0) |
-| **Social 卡片** | ★★★☆☆ | ★★★★★ | ★★★☆☆ | 2 套模板 (v0.5.0) |
-
-### ⏱ BWVI 命令实测延迟
-
-| 命令 | 延迟 | 说明 |
-|---------|---------|-------|
-| `--help` | **~296 ms** | 冷启动 |
-| `analyze` | **~198 ms** | 本地，无网络 |
-| `generate --direct` | **~201 ms** | 本地 HTML 生成 |
-| `critique` | **~150 ms** | 本地分析 |
-| `showcase --pick` | **~200 ms** | 生成真实 HTML |
-| `brand list` | **~180 ms** | 嵌入式数据 |
-| `benchmark` (全部 13 项) | **~235 ms** | 完整套件 |
-| **平均** | **~209 ms** | |
-
-### 🎯 场景推荐
-
-| 场景 | 推荐 | 理由 |
-|----------|------|------|
-| 快速出 Landing Page（带品牌风格） | **Open-Design** | 129 品牌 + 64 技能 + 沙箱预览 |
-| iOS App 高保真原型 | **Huashu-Design** | iPhone 边框 + 状态管理器 + 点击测试 |
-| 多轮迭代的品牌设计项目 | **BWVI → OD** | BWVI 定方向，OD 执行产出 |
-| 设计评审 / 质量门禁 | **BWVI** | 唯一自动化 10 维客观评审 |
-| 产品动画 / Motion Demo | **Huashu-Design** | 内置动画引擎 + 音轨流水线 |
-| Agent 原生设计工具链 | **BWVI + OD** | BWVI 做决策，OD 做执行 |
-| 离线设计工作流 | **BWVI** | 完全离线可用 |
-| 低延迟迭代循环 | **BWVI** | 每次命令 ~200ms |
-| CI/CD 设计门禁 | **BWVI** | 纯 CLI，200ms，零依赖 |
-| 幻灯片/Deck 生成 | **BWVI** | `--deck` 一键生成 + 键盘导航 |
-| 社交媒体卡片 | **BWVI** | `--social` 一键生成 Twitter/XHS 风格 |
-| 技能模板管理 | **BWVI** | `bwvi skill` 文件系统，热加载 |
-
-### 🔄 决策枢纽架构
-
-```
-┌──────────────────────────────────────────┐
-│                  BWVI                    │
-│     分析 → 决策链 → Checkpoint           │
-│     方向 + 色板 + 字体                    │
-└─────────────┬────────────────────────────┘
-              │ 决策 JSON (~200ms)
-     ┌────────┴────────┐
-     ▼                  ▼
-┌────────────┐   ┌──────────────┐
-│Open-Design │   │Huashu-Design │
-│129 品牌    │   │iPhone 边框   │
-│64 个技能   │   │动画引擎      │
-│沙箱预览     │   │视频导出      │
-│(~10-30s)   │   │(~30-120s)    │
-└────────────┘   └──────────────┘
-     │                  │
-     └──────────────────┘
-            ▼
-     ★★★★★ 质量
-```
-
-### 🖼 产出展示
-
-| demo 页面 | demo 页面 |
-|:----------:|:----------:|
-| ![](demo/screenshots/photography.png) | ![](demo/screenshots/cosmetics.png) |
-| 摄影个人主页 `photography.html` | 化妆品品牌站 `cosmetics.html` |
-| ![](demo/screenshots/enterprise.png) | ![](demo/screenshots/metallix-3d.png) |
-| 企业页面 `enterprise.html` | 创意页面 `metallix-3d.html` |
 
 ---
 
@@ -219,8 +108,6 @@ BWVI、[Open-Design](https://github.com/nexu-io/open-design)（21.8k ★）和 [
 | 引擎 | 模式 | 性能评估 |
 |:-----|:------|:---------|
 | `direct`（默认） | BWVI 内置渲染，零外部依赖 | ⭐⭐⭐⭐⭐ 最快，~200ms 出结果 |
-| `od` | Open-Design 后端 | ⭐⭐⭐ 需网络，更丰富的设计库 |
-| `huashu` | 花叔Design HTML 设计 | ⭐⭐⭐⭐ 适合高保真原型 + 动画 |
 | `pencil` | Pencil 设计稿转代码 | ⭐⭐⭐ 自动生成手绘风格 UI |
 | `agent` | 通过 Claude/OpenCode 智能生成 | ⭐⭐⭐ 质量最高但需 token 预算 |
 
@@ -540,22 +427,6 @@ bwvi generate "SaaS" --brand=linear
 覆盖 12 分类：Tech、Fintech、Enterprise、Consumer、Retail、Automotive、Gaming、Food、Media、Creative、Education、Health。
 
 部分内置品牌：Linear, Stripe, Vercel, Apple, Notion, Airbnb, Figma, Supabase, Cursor, Shopify, Spotify, Coinbase, Tesla, Nike, IBM, NVIDIA, Miro, Framer, Claude, Xiaohongshu, WeChat 等。
-
----
-
-## 🔌 多后端渲染引擎
-
-| 后端 | 值 | 前置条件 |
-|---------|------|-------------|
-| BWVI 内置 | `direct` | 无 |
-| Open-Design | `od` | OD daemon |
-| Huashu-Design | `huashu` | Agent CLI |
-| Agent CLI | `agent` | Agent CLI |
-
-```bash
-bwvi generate "SaaS landing" --engine=od --brand=linear
-bwvi generate "App 原型" --engine=huashu --device=iphone
-```
 
 ---
 
