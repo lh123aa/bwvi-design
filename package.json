@@ -1,6 +1,6 @@
 {
   "name": "bwvi",
-  "version": "0.2.1",
+  "version": "0.5.0",
   "type": "module",
   "description": "Better Way of Visual Intelligence — Agent-native design decision protocol",
   "bin": {
@@ -11,11 +11,13 @@
     "dev": "npx tsx src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "npx playwright test --config=test_framework/playwright.config.ts",
     "benchmark": "tsx src/index.ts benchmark run",
     "build": "node scripts/build.mjs",
     "prepublishOnly": "npm run build && npm test && npm run benchmark"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/node": "^22.0.0",
     "esbuild": "^0.27.0",
     "playwright": "^1.59.1",
@@ -24,6 +26,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "sharp": "^0.34.5",
     "tsx": "^4.0.0",
     "yaml": "^2.7.0"
   },
@@ -46,7 +49,6 @@
   "files": [
     "dist/",
     "README.md",
-
     "README.en.md",
     "LICENSE"
   ]

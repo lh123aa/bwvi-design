@@ -1,115 +1,94 @@
-<!DOCTYPE html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>测试咖啡 — Perfect Brew</title>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>linear — Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{--color-primary:#D97757;--color-accent:#8C6E5D;--color-surface:#FDF8F5;--color-text:#3D3D3D;--font-display:'Georgia', 'Times New Roman', serif;--font-body:system-ui,-apple-system,sans-serif}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font-body);color:var(--color-text);background:#FDF8F5;-webkit-font-smoothing:antialiased}
-
-@keyframes bwvi-fade-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bwvi-fade-in{from{opacity:0}to{opacity:1}}
-@keyframes bwvi-scale-in{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
-@keyframes bwvi-shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-.bwvi-fade-up{animation:bwvi-fade-up .6s ease-out both}
-.bwvi-fade-in{animation:bwvi-fade-in .5s ease-out both}
-.bwvi-scale-in{animation:bwvi-scale-in .4s ease-out both}
-.bwvi-d1{animation-delay:0.1s}
-.bwvi-d2{animation-delay:0.2s}
-.bwvi-d3{animation-delay:0.3s}
-.bwvi-d4{animation-delay:0.4s}
-.bwvi-d5{animation-delay:0.5s}
-.bwvi-d6{animation-delay:0.6s}
-.bwvi-stagger>*{animation:bwvi-fade-up .5s ease-out both}
-.bwvi-stagger>*:nth-child(1){animation-delay:0.08s}
-.bwvi-stagger>*:nth-child(2){animation-delay:0.16s}
-.bwvi-stagger>*:nth-child(3){animation-delay:0.24s}
-.bwvi-stagger>*:nth-child(4){animation-delay:0.32s}
-.bwvi-stagger>*:nth-child(5){animation-delay:0.40s}
-.bwvi-stagger>*:nth-child(6){animation-delay:0.48s}
-
-
-</style></head><body>
-<div style="font-family:system-ui,-apple-system,sans-serif;color:#3D3D3D;background:#FDF8F5">
-<header style="position:fixed;top:0;left:0;right:0;z-index:100;background:#FDF8F5;border-bottom:1px solid #3D3D3D15;backdrop-filter:blur(12px)" class="bwvi-fade-up">
-<div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:64px">
-<a href="/" style="font-weight:700;font-size:1.25rem;color:#D97757;text-decoration:none;letter-spacing:-0.02em">测试咖啡</a>
-<nav style="display:flex;gap:24px;list-style:none"><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Menu</a><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Story</a><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Locations</a><a href="#" style="text-decoration:none;font-size:0.875rem;color:#3D3D3D99;transition:color 0.2s">Contact</a></nav>
-<button style="padding:8px 20px;background:#D97757;color:#fff;border:none;border-radius:8px;font-size:0.875rem;cursor:pointer;transition:opacity 0.2s">Order Now</button>
-</div></header>
-
-<section style="min-height:80vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:80px 0">
-<div style="padding:0 24px 0 80px">
-<h1 style="font-size:clamp(2rem,4vw,3.5rem);font-weight:700;line-height:1.15;color:#3D3D3D;margin-bottom:20px;letter-spacing:-0.03em;font-family:'Georgia', 'Times New Roman', serif" class="bwvi-fade-up">测试咖啡 — Perfect Brew</h1>
-<p style="font-size:1.125rem;color:#3D3D3D88;line-height:1.8;margin-bottom:32px" class="bwvi-fade-up bwvi-d1">Premium quality designed for modern needs.</p>
-<button style="padding:14px 32px;background:#D97757;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:500">Explore Our Menu</button>
+  :root{--color-primary:#5E6AD2;--color-accent:#E2E8F0;--color-surface:#FFFFFF;--color-text:#1A202C;--font-display:'Inter',sans-serif}
+  :root{--color-surface:#1a1a1a;--color-text:#e0e0e0}
+  @page { margin: 0; size: 4961px 7016px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 4961px; height: 7016px;
+    overflow: hidden; -webkit-font-smoothing: antialiased;
+  }
+  .poster-canvas {
+    width: 4961px; height: 7016px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: #FFFFFF; color: var(--color-text);
+    font-family: system-ui, -apple-system, sans-serif;
+    padding: 5%; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .poster-accent-bar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2.5%; background: #E2E8F0;
+  }
+  .poster-accent-corner {
+    position: absolute; bottom: 4%; right: 4%;
+    width: 8%; height: 8%;
+    border: 2px solid #E2E8F040;
+    border-radius: 4px;
+  }
+  .poster-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 12rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: #5E6AD2;
+    margin-bottom: 0.4em;
+    max-width: 85%;
+  }
+  .poster-subtitle {
+    font-size: clamp(1.2rem, 3.5vw, 4rem);
+    font-weight: 400; line-height: 1.4;
+    color: var(--color-text); opacity: 0.6;
+    margin-bottom: 0.8em;
+    max-width: 70%;
+  }
+  .poster-desc {
+    font-size: clamp(0.8rem, 2vw, 2.2rem);
+    font-weight: 300; line-height: 1.6;
+    color: var(--color-text); opacity: 0.5;
+    margin-bottom: 1.2em;
+    max-width: 60%;
+  }
+  .poster-cta {
+    display: inline-block;
+    padding: 0.6em 2em;
+    font-size: clamp(0.7rem, 1.8vw, 2rem);
+    font-weight: 600;
+    background: #E2E8F0;
+    color: #1a1a1a;
+    border: none; border-radius: 0.3em;
+    text-decoration: none;
+    cursor: default;
+  }
+  .poster-brand {
+    position: absolute; bottom: 4%;
+    font-size: clamp(0.5rem, 1.2vw, 1.4rem);
+    color: #5E6AD240;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="poster-canvas">
+  <div class="poster-accent-bar"></div>
+  <div class="poster-accent-corner"></div>
+  <div class="poster-title">linear</div>
+  <div class="poster-subtitle">Conference 2026</div>
+  <div class="poster-desc">Premium quality designed for modern needs.</div>
+  <div class="poster-cta">Conference 2026</div>
+  <div class="poster-brand">linear</div>
 </div>
-<div style="background:linear-gradient(135deg,#D9775715,#8C6E5D15);min-height:60vh;display:flex;align-items:center;justify-content:center;border-radius:12px;margin:24px">
-<span style="opacity:0.3;font-size:0.875rem">Image</span>
-</div>
-</section>
-<section style="padding:80px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
-<div class="bwvi-stagger" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px"><div style="padding:32px;background:#FDF8F5;border:1px solid #3D3D3D10;border-radius:12px;transition:transform 0.3s,box-shadow 0.3s;cursor:default">
-<div style="font-size:1.5rem;margin-bottom:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#D9775715;border-radius:10px">☕</div>
-<h3 style="font-size:1.125rem;font-weight:600;margin-bottom:8px">Single Origin</h3>
-<p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.7">Sourced directly from small farms in Ethiopia, Colombia, and Guatemala.</p>
-</div><div style="padding:32px;background:#FDF8F5;border:1px solid #3D3D3D10;border-radius:12px;transition:transform 0.3s,box-shadow 0.3s;cursor:default">
-<div style="font-size:1.5rem;margin-bottom:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#D9775715;border-radius:10px">🌱</div>
-<h3 style="font-size:1.125rem;font-weight:600;margin-bottom:8px">Sustainable</h3>
-<p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.7">100% compostable packaging and direct trade partnerships.</p>
-</div><div style="padding:32px;background:#FDF8F5;border:1px solid #3D3D3D10;border-radius:12px;transition:transform 0.3s,box-shadow 0.3s;cursor:default">
-<div style="font-size:1.5rem;margin-bottom:16px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#D9775715;border-radius:10px">🏆</div>
-<h3 style="font-size:1.125rem;font-weight:600;margin-bottom:8px">Award Winning</h3>
-<p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.7">Gold medal at the 2025 International Coffee Awards.</p>
-</div>
-</div></div></section>
-<section style="padding:80px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
-<div class="bwvi-stagger" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px"><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
-<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">50+</div>
-<div style="font-size:0.875rem;color:#3D3D3D88">Origins</div>
-</div><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
-<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">10K+</div>
-<div style="font-size:0.875rem;color:#3D3D3D88">Happy Customers</div>
-</div><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
-<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">4.9★</div>
-<div style="font-size:0.875rem;color:#3D3D3D88">Rating</div>
-</div><div style="text-align:center;padding:32px;background:#FDF8F5;border-radius:12px">
-<div style="font-size:2.5rem;font-weight:700;color:#8C6E5D;margin-bottom:4px">8</div>
-<div style="font-size:0.875rem;color:#3D3D3D88">Locations</div>
-</div>
-</div></div></section>
-<section style="padding:80px 0;background:#FDF8F5"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
-<div class="bwvi-stagger" style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px"><div style="padding:32px;border:1px solid #3D3D3D10;border-radius:12px">
-<p style="font-size:0.9375rem;color:#3D3D3D88;line-height:1.8;margin-bottom:20px;font-style:italic">Best flat white in town. The single origin Ethiopian is incredible.</p>
-<div style="display:flex;align-items:center;gap:12px">
-<div style="width:40px;height:40px;border-radius:50%;background:#D9775720;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:600;color:#D97757">S</div>
-<div><div style="font-weight:600;font-size:0.875rem">Sarah L.</div><div style="font-size:0.8125rem;color:#3D3D3D88">Regular</div></div>
-</div></div><div style="padding:32px;border:1px solid #3D3D3D10;border-radius:12px">
-<p style="font-size:0.9375rem;color:#3D3D3D88;line-height:1.8;margin-bottom:20px;font-style:italic">Their sustainable approach sets them apart. And the pastries are divine!</p>
-<div style="display:flex;align-items:center;gap:12px">
-<div style="width:40px;height:40px;border-radius:50%;background:#D9775720;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:600;color:#D97757">J</div>
-<div><div style="font-weight:600;font-size:0.875rem">James K.</div><div style="font-size:0.8125rem;color:#3D3D3D88">Food Blogger</div></div>
-</div></div><div style="padding:32px;border:1px solid #3D3D3D10;border-radius:12px">
-<p style="font-size:0.9375rem;color:#3D3D3D88;line-height:1.8;margin-bottom:20px;font-style:italic">Finally a coffee shop that cares about both taste and the planet.</p>
-<div style="display:flex;align-items:center;gap:12px">
-<div style="width:40px;height:40px;border-radius:50%;background:#D9775720;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:600;color:#D97757">M</div>
-<div><div style="font-weight:600;font-size:0.875rem">Mia W.</div><div style="font-size:0.8125rem;color:#3D3D3D88">Barista</div></div>
-</div></div>
-</div></div></section>
-<section style="padding:80px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
-<div style="padding:64px;background:linear-gradient(135deg,#D9775708,#8C6E5D08);border:1px solid #3D3D3D10;border-radius:16px;text-align:center" class="bwvi-fade-up">
-<h2 style="font-size:2rem;font-weight:700;margin-bottom:12px;color:#3D3D3D">Visit Us Today</h2>
-<p style="color:#3D3D3D88;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto">Find your nearest store and enjoy the perfect brew.</p>
-<button style="padding:14px 36px;background:#8C6E5D;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:500;transition:transform 0.2s">Find a Store</button>
-</div></div></section>
-
-<footer style="border-top:1px solid #3D3D3D10;padding:48px 0"><div style="max-width:1200px;margin:0 auto;padding:0 24px">
-<div style="display:grid;grid-template-columns:2fr repeat(3,1fr);gap:48px">
-<div><p style="font-size:0.875rem;color:#3D3D3D88;line-height:1.8">测试咖啡 — Crafting exceptional coffee experiences since 2020.</p></div>
-<div><h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:#3D3D3D">Menu</h4><ul style="list-style:none"><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Drinks</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Food</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Seasonal</a></li></ul></div><div><h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:#3D3D3D">Company</h4><ul style="list-style:none"><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Our Story</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Sustainability</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Careers</a></li></ul></div><div><h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.08em;color:#3D3D3D">Support</h4><ul style="list-style:none"><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">FAQ</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Contact</a></li><li style="margin-bottom:8px"><a href="#" style="color:#3D3D3D88;text-decoration:none;font-size:0.875rem">Feedback</a></li></ul></div>
-</div>
-<div style="border-top:1px solid #3D3D3D10;margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;font-size:0.8125rem;color:#3D3D3D88">
-<span>2026 Menu</span><span>BWVI</span>
-</div></div></footer>
-</div>
-</body></html>
+</body>
+</html>

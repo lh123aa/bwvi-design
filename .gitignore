@@ -1,12 +1,37 @@
+# 依赖
 node_modules/
+
+# 构建产出
 dist/
 .tmp/
 .od/
+
+# 运行时目录
 .bwvi/
+
+# 日志
 *.log
-.DS_Store
+
+# 临时文件（用完即删，不清除 git 记录）
+_temp/
+_tmp/
+
+# demo 生成文件（所有非文档产出）
 demo/*.html
 demo/*.webm
+demo/*.mp4
+demo/*.gif
+demo/*.png
+demo/*.jpg
+demo/*.jpeg
+demo/screenshots/
+
+# 示例/插件脚手架（非核心代码）
 my-plugin/
 
+# 历史遗留规则
 pencil-batch-*.json
+
+# 操作系统
+.DS_Store
+Thumbs.db
