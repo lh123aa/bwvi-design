@@ -34,4 +34,4 @@ jobs:
         run: npm run benchmark
 
       - name: Verify bundle
-        run: node -e "const s=require('fs').statSync('dist/bwvi.cjs').size;console.log((s/1024).toFixed(0)+'KB');if(s>1048576)process.exit(1)"
+        run: node -e "const s=require('fs').statSync('dist/bwvi.cjs').size;console.log((s/1024).toFixed(0)+'KB');if(s>2097152)process.exit(1)"

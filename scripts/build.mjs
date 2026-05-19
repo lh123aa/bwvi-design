@@ -6,7 +6,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf-8"));
-const external = ["playwright", "playwright-core"];
+/** 外部化：原生模块 + 运行时按需加载的模块 */
+const external = ["playwright", "playwright-core", "sharp"];
 
 async function main() {
   const start = Date.now();
