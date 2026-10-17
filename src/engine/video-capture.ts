@@ -33,6 +33,8 @@ export interface CaptureOptions {
   loop?: number;
   /** 交互步骤（录制过程中自动执行） */
   interactionSteps?: InteractionStep[];
+  /** 动画引擎：css | gsap */
+  animationEngine?: "css" | "gsap";
 }
 
 export interface CaptureResult {
@@ -89,6 +91,7 @@ export async function captureVideo(
     duration,
     animate = true,
     loop = 1,
+    animationEngine,
   } = opts;
 
   // 确保输出目录存在
@@ -99,7 +102,7 @@ export async function captureVideo(
   // 1. 读取并注入动画
   let html = readFileSync(htmlPath, "utf-8");
   if (animate) {
-    html = injectForVideo(html, { loop, autoScroll: scrollBehavior !== "none" });
+    html = injectForVideo(html, { loop, autoScroll: scrollBehavior !== "none", animationEngine });
   }
 
   // 2. 写入临时 HTML

@@ -77,9 +77,10 @@ Examples:
     return;
   }
 
+  const dims = detectContentDimensions(html);
   const script = format === "pdf"
     ? generatePdfScript(tmpHtml, output)
-    : generatePngScript(tmpHtml, output, scale, transparent);
+    : generatePngScript(tmpHtml, output, scale, transparent, dims);
   writeFileSync(tmpScript, script, "utf-8");
 
   try {
@@ -99,13 +100,47 @@ function generatePdfScript(htmlPath: string, output: string): string {
 (async()=>{const b=await chromium.launch();const p=await b.newPage();await p.goto('file:///${htmlPath.replace(/\\/g,'/')}',{waitUntil:'networkidle'});await p.pdf({path:'${output.replace(/\\/g,'/')}',format:'A4',printBackground:true});await b.close()})();`;
 }
 
-function generatePngScript(htmlPath: string, output: string, scale: number = 1, transparent: boolean = false): string {
+function generatePngScript(htmlPath: string, output: string, scale: number = 1, transparent: boolean = false, dims?: { width: number; height: number }): string {
+  const { width = 1920, height = 1080 } = dims || {};
   const scaleOpt = scale > 1 ? `,deviceScaleFactor:${scale}` : "";
   const bgOpt = transparent ? ",omitBackground:true" : "";
   return `import {chromium} from 'playwright';
-(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1920,height:1080${scaleOpt}}});await p.goto('file:///${htmlPath.replace(/\\/g,'/')}',{waitUntil:'networkidle'});await p.screenshot({path:'${output.replace(/\\/g,'/')}',fullPage:true${bgOpt}});await b.close()})();`;
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:${width},height:${height}${scaleOpt}}});await p.goto('file:///${htmlPath.replace(/\\/g,'/')}',{waitUntil:'networkidle'});await p.screenshot({path:'${output.replace(/\\/g,'/')}',fullPage:true${bgOpt}});await b.close()})();`;
 }
 
 function escapeHtml(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
+ * 从 HTML 内容中检测实际设计尺寸，用于匹配 viewport 与内容尺寸。
+ * 检测优先级: 设备边框类 → 海报 @page 规则 → 浏览器 max-width → 默认 1920×1080
+ */
+function detectContentDimensions(html: string): { width: number; height: number } | undefined {
+  // 1. 设备边框 — 从 CSS class 定义中提取宽高
+  const deviceMatch = html.match(/\.bwvi-(iphone|pixel|ipad)\{width:(\d+)px;height:(\d+)px/);
+  if (deviceMatch) {
+    return { width: parseInt(deviceMatch[2]), height: parseInt(deviceMatch[3]) };
+  }
+
+  // 2. MacBook — 特殊处理，screen 高度 + 底座
+  const macScreenMatch = html.match(/\.bwvi-macbook-screen\{[^}]*height:(\d+)px/);
+  if (macScreenMatch) {
+    return { width: 1024, height: parseInt(macScreenMatch[1]) + 40 };
+  }
+
+  // 3. 海报 — @page size 规则
+  const pageSizeMatch = html.match(/@page\s*\{[^}]*size:\s*(\d+)px\s+(\d+)px/);
+  if (pageSizeMatch) {
+    return { width: parseInt(pageSizeMatch[1]), height: parseInt(pageSizeMatch[2]) };
+  }
+
+  // 4. 浏览器窗口框架 — 提取 max-width
+  const browserMatch = html.match(/\.bwvi-browser\{[^}]*max-width:(\d+)px/);
+  if (browserMatch) {
+    return { width: parseInt(browserMatch[1]), height: 1080 };
+  }
+
+  // 未匹配到任何已知模式，返回 undefined 保留原行为 1920×1080
+  return undefined;
 }

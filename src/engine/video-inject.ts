@@ -15,6 +15,8 @@ export interface InjectOptions {
   loop?: number;
   /** 是否在加载后自动滚动（用于触发 IntersectionObserver 类动画） */
   autoScroll?: boolean;
+  /** 动画引擎：css（默认）| gsap（需页面已加载 GSAP） */
+  animationEngine?: "css" | "gsap";
 }
 
 /** 视频注入标记，用于检测是否已注入 */
@@ -25,27 +27,25 @@ const VIDEO_MARKER = "data-bwi-video-injected";
  * 替换 IntersectionObserver 为直接播放，确保录屏时所有动画可见。
  */
 export function injectForVideo(html: string, opts: InjectOptions = {}): string {
-  const { stagger = true, loop = 1, autoScroll = false } = opts;
+  const { stagger = true, loop = 1, autoScroll = false, animationEngine = "css" } = opts;
 
-  // 如果已经注入过则跳过
   if (html.includes(VIDEO_MARKER)) return html;
-
-  const css = getAnimationCSS();
-  const script = generateVideoScript({ stagger, loop, autoScroll });
 
   let result = html;
 
-  // 总是注入 CSS（替换已有或新增）
-  const styleTag = `<style data-bwi-video="anim">${css}</style>`;
-  result = result.replace("</head>", `${styleTag}</head>`);
+  if (animationEngine === "gsap") {
+    const gsapScript = generateGsapVideoScript({ loop, autoScroll });
+    result = result.replace("</body>", `${gsapScript}</body>`);
+  } else {
+    const css = getAnimationCSS();
+    const script = generateVideoScript({ stagger, loop, autoScroll });
+    const styleTag = `<style data-bwi-video="anim">${css}</style>`;
+    result = result.replace("</head>", `${styleTag}</head>`);
+    result = result.replace("</body>", `${script}</body>`);
+  }
 
-  // 注入视频录制脚本
-  result = result.replace("</body>", `${script}</body>`);
-
-  // 添加注入标记
   result = result.replace("<body", `<body ${VIDEO_MARKER}="true"`);
 
-  // 如果需要 autoScroll，注入滚动控制
   if (autoScroll) {
     result = result.replace("</head>", `<style>
 html{scroll-behavior:smooth}
@@ -98,4 +98,28 @@ function generateVideoScript(opts: {
 `;
 
   return `<script>${autoPlayAll}</script>`;
+}
+
+/**
+ * 为 GSAP 驱动页面生成视频录制脚本。
+ * 暂停所有 ScrollTrigger 实例，强制播放所有 tween。
+ */
+function generateGsapVideoScript(_opts: {
+  loop: number;
+  autoScroll: boolean;
+}): string {
+  return `<script>
+(function(){
+  'use strict';
+  try {
+    var sts = ScrollTrigger.getAll();
+    sts.forEach(function(st){ st.kill(); });
+  } catch(e){}
+  try {
+    var tweens = gsap.globalTimeline ? gsap.globalTimeline.getChildren() : [];
+    tweens.forEach(function(t){ t.progress(1); });
+  } catch(e){}
+  document.body.dataset.bwiVideoReady = 'true';
+})();
+<\/script>`;
 }

@@ -9,7 +9,7 @@ export interface BlueprintSection {
 export interface Blueprint {
   id: string;
   name: string;
-  pageType: "landing" | "dashboard" | "app" | "deck" | "poster";
+  pageType: "landing" | "dashboard" | "app" | "deck" | "poster" | "social" | "office";
   industry: string[];
   keywords: string[];
   direction: string;

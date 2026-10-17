@@ -117,7 +117,7 @@ const SLIDE_LAYOUTS: Record<string, SlideLayoutFn> = {
         <div class="bw-deck-hairline" style="background:var(--color-accent)"></div>
         <h2 class="bw-deck-title" style="font-family:var(--font-display);color:var(--color-accent)">${esc(s.title)}</h2>
       </div>
-      <div class="bw-deck-split-right" style="background:${p.surface}">
+      <div class="bw-deck-split-right">
         ${s.content.map((c) => `<p class="bw-deck-paragraph" style="color:var(--color-text);opacity:0.6">${esc(c)}</p>`).join("\n        ")}
       </div>
       <div class="bw-deck-slide-footer">

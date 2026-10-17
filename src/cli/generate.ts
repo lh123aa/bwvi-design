@@ -27,6 +27,7 @@ export async function generateCommand(args: string[]) {
   const orientationFlag = args.find(a => a.startsWith("--orientation="));
   const orientation = orientationFlag ? orientationFlag.split("=")[1] as "portrait" | "landscape" : "portrait";
   const interactive = args.includes("--interactive");
+  const gsap = args.includes("--gsap");
   const realImages = args.includes("--real-images");
   const brandName = getFlagWithDefault(args, "--brand=", config.default_brand, "__none__");
   const brand = brandName !== "__none__" && brandName !== "none" ? getBrand(brandName) : undefined;
@@ -65,6 +66,7 @@ Options:
   --dark                Enable dark mode
   --interactive         Embed interactive state machine
   --engine=<backend>    Render backend: direct, od, huashu, agent, pencil
+  --gsap                Enable GSAP animations (replaces CSS with GSAP engine)
   --poster              Generate print-quality poster (PNG 300dpi via export --scale=4)
   --poster-size=<s>     Poster size: a3 (default), a2, a1
   --json                JSON output mode
@@ -107,7 +109,7 @@ Examples:
       return;
     }
 
-    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive, styleId: styleFinal, aiImages, poster, posterSize, category });
+    const pageResult = buildPage({ task, direction: directionFlag ? direction : undefined, brand: brandName, device, orientation, dark, interactive, styleId: styleFinal, aiImages, poster, posterSize, category, animationEngine: gsap ? "gsap" : undefined });
     const fileName = device ? `preview-${device}.html` : "index.html";
     const filePath = join(demoDir(), fileName);
     writeFileSync(filePath, pageResult.html, "utf-8");

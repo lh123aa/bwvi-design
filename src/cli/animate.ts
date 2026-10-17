@@ -53,16 +53,17 @@ export async function animateCommand(args: string[]) {
   const watermarkFlag = args.find(a => a.startsWith("--watermark="));
   const watermark = watermarkFlag ? watermarkFlag.split("=")[1] : undefined;
   const interactive = args.includes("--interactive");
+  const gsap = args.includes("--gsap");
 
   // 默认行为: --embed（无 --record 时）
   if (!record) {
-    await doEmbed(filePath, fps);
+    await doEmbed(filePath, fps, gsap);
     return;
   }
 
   // ---- --record: 视频录制 ----
   await doRecord(filePath, output, {
-    fps, bgm, format, duration, scroll, quality, watermark, quick, interactive,
+    fps, bgm, format, duration, scroll, quality, watermark, quick, interactive, gsap,
   });
 }
 
@@ -73,7 +74,17 @@ export async function animateCommand(args: string[]) {
 /**
  * 模式 1: 仅注入动画 CSS + scroll-trigger（原 --embed 行为）
  */
-async function doEmbed(filePath: string, fps: number) {
+async function doEmbed(filePath: string, _fps: number, gsap = false) {
+  if (gsap) {
+    const { injectForVideo } = await import("../engine/video-inject.js");
+    let html = readFileSync(filePath, "utf-8");
+    html = injectForVideo(html, { animationEngine: "gsap" });
+    writeFileSync(filePath, html, "utf-8");
+    success(`GSAP 动画已注入: ${filePath}`);
+    result({ status: "ok", file: filePath, action: "gsap_embedded" });
+    return;
+  }
+
   let html = readFileSync(filePath, "utf-8");
   const css = getAnimationCSS();
   const script = getStageScript();
@@ -83,7 +94,7 @@ async function doEmbed(filePath: string, fps: number) {
     html = html.replace("</body>", `${script}</body>`);
     html = html.replace(/<body[^>]*>/i, (m) => `${m} class="bwi-stagger"`);
     writeFileSync(filePath, html, "utf-8");
-    success(`动画已注入: ${filePath}`);
+    success(`CSS 动画已注入: ${filePath}`);
   } else {
     info("动画已存在，跳过注入");
   }
@@ -101,6 +112,7 @@ interface RecordOptions {
   watermark?: string;
   quick: boolean;
   interactive?: boolean;
+  gsap?: boolean;
 }
 
 /**
@@ -160,19 +172,24 @@ async function doRecord(htmlPath: string, outputPath: string, opts: RecordOption
     }
   }
 
-  // 4. 录制
+  // 4. 检测内容实际尺寸，确保视频尺寸与 HTML 设计匹配
+  const htmlForDim = readFileSync(htmlPath, "utf-8");
+  const dims = detectContentDimensions(htmlForDim) ?? { width: 1920, height: 1080 };
+
+  // 5. 录制
   info("启动浏览器录制...");
   const outputDir = dirname(outputPath);
 
   const captureResult = await captureVideo(htmlPath, outputDir, {
     fps: opts.fps,
-    width: 1920,
-    height: 1080,
+    width: dims.width,
+    height: dims.height,
     scrollBehavior: opts.scroll,
     duration: opts.duration,
     animate: true,
     loop: 1,
     interactionSteps,
+    animationEngine: opts.gsap ? "gsap" : undefined,
   });
 
   if (!captureResult.success) {
@@ -250,6 +267,7 @@ Video recording (requires Playwright + ffmpeg):
   --bgm=<name>          Background music: ${BGM_LIST.join("|")}
   --watermark=<file>    Watermark image overlay
   --quick               Quick mode: 720p 15fps lower quality
+  --gsap                Use GSAP engine for animations (requires GSAP in HTML)
   --interactive         Auto-detect and record interactive elements (modal/tab/carousel)
   --output=<file>       Output file path
 
@@ -276,4 +294,28 @@ async function getFileSize(filePath: string): Promise<string> {
   } catch {
     return "未知";
   }
+}
+
+/**
+ * 从 HTML 中检测内容实际设计尺寸（与 export.ts 中的版本保持同步）
+ * 检测优先级: 设备边框类 → 海报 @page 规则 → 浏览器 max-width → 默认
+ */
+function detectContentDimensions(html: string): { width: number; height: number } | undefined {
+  const deviceMatch = html.match(/\.bwvi-(iphone|pixel|ipad)\{width:(\d+)px;height:(\d+)px/);
+  if (deviceMatch) {
+    return { width: parseInt(deviceMatch[2]), height: parseInt(deviceMatch[3]) };
+  }
+  const macScreenMatch = html.match(/\.bwvi-macbook-screen\{[^}]*height:(\d+)px/);
+  if (macScreenMatch) {
+    return { width: 1024, height: parseInt(macScreenMatch[1]) + 40 };
+  }
+  const pageSizeMatch = html.match(/@page\s*\{[^}]*size:\s*(\d+)px\s+(\d+)px/);
+  if (pageSizeMatch) {
+    return { width: parseInt(pageSizeMatch[1]), height: parseInt(pageSizeMatch[2]) };
+  }
+  const browserMatch = html.match(/\.bwvi-browser\{[^}]*max-width:(\d+)px/);
+  if (browserMatch) {
+    return { width: parseInt(browserMatch[1]), height: 1080 };
+  }
+  return undefined;
 }

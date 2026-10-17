@@ -1,4 +1,4 @@
-import { findBlueprint, fillBlueprint, type BlueprintSection } from "../templates/content-presets.js";
+import { findBlueprint, fillBlueprint, type Blueprint, type BlueprintSection } from "../templates/content-presets.js";
 import { findBestSkill, getSkillsByCategory, type SkillYaml } from "./skill-loader.js";
 import { renderDeck } from "./deck-renderer.js";
 
@@ -64,6 +64,8 @@ export interface PageBuildOptions {
   posterSize?: PosterSize;
   /** v0.5.0: 品类提示 (landing/deck/social/office) */
   category?: string;
+  /** 动画引擎：css（默认，离线段）| gsap（高级动画，需联网） */
+  animationEngine?: "css" | "gsap";
 }
 
 export interface PageBuildResult {
@@ -138,6 +140,14 @@ export function buildPage(opts: PageBuildOptions): PageBuildResult {
     }
   }
 
+  // 用 Blueprint 的 fillBlueprint 机制填充 YAML skill sections 中的占位符
+  if (skill.sections.length > 0) {
+    // 构造虚拟 Blueprint 对象以复用 fillBlueprint
+    const fakeBlueprint = { id: skill.id, name: skill.name, pageType: skill.category, industry: skill.industry, keywords: skill.keywords, direction: skill.direction, dark: skill.dark, sections: skill.sections as BlueprintSection[] };
+    const filled = fillBlueprint(fakeBlueprint, brandName, tagline, description);
+    skill = { ...skill, sections: filled.sections as any };
+  }
+
   // ─── Deck 渲染 ────────────────────────────────────────
   if (skill.category === "deck" || category === "deck") {
     const deckHtml = renderDeck(skill.sections, {
@@ -177,7 +187,7 @@ export function buildPage(opts: PageBuildOptions): PageBuildResult {
   }
 
   // ─── 标准 Landing/Dashboard/App 渲染 ─────────────────
-  return renderStandard(brandName, tagline, description, palette, fontStack, isDark, skill, opts.interactive || false, opts.device, opts.orientation, direction);
+  return renderStandard(brandName, tagline, description, palette, fontStack, isDark, skill, opts.interactive || false, opts.device, opts.orientation, direction, opts.animationEngine);
 }
 
 /**
@@ -234,9 +244,12 @@ body::before{content:'';position:absolute;inset:0;
   letter-spacing:0.12em;color:var(--color-primary-dim);text-transform:uppercase;font-weight:600}
 /* 标题 */
 .social-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,4rem);font-weight:800;
-  line-height:1.1;letter-spacing:-0.02em;color:var(--color-accent);margin-bottom:0.5rem}
-.social-tagline{font-size:clamp(1rem,2vw,1.8rem);line-height:1.4;color:var(--color-text);opacity:0.6;margin-bottom:1rem}
-.social-desc{font-size:clamp(0.8rem,1.2vw,1.2rem);line-height:1.6;color:var(--color-text);opacity:0.5;margin-bottom:2rem}
+  line-height:1.1;letter-spacing:-0.02em;color:var(--color-accent);margin-bottom:0.5rem;
+  overflow-wrap:break-word;word-break:break-word}
+.social-tagline{font-size:clamp(1rem,2vw,1.8rem);line-height:1.4;color:var(--color-text);
+  opacity:0.6;margin-bottom:1rem;overflow-wrap:break-word;word-break:break-word}
+.social-desc{font-size:clamp(0.8rem,1.2vw,1.2rem);line-height:1.6;color:var(--color-text);
+  opacity:0.5;margin-bottom:2rem;overflow-wrap:break-word;word-break:break-word}
 /* CTA */
 .social-cta{display:inline-block;padding:0.8em 2.5em;background:var(--color-accent);
   color:#fff;border-radius:2em;font-weight:600;font-size:1rem;text-decoration:none;
@@ -289,7 +302,20 @@ function buildPageLegacy(opts: PageBuildOptions, blueprint: any, confidence: num
     return { html: posterHtml, blueprintId: "poster", direction, brandUsed: brandName, matchConfidence: 1 };
   }
 
-  return renderStandard(brandName, tagline, description, palette, fontStack, isDark, null, opts.interactive || false, opts.device, opts.orientation, direction);
+  // 用蓝图的 sections 填充伪 SkillYaml，传给 renderStandard
+  const filled = fillBlueprint(blueprint, brandName, tagline, description);
+  const pseudoSkill: SkillYaml = {
+    id: blueprint.id || "generic",
+    name: blueprint.name || "",
+    category: blueprint.pageType || "landing",
+    direction: blueprint.direction || direction,
+    dark: blueprint.dark,
+    sections: filled.sections,
+    keywords: blueprint.keywords || [],
+    industry: blueprint.industry || [],
+  };
+
+  return renderStandard(brandName, tagline, description, palette, fontStack, isDark, pseudoSkill, opts.interactive || false, opts.device, opts.orientation, direction);
 }
 
 /**
@@ -304,6 +330,7 @@ function renderStandard(
   interactive: boolean,
   device?: DeviceType, orientation?: string,
   overrideDirection?: string,
+  animationEngine?: "css" | "gsap",
 ): PageBuildResult {
   const sections = skillOrNull?.sections || [];
   const base = { palette: { ...palette, muted: palette.text + "88" }, fontDisplay: fontStack, animation: true, dark: isDark };
@@ -314,6 +341,10 @@ function renderStandard(
   const headScript = interactive ? getStateMachineScript() : "";
   const fontLink = generateFontsLink(fontStack);
   const themeAttr = isDark ? ' data-theme="dark"' : '';
+  const gsapScript = animationEngine === "gsap" ? `
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/gsap.min.js"><\/script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12/dist/ScrollTrigger.min.js"><\/script>
+<script>gsap.registerPlugin(ScrollTrigger);ScrollTrigger.refresh()<\/script>` : "";
 
   let html = `<!DOCTYPE html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -325,7 +356,7 @@ ${fontLink}${headScript}
 body{font-family:var(--font-body);color:var(--color-text);background:${isDark ? '#111' : palette.surface};-webkit-font-smoothing:antialiased}
 ${styles}
 ${isDark ? `[data-theme="dark"] body{background:#111;color:#e0e0e0}` : ''}
-</style></head><body>
+</style>${gsapScript}</head><body>
 <div${themeAttr} style="font-family:system-ui,-apple-system,sans-serif;color:${palette.text};background:${isDark ? '#111' : palette.surface}">
 ${htmlSections}
 </div>
@@ -430,6 +461,7 @@ ${fontLink}
     margin-bottom: 0.2em;
     max-width: 85%; position:relative; z-index:1;
     text-shadow: ${isDark ? '0 2px 8px rgba(0,0,0,0.4)' : 'none'};
+    overflow-wrap: break-word; word-break: break-word;
   }
   .poster-subtitle {
     font-size: clamp(1.2rem, 3.5vw, 4rem);
@@ -437,6 +469,7 @@ ${fontLink}
     color: var(--color-text); opacity: 0.6;
     margin-bottom: 0.8em; max-width: 70%;
     position:relative; z-index:1;
+    overflow-wrap: break-word; word-break: break-word;
   }
   .poster-desc {
     font-size: clamp(0.8rem, 2vw, 2.2rem);
@@ -444,6 +477,7 @@ ${fontLink}
     color: var(--color-text); opacity: 0.5;
     margin-bottom: 1.2em; max-width: 60%;
     position:relative; z-index:1;
+    overflow-wrap: break-word; word-break: break-word;
   }
   .poster-cta {
     display: inline-block;

@@ -68,13 +68,17 @@ const SKILLS_DIR = /* @__PURE__ */ (() => {
     // @ts-ignore - CJS bundle fallback
     here = __dirname;
   }
-  // src/engine/ → src/skills/
-  const candidate = join(here, "..", "skills");
-  if (existsSync(candidate)) return candidate;
-  // 也尝试从项目根找 src/skills/
-  const root = join(here, "..", "..", "skills");
-  if (existsSync(root)) return root;
-  return candidate;
+  // 路径解析（兼容 src/engine/ 源码和 dist/ bundle 两种位置）
+  //   src/engine/ → ../skills/
+  //   dist/       → ../src/skills/
+  const candidates = [
+    join(here, "..", "skills"),
+    join(here, "..", "src", "skills"),
+  ];
+  for (const c of candidates) {
+    if (existsSync(c)) return c;
+  }
+  return candidates[0];
 })();
 
 // ─── 内部工具函数 ───────────────────────────────────────────────
