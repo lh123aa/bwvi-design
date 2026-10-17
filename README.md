@@ -1,16 +1,18 @@
 <div align="center">
   <h1>BWVI</h1>
   <p><strong>B</strong>etter <strong>W</strong>ay of <strong>V</strong>isual <strong>I</strong>ntelligence</p>
-  <p><em>Agent 原生设计决策协议 — CLI · MCP Server · 多引擎渲染</em></p>
+  <p><em>Agent 原生设计决策协议 — 一行命令，给 AI Agent 装上一个有理由的设计大脑</em></p>
   <p>
-    <img src="https://img.shields.io/badge/version-0.5.0-5E6AD2" alt="版本">
+    <img src="https://img.shields.io/badge/version-0.5.1-5E6AD2" alt="版本">
     <img src="https://img.shields.io/badge/license-Apache%202.0-00D4AA" alt="许可证">
-    <img src="https://img.shields.io/badge/tests-230%20passed-00E698" alt="测试">
-    <img src="https://img.shields.io/badge/skills-53-FF6B9D" alt="技能">
-    <img src="https://img.shields.io/badge/benchmark-13%2F13-00D4AA" alt="基准测试">
-    <img src="https://img.shields.io/badge/scores-10%E2%9C%85-00D4AA" alt="全五星">
+    <img src="https://img.shields.io/badge/tests-236%20passed-00E698" alt="测试">
+    <img src="https://img.shields.io/badge/brands-115-FF6B9D" alt="品牌">
+    <img src="https://img.shields.io/badge/styles-56-00D4AA" alt="风格">
+    <img src="https://img.shields.io/badge/node-18%2B-3C873A" alt="Node">
   </p>
   <p>
+    <a href="#-快速开始"><b>🚀 快速开始</b></a> ·
+    <a href="#-demo"><b>🎬 看 Demo</b></a> ·
     <a href="./README.en.md"><b>🌐 English</b></a>
   </p>
   <br>
@@ -20,61 +22,55 @@
 
 **BWVI 不是设计工具。** 它是 AI Agent 与设计执行之间的**决策层**。它不画像素——它确保每个像素都有理由。
 
-> CLI + MCP Server，让 AI Agent 拥有结构化的设计决策能力。
+30 秒看懂它解决什么问题：
+
+> 你让 AI "帮我设计一个咖啡品牌官网"。AI 会胡编配色、套模板、生成一屏 Lorem ipsum。
+> **BWVI 先问 5 个决策题**（方向 → 色板 → 字体 → 布局 → 细节签名），每个答案带理由、可追溯、可回滚，然后才生成页面。
+> 它知道 Linear 的色板、Stripe 的字体节奏、56 种设计流派的特征、iPhone 边框的刘海参数——这些是 115 个品牌 + 50 个行业蓝图 + 7 类评审维度的沉淀，不是一次性 token 猜的。
+
+一行出结果：
+
+```bash
+npx bwvi generate "咖啡品牌 豆蔻咖啡 landing page" --direct
+# → 真实 HTML，~200ms，5-15KB，带完整设计决策 JSON
+```
 
 ---
 
-<div align="center">
-  <table>
-    <tr>
-      <td align="center"><b>🧠 决策链</b><br>方向→色板→字体→布局→细节</td>
-      <td align="center"><b>📐 10 种方向</b><br>从编辑式克制到多彩趣味</td>
-      <td align="center"><b>🏷️ 115 品牌</b><br>Linear · Stripe · Apple · Notion …</td>
-    </tr>
-    <tr>
-      <td align="center"><b>📱 5 种设备边框</b><br>iPhone · Pixel · iPad · MacBook · 浏览器</td>
-      <td align="center"><b>🔍 10 维评审</b><br>自动化客观指标</td>
-      <td align="center"><b>🔌 渲染后端</b><br>direct · huashu · agent · pencil</td>
-    </tr>
-    <tr>
-      <td align="center"><b>🏭 Page Builder</b><br>50+ 行业蓝图 → 真实页面</td>
-      <td align="center"><b>🎨 56 种视觉风格</b><br>粗野主义 · 玻璃拟态 · 赛博朋克 …</td>
-      <td align="center"><b>🎬 动画引擎</b><br>12 动画 × 7 easing + MP4 导出</td>
-    </tr>
-    <tr>
-      <td align="center"><b>📁 Skill 文件系统</b><br>YAML 技能文件 · 热加载 · 社区贡献</td>
-      <td align="center"><b>📊 Deck 幻灯片</b><br>3 套模板 · 键盘导航 · 过渡动画</td>
-      <td align="center"><b>🐦 Social 卡片</b><br>Twitter · 小红书 · 一键适配</td>
-    </tr>
-    <tr>
-      <td align="center"><b>🧠 持续学习</b><br>12 能力节点 · 自动诊断 · 知识注入</td>
-      <td align="center"><b>🔌 渲染后端</b><br>direct · huashu · agent · pencil</td>
-      <td align="center"><b>🔄 自我进化</b><br>测量→诊断→改进→验证循环</td>
-    </tr>
-    <tr>
-      <td align="center"><b>🎨 设计原理层</b><br>HSL 色彩和谐 · 排版比例尺 · 风格冲突检测</td>
-      <td align="center"><b>🧩 混搭组合</b><br>A的配色+B的字体+C的布局 · 原理可解释</td>
-      <td align="center"><b>✅ WCAG 验证</b><br>自动检查对比度 · 提示修复建议</td>
-    </tr>
-  </table>
-</div>
+## 🎬 Demo
+
+把下面这段粘进终端，3 个命令从 0 到 1：
+
+```bash
+npx bwvi init my-project && cd my-project
+npx bwvi analyze "SaaS AI 产品官网"          # ① 分析任务 → 推荐方向 + 色板 + 字体
+npx bwvi generate "SaaS AI 产品官网" --direct # ② 出一页真实 HTML
+npx bwvi export index.html --format=pdf      # ③ 导出 PDF 看打印效果
+```
+
+<details>
+<summary>📺 想看完整 12 种动画 + 视频录制？（展开）</summary>
+
+```bash
+bwvi animate index.html --record --bgm=tech   # 录 MP4，带背景音乐
+bwvi animate index.html --record --format=gif  # 录 GIF
+```
+</details>
 
 ---
 
 ## 📋 目录
 
-- [核心特性](#-核心特性)
 - [快速开始](#-快速开始)
 - [安装](#-安装)
-- [架构](#-架构)
 - [设计决策协议](#-设计决策协议)
 - [命令](#-命令)
-- [设备边框](#-设备边框)
-- [交互原型模式](#-交互原型模式)
-- [组件变体](#-组件变体)
 - [Page Builder 蓝图引擎](#-page-builder-蓝图引擎)
 - [56 种视觉风格](#-56-种视觉风格)
-- [动画引擎](#-动画引擎)
+- [动画引擎 + 视频录制](#-动画引擎--视频录制)
+- [设备边框](#-设备边框)
+- [交互原型](#-交互原型)
+- [组件变体](#-组件变体)
 - [品牌系统](#-品牌系统)
 - [评审体系](#-评审体系)
 - [知识块系统](#-知识块系统)
@@ -86,10 +82,11 @@
 - [开发](#-开发)
 - [基准测试](#-基准测试)
 - [许可证](#-许可证)
+- [附录：能力全景评估](#-附录bwvi-类型能力全景评估)
 
 ---
 
-## 📊 BWVI 类型能力全景评估
+## 📊 附录：BWVI 类型能力全景评估
 
 以下为 BWVI 自身各品类能力的系统性评估，数据来自源码分析与基准测试。
 
@@ -211,22 +208,6 @@ BWVI 内置 `capability-graph.ts` 自我诊断系统，当前各能力等级（�
 | **AI 图片生成** | ⭐⭐⭐ | `image "prompt"` | 需自行配置 API Key |
 | **设计评审** | ⭐⭐⭐ | `critique file.html` | 客观指标检查可用，深度视觉评审待完善 |
 | **App 原型** | ⭐⭐⭐⭐ | `generate "xxx" --device=iphone --interactive` | 设备边框 + 交互状态机 |
-
----
-
-## 🚀 快速开始
-
-```bash
-npx bwvi init my-project && cd my-project
-npx bwvi analyze "咖啡品牌 landing page"     # 分析任务 → 方向推荐
-npx bwvi showcase --pick landing-warm        # 选方向（真实 HTML 预览）
-npx bwvi generate "咖啡品牌" --direct        # 直接出 HTML
-npx bwvi generate "产品路线图" --deck        # Deck 幻灯片
-npx bwvi generate "新品发布" --social        # 社交卡片
-npx bwvi skill list                          # 查看所有技能模板
-npx bwvi critique index.html                 # 评审
-npx bwvi feedback 8                          # 评分
-```
 
 ---
 

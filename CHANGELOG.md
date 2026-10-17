@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.1] - 2026-10-17
+
+### Added
+- **GSAP animation engine for video capture** — `injectForVideo()` now accepts `animationEngine: "css" | "gsap"` (default `css`). For GSAP-driven pages, the new `generateGsapVideoScript()` kills all ScrollTrigger instances and forces every tween to `progress(1)`, so off-screen / scroll-triggered content renders correctly in recordings.
+- **Wiring through the pipeline** — `composer.ts`, `page-builder.ts`, and `skill-loader.ts` propagate the engine choice; `cli/animate.ts` and `cli/export.ts` expose `--animation-engine` for the user.
+
+### Changed
+- Removed `demo/index.html` (superseded by the showcase demo).
+- Refactored `video-inject.ts` internal helpers for cleaner CSS/GSAP branching.
+
+### Quality
+- **Tests** — 236/236 passed (26 files), build bundle ~1.4MB (under 2MB limit).
+
 ## [0.5.0] - 2026-05-15
 
 ### Added
